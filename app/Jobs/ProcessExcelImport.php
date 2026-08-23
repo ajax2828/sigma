@@ -40,7 +40,13 @@ class ProcessExcelImport implements ShouldQueue
      */
     public function handle()
     {
-        $rows = \Maatwebsite\Excel\Facades\Excel::toArray([], $this->filePath)[0]; // Ambil sheet pertama
+        $fullPath = \Illuminate\Support\Facades\Storage::path($this->filePath);
+        if (!file_exists($fullPath)) {
+            \Log::error("Excel file not found: {$this->filePath} -> {$fullPath}");
+            return;
+        }
+        $sheets = \Maatwebsite\Excel\Facades\Excel::toArray([], $fullPath);
+        $rows = $sheets[0] ?? [];
         $delayMinutes = $this->delaySeconds / 60;
 
         foreach ($rows as $index => $row) {
@@ -82,7 +88,7 @@ class ProcessExcelImport implements ShouldQueue
             ]);
 
             // Dispatch email job with 5-minute delay
-            SendSeminarTicketEmail::dispatch($registration)->delay(now()->addMinutes($delayMinutes));
+            SendSeminarTicketEmail::dispatch($registration, null, 0)->delay(now()->addMinutes($delayMinutes));
             $delayMinutes += 5; // Increment delay for next email
         }
 

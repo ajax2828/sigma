@@ -25,7 +25,7 @@ class SendSeminarTicketEmail implements ShouldQueue
      * @param Registration $registration
      * @return void
      */
-    public function __construct(Registration $registration, $filePath, $delaySeconds = 0)
+    public function __construct(Registration $registration, $filePath = null, $delaySeconds = 0)
     {
         $this->registration = $registration;
         $this->filePath = $filePath;
@@ -40,9 +40,7 @@ class SendSeminarTicketEmail implements ShouldQueue
     public function handle()
     {
         try {
-            $delayMinutes = $this->delaySeconds / 60; // Convert to minutes
-            Mail::to($this->registration->email)->send(new SeminarTicketMail($this->registration))->delay(now()->addMinutes($delayMinutes));
-            $delayMinutes += 5;
+            Mail::to($this->registration->email)->send(new SeminarTicketMail($this->registration));
             \Log::info("Email sent successfully to {$this->registration->email} at " . now());
         } catch (\Exception $e) {
             \Log::error("Failed to send email to {$this->registration->email}: " . $e->getMessage());

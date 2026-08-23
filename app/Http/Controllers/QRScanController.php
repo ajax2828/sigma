@@ -34,10 +34,10 @@ class QRScanController extends Controller
             return response()->json([
                 'status' => 'invalid',
                 'message' => 'QR tidak valid.',
-                'nama' => $registrant->name,
-                'institusi' => $registrant->institute,
-                'jabatan' => $registrant->user_status,
-                'studi' => $registrant->study,
+                'nama' => null,
+                'institusi' => null,
+                'jabatan' => null,
+                'studi' => null,
             ], 404);
         }
 
@@ -46,7 +46,7 @@ class QRScanController extends Controller
                 'status' => 'invalid',
                 'message' => 'QR ini sudah digunakan pada ' . $registrant->scanned_at->format('d-m-Y H:i:s'),
                 'nama' => $registrant->name,
-                'institusi' => $registrant->institute,
+                'institusi' => $registrant->Institute,
                 'jabatan' => $registrant->user_status,
                 'studi' => $registrant->study,
             ], 403);
@@ -62,7 +62,7 @@ class QRScanController extends Controller
             'status' => 'valid',
             'message' => 'QR valid dan pertama kali digunakan.',
             'nama' => $registrant->name,
-            'institusi' => $registrant->institute,
+            'institusi' => $registrant->Institute,
             'jabatan' => $registrant->user_status,
             'studi' => $registrant->study,
         ]);

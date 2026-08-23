@@ -3,8 +3,9 @@
 namespace App\Jobs;
 
 use App\Models\Registration;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Mail\CertificateMail;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 
 class SendSeminarCertificate implements ShouldQueue
 {
-    use Queueable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $registration;
     protected $filePath;

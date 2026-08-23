@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/check-email-status', [RegistrationController::class, 'checkEmailStatus'])->name('check.email.status');
 
     Route::get('/scan/depan', [QRScanController::class, 'show'])->name('scan');
-    Route::get('/scan/belakang', [QRScanController::class, 'show'])->name('scan.back');
+    Route::get('/scan/belakang', [QRScanController::class, 'showBehind'])->name('scan.back');
     Route::post('/scan-result', [QRScanController::class, 'scan']);
 
     Route::get('/send-certificate', [SendCertificateViaEmail::class, 'show'])->name('send.certificate');

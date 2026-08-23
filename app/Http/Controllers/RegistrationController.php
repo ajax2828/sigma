@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use App\Models\Registration;
 use Illuminate\Http\Request;
-use App\Mail\Seminar1TicketMail;
 use App\Jobs\ProcessExcelImport;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Jobs\SendSeminarTicketEmail;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
@@ -55,7 +55,7 @@ class RegistrationController extends Controller
             ]);
 
             // Dispatch email job (optional for single registration)
-            SendSeminarTicketEmail::dispatch($registration);
+            SendSeminarTicketEmail::dispatch($registration, null, 0);
 
             // Return JSON for AJAX or redirect for non-AJAX
             if ($request->ajax()) {
@@ -105,6 +105,15 @@ class RegistrationController extends Controller
     //         'qr_code_url' => route('qr.validate', $qrToken),
     //     ]);
     // }
+
+    public function scan($code)
+    {
+        $registrant = Registration::where('unique_code', $code)->first();
+        if (!$registrant) {
+            abort(404, 'QR Code tidak valid');
+        }
+        return view('scanResult', compact('registrant'));
+    }
 
     public function importShow()
     {
