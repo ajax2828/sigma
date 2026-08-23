@@ -1,0 +1,42 @@
+# Production override - pakai: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Atau: docker compose --profile prod up (jika pakai COMPOSE_FILE)
+services:
+  app:
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+    # build tanpa dev deps sudah benar (Dockerfile pakai --no-dev)
+
+  nginx:
+    # di prod jangan expose 8000 ke publik jika pakai reverse proxy (Traefik/Nginx host)
+    # biarkan 80, atau bind ke 127.0.0.1 saja:
+    ports:
+      - "127.0.0.1:${NGINX_PORT:-80}:80"
+
+  db:
+    ports:
+      # jangan expose MySQL ke internet, hanya localhost (atau hapus baris ini total jika tidak butuh akses luar)
+      - "127.0.0.1:${DB_PORT_HOST:-3307}:3306"
+    # optional: limit memory
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 1G
+
+  mailpit:
+    # di prod matikan mailpit, pakai SMTP asli (Gmail/SES/Mailgun)
+    # kalau tetap butuh, bind ke localhost saja:
+    ports:
+      - "127.0.0.1:${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "127.0.0.1:${MAILPIT_UI_PORT:-8025}:8025"
+    # atau disable total: profiles: ["debug"] -> tidak akan jalan tanpa --profile debug
+    profiles: ["debug"]
+
+  queue:
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+
+  # vite jangan jalan di prod
+  vite:
+    profiles: ["dev"]
