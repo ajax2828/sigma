@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGMA - Sistem Informasi Terpadu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans 3', Arial, sans-serif; background: #f4f0e6; color: #181818; }
+
+        /* ===== NAVBAR ===== */
+        .navbar { background: #f4f0e6; border-bottom: 2px solid #181818; padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .nav-container { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.5rem; font-weight: 700; color: #181818; text-decoration: none; letter-spacing: 0.08em; }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links a { color: #181818; text-decoration: none; font-size: 0.78rem; transition: color 0.2s; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+        .nav-links a:hover { color: #9b1c1c; }
+
+        /* ===== HERO ===== */
+        .hero { min-height: 72vh; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding: 5rem max(2rem, calc((100% - 1180px) / 2)); background: transparent; border-bottom: 2px solid #181818; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; width: 42%; height: 100%; right: 0; top: 0; background: linear-gradient(90deg, transparent, #faf7ef 30%); border-left: 0; }
+        .hero::after { content: ''; position: absolute; width: 36%; height: 2px; right: 3%; bottom: 22%; background: #9b1c1c; }
+        .hero h1 { font-family: 'Libre Baskerville', Georgia, serif; font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 700; margin-bottom: 1.5rem; color: #181818; position: relative; z-index: 1; letter-spacing: -0.04em; }
+        .hero .tagline-container { height: 2.5rem; overflow: hidden; position: relative; z-index: 1; margin-bottom: 1rem; }
+        .hero .tagline { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.35rem; color: #9b1c1c; font-weight: 700; margin: 0; line-height: 2rem; position: relative; z-index: 1; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s; }
+        .hero .tagline:not(.active) { position: absolute; top: 0; left: 0; right: 0; opacity: 0; transform: translateY(100%); }
+        .hero .tagline.active { opacity: 1; transform: translateY(0); }
+        .hero .tagline.exit-up { opacity: 0; transform: translateY(-100%); }
+        .hero p { font-size: 1.15rem; color: #3f3a34; max-width: 600px; line-height: 1.7; margin-bottom: 2.5rem; position: relative; z-index: 1; }
+        .cta { position: relative; z-index: 1; }
+        .cta a { padding: 0.8rem 1.5rem; border-radius: 0; font-size: 0.8rem; text-decoration: none; transition: all 0.2s; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: #181818; color: #f4f0e6; }
+        .cta a:hover { background: #9b1c1c; transform: none; }
+
+        /* ===== SECTIONS ===== */
+        .section { padding: 4rem 2rem; max-width: 1180px; margin: 0 auto; }
+        .section-title { text-align: left; font-family: 'Libre Baskerville', Georgia, serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.75rem; color: #181818; border-bottom: 2px solid #181818; padding-bottom: 0.75rem; }
+        .section-subtitle { text-align: left; color: #5f574d; font-size: 1rem; max-width: 700px; margin: 1rem 0 2.5rem; }
+
+        /* ===== ABOUT ===== */
+        .about-grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 4rem; align-items: start; }
+        .about-text h3 { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; color: #181818; }
+        .about-text p { color: #3f3a34; line-height: 1.8; margin-bottom: 1rem; }
+
+        /* About Carousel / Slider */
+        .about-slider { position: relative; overflow: hidden; min-height: 250px; }
+        .about-slides { display: flex; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; }
+        .about-slide { width: 100%; flex: 0 0 100%; padding: 0.5rem 0; }
+        .about-slide-title { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.35rem; font-weight: 700; margin-bottom: 1rem; color: #181818; }
+        .about-slide p { color: #3f3a34; line-height: 1.8; margin-bottom: 0.75rem; }
+        .about-slide-icon { display: none; }
+
+        /* Slider Nav */
+        .slider-nav { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-top: 1.5rem; }
+        .slider-dot { width: 8px; height: 8px; border-radius: 50%; background: #a9a094; cursor: pointer; transition: all 0.3s; border: none; padding: 0; }
+        .slider-dot.active { background: #9b1c1c; transform: scale(1.3); box-shadow: none; }
+        .slider-arrow { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid #181818; color: #181818; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; }
+        .slider-arrow:hover { background: #181818; border-color: #181818; color: #f4f0e6; }
+        .about-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border: 1px solid #c8bda9; background: #e8e0d1; }
+        .stat-box { background: transparent; border: 0; border-right: 1px solid #c8bda9; border-bottom: 1px solid #c8bda9; border-radius: 0; padding: 1.25rem 0.75rem; text-align: center; transition: all 0.2s; }
+        .stat-box:nth-child(2n) { border-right: 0; }
+        .stat-box:nth-last-child(-n+2) { border-bottom: 0; }
+        .stat-box:hover { background: #f4f0e6; }
+        .stat-number { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.75rem; font-weight: 700; color: #9b1c1c; }
+        .stat-label { font-size: 0.72rem; color: #5f574d; margin-top: 0.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+        /* ===== MEMBERS ===== */
+        .members-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .member-card { position: relative; display: flex; align-items: center; gap: 1.25rem; background: #f8f5ed; border: 1px solid #c8bda9; border-radius: 0; padding: 1.25rem; text-align: left; transition: all 0.2s; }
+        .member-card:hover { border-color: #9b1c1c; transform: none; background: #fffdf8; }
+        .member-avatar { width: 54px; height: 54px; border-radius: 50%; background: #181818; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: #f4f0e6; flex-shrink: 0; box-shadow: none; }
+        .member-body { flex: 1; }
+        .member-number { display: inline-block; font-size: 0.65rem; font-weight: 700; color: #9b1c1c; background: transparent; padding: 0; border-radius: 0; margin-bottom: 0.4rem; letter-spacing: 0.08em; }
+        .member-name { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1rem; font-weight: 700; color: #181818; margin-bottom: 0.125rem; }
+        .member-role { font-size: 0.75rem; color: #9b1c1c; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
+        .member-desc { font-size: 0.8125rem; color: #5f574d; line-height: 1.5; }
+
+        /* ===== ACHIEVEMENTS ===== */
+        .achievements-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+        .achievement-card { background: #f8f5ed; border: 1px solid #c8bda9; border-radius: 0; padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; transition: all 0.2s; }
+        .achievement-card:hover { border-color: #9b1c1c; background: #fffdf8; }
+        .achievement-icon { display: none; }
+        .achievement-content h4 { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1rem; font-weight: 700; color: #181818; margin-bottom: 0.25rem; }
+        .achievement-content .year { font-size: 0.72rem; color: #9b1c1c; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .achievement-content p { font-size: 0.875rem; color: #5f574d; line-height: 1.5; }
+
+        /* ===== FOOTER ===== */
+        footer { text-align: center; padding: 2.5rem 2rem; color: #5f574d; font-size: 0.8rem; border-top: 2px solid #181818; background: #e8e0d1; }
+        footer a { color: #9b1c1c; text-decoration: none; }
+        footer a:hover { color: #181818; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem 1.25rem; }
+            .hero { min-height: auto; padding: 4rem 1.25rem 4.5rem; }
+            .hero::before { width: 38%; opacity: 0.65; }
+            .hero::after { width: 45%; right: 1.25rem; bottom: 2rem; }
+            .hero h1 { font-size: clamp(3rem, 18vw, 5rem); }
+            .hero .tagline { font-size: 1.05rem; line-height: 1.5rem; }
+            .hero p { font-size: 1rem; margin-bottom: 2rem; }
+            .about-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================
+         NAVBAR - Edit link navigasi di sini
+    ======================================== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">SIGMA</a>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#members">Anggota</a>
+                <a href="#achievements">Prestasi</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========================================
+         HERO SECTION - Edit judul, tagline, deskripsi
+    ======================================== -->
+    <section class="hero">
+        <h1>SIGMA</h1>
+        <div class="tagline-container" id="taglineContainer">
+            <div class="tagline active">Inovasi Digital untuk Masa Depan</div>
+            <div class="tagline">Teknologi yang Menginspirasi</div>
+            <div class="tagline">Berkarya Berani Berbeda</div>
+            <div class="tagline">Solusi Cerdas Generasi Muda</div>
+        </div>
+        <p>Organisasi mahasiswa yang bergerak di bidang teknologi dan informasi, berkomitmen menghasilkan karya inovatif dan berkontribusi untuk kemajuan teknologi di Indonesia.</p>
+        <div class="cta">
+            <a href="#about">Pelajari Lebih</a>
+        </div>
+    </section>
+
+    <!-- ========================================
+         ABOUT SECTION - Edit deskripsi, visi/misi, statistik
+    ======================================== -->
+    <section id="about" class="section">
+        <h2 class="section-title">Tentang Kami</h2>
+        <p class="section-subtitle">Kenali lebih dalam tentang organisasi kami, visi, misi, dan nilai-nilai yang kami pegang.</p>
+        <div class="about-grid">
+            <div class="about-text">
+                <h3>Organisasi SIGMA</h3>
+                <div class="about-slider" id="aboutSlider">
+                    <div class="about-slides">
+                        <div class="about-slide">
+                            <div class="about-slide-title">Tentang Kami</div>
+                            <p>SIGMA adalah organisasi mahasiswa yang mengembangkan teknologi dan informasi.</p>
+                        </div>
+                        <div class="about-slide">
+                            <div class="about-slide-title">Visi & Misi</div>
+                            <p><strong>Visi:</strong> Menjadi organisasi teknologi terdepan yang menghasilkan karya inovatif dan berdampak positif.</p>
+                            <p><strong>Misi:</strong> Membangun ekosistem pembelajaran teknologi yang kolaboratif dan inklusif bagi seluruh anggota.</p>
+                        </div>
+                    </div>
+                    <div class="slider-nav">
+                        <button type="button" class="slider-arrow" onclick="sliderPrev()">&#8249;</button>
+                        <div class="slider-dots">
+                            <button type="button" class="slider-dot active" onclick="goToSlide(0)" aria-label="Tentang Kami"></button>
+                            <button type="button" class="slider-dot" onclick="goToSlide(1)" aria-label="Visi dan Misi"></button>
+                        </div>
+                        <button type="button" class="slider-arrow" onclick="sliderNext()">&#8250;</button>
+                    </div>
+                </div>
+            </div>
+            <div class="about-stats">
+                <div class="stat-box">
+                    <div class="stat-number">25+</div>
+                    <div class="stat-label">Anggota Aktif</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Proyek Selesai</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Penghargaan</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Tahun Berdiri</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Kerjasama</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Dedikasi</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         MEMBERS SECTION - Edit data anggota
+         Format: Inisial Avatar, Nama, Jabatan, Deskripsi
+    ======================================== -->
+    <section id="members" class="section" style="background: #e8e0d1; border-top: 1px solid #c8bda9; border-bottom: 1px solid #c8bda9; padding: 3rem 2rem;">
+        <h2 class="section-title">Anggota Kami</h2>
+        <p class="section-subtitle">Orang-orang hebat yang berada di balik setiap pencapaian organisasi.</p>
+        <div class="members-grid">
+
+            <div class="member-card">
+                <div class="member-avatar">AI</div>
+                <div class="member-body">
+                    <div class="member-number">Giyama/2025/001</div>
+                    <div class="member-name">Ahmad Ihsan</div>
+                    <div class="member-role">Ketua Organisasi</div>
+                    <div class="member-desc">Mahasiswa Teknik Informatika yang memiliki pengalaman memimpin tim pengembangan aplikasi web dan mobile selama 3 tahun.</div>
+                </div>
+            </div>
+
+            <div class="member-card">
+                <div class="member-avatar">BN</div>
+                <div class="member-body">
+                    <div class="member-number">Giyama/2025/002</div>
+                    <div class="member-name">Bella Nadira</div>
+                    <div class="member-role">Wakil Ketua</div>
+                    <div class="member-desc">Spesialis UI/UX Design dengan portfolio lebih dari 20 proyek desain untuk startup dan perusahaan lokal.</div>
+                </div>
+            </div>
+
+            <div class="member-card">
+                <div class="member-avatar">CR</div>
+                <div class="member-body">
+                    <div class="member-number">Giyama/2025/003</div>
+                    <div class="member-name">Candra Rizky</div>
+                    <div class="member-role">Sekretaris</div>
+                    <div class="member-desc">Mengelola administrasi organisasi dan koordinasi event, aktif di kepanitiaan tingkat universitas.</div>
+                </div>
+            </div>
+
+            <div class="member-card">
+                <div class="member-avatar">DP</div>
+                <div class="member-body">
+                    <div class="member-number">Giyama/2025/004</div>
+                    <div class="member-name">Dian Permata</div>
+                    <div class="member-role">Bendahara</div>
+                    <div class="member-desc">Ahli keuangan yang mengatur anggaran dan sponsorship, berpengalaman di organisasi kemahasiswaan.</div>
+                </div>
+            </div>
+
+            <div class="member-card">
+                <div class="member-avatar">EH</div>
+                <div class="member-body">
+                    <div class="member-number">Giyama/2025/005</div>
+                    <div class="member-name">Eka Hidayat</div>
+                    <div class="member-role">K Divisi Teknologi</div>
+                    <div class="member-desc">Full-stack developer dengan keahlian Laravel, React, dan Flutter. Juara 2 Hackathon Nasional 2025.</div>
+                </div>
+            </div>
+
+            <div class="member-card">
+                <div class="member-avatar">FA</div>
+                <div class="member-body">
+                    <div class="member-number">Giyama/2025/006</div>
+                    <div class="member-name">Fitri Aulia</div>
+                    <div class="member-role">K Divisi Desain</div>
+                    <div class="member-desc">Desainer grafis profesional, berpengalaman membuat branding dan konten visual untuk berbagai komunitas.</div>
+                </div>
+            </div>
+
+            <div class="member-card">
+                <div class="member-avatar">GH</div>
+                <div class="member-body">
+                    <div class="member-number">Giyama/2025/007</div>
+                    <div class="member-name">Galih Prasetyo</div>
+                    <div class="member-role">K Divisi Humas</div>
+                    <div class="member-desc">Menangani hubungan masyarakat, media sosial, dan kerjasama eksternal dengan berbagai stakeholder.</div>
+                </div>
+            </div>
+
+            <div class="member-card">
+                <div class="member-avatar">HN</div>
+                <div class="member-body">
+                    <div class="member-number">Giyama/2025/008</div>
+                    <div class="member-name">Hana Nurhaliza</div>
+                    <div class="member-role">Staf Ahli</div>
+                    <div class="member-desc">Mahasiswa Ilmu Komputer yang aktif mengajar programming dasar untuk anggota baru setiap semester.</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========================================
+         ACHIEVEMENTS SECTION - Edit data prestasi
+    ======================================== -->
+    <section id="achievements" class="section">
+        <h2 class="section-title">Prestasi Kami</h2>
+        <p class="section-subtitle">Bukti dedikasi dan kerja keras organisasi dalam mencapai berbagai penghargaan.</p>
+        <div class="achievements-grid">
+
+            <div class="achievement-card">
+                <div class="achievement-content">
+                    <h4>Juara 1 - Nasional Innovation Challenge 2025</h4>
+                    <div class="year">2025</div>
+                    <p>Kompetisi inovasi teknologi tingkat nasional yang diselenggarakan oleh Kementerian Pendidikan. Tim SIGMA membawa aplikasi manajemen sampah berbasis AI.</p>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <div class="achievement-content">
+                    <h4>Juara 2 - Hackathon Indonesia Digital 2025</h4>
+                    <div class="year">2025</div>
+                    <p>Hackathon 48 jam dengan tema "Digital Solutions for Education". Tim berhasil membuat platform e-learning interaktif.</p>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <div class="achievement-content">
+                    <h4>Juara 3 - Lomba Cipta Aplikasi 2024</h4>
+                    <div class="year">2024</div>
+                    <p>Lomba pembuatan aplikasi tingkat provinsi yang diikuti 50+ tim dari berbagai universitas ternama.</p>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <div class="achievement-content">
+                    <h4>Best Innovation Award - Tech Fest 2025</h4>
+                    <div class="year">2025</div>
+                    <p>Penghargaan inovasi terbaik dalam acara festival teknologi yang diselenggarakan universitas negeri ternama.</p>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <div class="achievement-content">
+                    <h4>1000 Startup Digital - Top 100</h4>
+                    <div class="year">2024</div>
+                    <p>Berhasil masuk 100 besar program pencetakan startup digital yang diselenggarakan Kominfo Indonesia.</p>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <div class="achievement-content">
+                    <h4>Sertifikasi Internasional - Google IT Support</h4>
+                    <div class="year">2025</div>
+                    <p>15 anggota berhasil mendapatkan sertifikasi Google IT Support sebagai bukti kompetensi di bidang teknologi informasi.</p>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <div class="achievement-content">
+                    <h4>Most Active Community - Developer Circle</h4>
+                    <div class="year">2024</div>
+                    <p>Diakui oleh Facebook Developer Circle sebagai komunitas teknologi paling aktif di regional masing-masing.</p>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <div class="achievement-content">
+                    <h4>Best Paper - Seminar Nasional Informatika</h4>
+                    <div class="year">2024</div>
+                    <p>Publikasi jurnal ilmiah tentang implementasi machine learning untuk klasifikasi penyakit tanaman.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========================================
+         FOOTER - Edit teks footer, copyright
+    ======================================== -->
+    <footer>
+        <p>&copy; 2026 Organisasi SIGMA. All rights reserved.</p>
+        <p style="margin-top: 0.5rem;">Designed and maintained by <a href="#">Ajawx.xyz</a></p>
+    </footer>
+
+    <!-- Slider JS -->
+    <script>
+    // About Slider
+    const sliderEl = document.getElementById('aboutSlider');
+    const slides = sliderEl.querySelector('.about-slides');
+    const slideItems = [...sliderEl.querySelectorAll('.about-slide')];
+    const dots = [...sliderEl.querySelectorAll('.slider-dot')];
+    let sliderIndex = 0;
+
+    function updateSlider() {
+      slides.style.transform = 'translateX(-' + (sliderIndex * 100) + '%)';
+      dots.forEach(function(dot, index) {
+        dot.classList.toggle('active', index === sliderIndex);
+      });
+    }
+
+    function goToSlide(index) { sliderIndex = index; updateSlider(); }
+    function sliderNext() { sliderIndex = (sliderIndex + 1) % slideItems.length; updateSlider(); }
+    function sliderPrev() { sliderIndex = (sliderIndex - 1 + slideItems.length) % slideItems.length; updateSlider(); }
+
+    setInterval(sliderNext, 3000);
+
+    // Hero Tagline Rotator
+    (function() {
+      const taglines = document.querySelectorAll('.hero .tagline');
+      let currentTag = 0;
+      setInterval(function() {
+        taglines[currentTag].classList.remove('active');
+        taglines[currentTag].classList.add('exit-up');
+        currentTag = (currentTag + 1) % taglines.length;
+        taglines[currentTag].classList.add('active');
+        taglines[currentTag].classList.remove('exit-up');
+        setTimeout(function() {
+          taglines.forEach(function(t, i) {
+            if (i !== currentTag) {
+              t.classList.remove('exit-up');
+            }
+          });
+        }, 500);
+      }, 3000);
+    })();
+    </script>
+
+</body>
+</html>

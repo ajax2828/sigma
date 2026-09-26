@@ -1,0 +1,16 @@
+.git
+docker-compose.override.yml
+*.log
+node_modules
+vendor
+storage/*.key
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
+bootstrap/cache/*
+.phpunit.result.cache
+.idea
+.vscode
+.DS_Store
