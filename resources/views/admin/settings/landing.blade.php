@@ -6,189 +6,141 @@
     <h1 class="page-title">Landing Page Settings</h1>
     <p class="page-subtitle">Manage your public landing page content</p>
 
-    <form method="POST" action="{{ route('admin.settings.landing.update') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('admin.settings.landing.update') }}">
         @csrf
 
-        <div class="card" style="margin-bottom: 1.5rem;">
-            <div class="stat-label" style="margin-bottom: 1rem; font-size: 1rem;">Site Identity &amp; Navigation</div>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+        <div class="card mb-lg">
+            <div class="stat-label f-subhead">Site Identity &amp; Navigation</div>
+            <div class="f-grid-2">
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Site Title</label>
-                    <input type="text" name="site_title" value="{{ $contents['site_title']->value ?? 'SIGMA - Sistem Informasi Terpadu' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Site Title</label>
+                    <input type="text" name="site_title" value="{{ $contents['site_title']->value ?? 'SIGMA - Sistem Informasi Terpadu' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Navigation Brand</label>
-                    <input type="text" name="nav_brand" value="{{ $contents['nav_brand']->value ?? 'SIGMA' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Navigation Brand</label>
+                    <input type="text" name="nav_brand" value="{{ $contents['nav_brand']->value ?? 'SIGMA' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">About Menu Label</label>
-                    <input type="text" name="nav_about_label" value="{{ $contents['nav_about_label']->value ?? 'About' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">About Menu Label</label>
+                    <input type="text" name="nav_about_label" value="{{ $contents['nav_about_label']->value ?? 'About' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Members Menu Label</label>
-                    <input type="text" name="nav_members_label" value="{{ $contents['nav_members_label']->value ?? 'Anggota' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Members Menu Label</label>
+                    <input type="text" name="nav_members_label" value="{{ $contents['nav_members_label']->value ?? 'Anggota' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Achievements Menu Label</label>
-                    <input type="text" name="nav_achievements_label" value="{{ $contents['nav_achievements_label']->value ?? 'Prestasi' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Achievements Menu Label</label>
+                    <input type="text" name="nav_achievements_label" value="{{ $contents['nav_achievements_label']->value ?? 'Prestasi' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Login Menu Label</label>
-                    <input type="text" name="nav_login_label" value="{{ $contents['nav_login_label']->value ?? 'Login' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
-                </div>
-            </div>
-            <div style="margin-top: 1rem;">
-                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Footer Text</label>
-                <input type="text" name="footer_text" value="{{ $contents['footer_text']->value ?? 'Organisasi SIGMA. All rights reserved.' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
-            </div>
-        </div>
-
-        <!-- Hero Section -->
-        <div class="card" style="margin-bottom: 1.5rem;">
-            <div class="stat-label" style="margin-bottom: 1rem; font-size: 1rem;">Hero Section</div>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-                <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Title</label>
-                    <input type="text" name="hero_title" value="{{ $contents['hero_title']->value ?? '' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
-                </div>
-                <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Tagline</label>
-                    <input type="text" name="hero_tagline" value="{{ $contents['hero_tagline']->value ?? '' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Login Menu Label</label>
+                    <input type="text" name="nav_login_label" value="{{ $contents['nav_login_label']->value ?? 'Login' }}" class="f-input">
                 </div>
             </div>
-            <div style="margin-top: 1rem;">
-                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Description</label>
-                <textarea name="hero_description" rows="3" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem; resize: vertical;">{{ $contents['hero_description']->value ?? '' }}</textarea>
-            </div>
-            <div style="margin-top: 1rem;">
-                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Button Label</label>
-                <input type="text" name="hero_cta_label" value="{{ $contents['hero_cta_label']->value ?? 'Pelajari Lebih' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
-            </div>
-            <div style="margin-top: 1rem;">
-                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Background Image</label>
-                @if($contents['hero_background_image']->value ?? null)
-                    <div style="width: 100%; max-width: 420px; height: 180px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; margin-bottom: 0.75rem;">
-                        <img src="{{ $contents['hero_background_image']->value }}" alt="Current hero background" style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                @endif
-                <input type="file" name="hero_background_image" accept="image/jpeg,image/png,image/webp" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
-                <p style="margin: 0.5rem 0 0; color: rgba(255,255,255,0.45); font-size: 0.75rem;">Format JPG, PNG, atau WebP. Maksimal 5 MB.</p>
+            <div class="mt-md">
+                <label class="f-label">Footer Text</label>
+                <input type="text" name="footer_text" value="{{ $contents['footer_text']->value ?? 'Organisasi SIGMA. All rights reserved.' }}" class="f-input">
             </div>
         </div>
 
         <!-- About Section -->
-        <div class="card" style="margin-bottom: 1.5rem;">
-            <div class="stat-label" style="margin-bottom: 1rem; font-size: 1rem;">About Section</div>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
+        <div class="card mb-lg">
+            <div class="stat-label f-subhead">About Section</div>
+            <div class="f-grid-2">
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Section Title</label>
-                    <input type="text" name="about_title" value="{{ $contents['about_title']->value ?? 'Tentang Kami' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Section Title</label>
+                    <input type="text" name="about_title" value="{{ $contents['about_title']->value ?? 'Tentang Kami' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Organization Title</label>
-                    <input type="text" name="about_organization_title" value="{{ $contents['about_organization_title']->value ?? 'Organisasi SIGMA' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
-                </div>
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Section Subtitle</label>
-                <input type="text" name="about_subtitle" value="{{ $contents['about_subtitle']->value ?? '' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">First Slide Title</label>
-                    <input type="text" name="about_slide_title" value="{{ $contents['about_slide_title']->value ?? 'Tentang Kami' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
-                </div>
-                <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Second Slide Title</label>
-                    <input type="text" name="vision_mission_title" value="{{ $contents['vision_mission_title']->value ?? 'Visi & Misi' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Organization Title</label>
+                    <input type="text" name="about_organization_title" value="{{ $contents['about_organization_title']->value ?? 'Organisasi SIGMA' }}" class="f-input">
                 </div>
             </div>
-            <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Description</label>
+            <div class="mb-md">
+                <label class="f-label">Section Subtitle</label>
+                <input type="text" name="about_subtitle" value="{{ $contents['about_subtitle']->value ?? '' }}" class="f-input">
+            </div>
+            <div class="f-grid-2">
+                <div>
+                    <label class="f-label">First Slide Title</label>
+                    <input type="text" name="about_slide_title" value="{{ $contents['about_slide_title']->value ?? 'Tentang Kami' }}" class="f-input">
+                </div>
+                <div>
+                    <label class="f-label">Second Slide Title</label>
+                    <input type="text" name="vision_mission_title" value="{{ $contents['vision_mission_title']->value ?? 'Visi & Misi' }}" class="f-input">
+                </div>
+            </div>
+            <div class="mb-md">
+                <label class="f-label">Description</label>
                 <textarea name="about_description" rows="4" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem; resize: vertical;">{{ $contents['about_description']->value ?? '' }}</textarea>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+            <div class="f-grid-2">
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Vision</label>
+                    <label class="f-label">Vision</label>
                     <textarea name="vision" rows="3" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem; resize: vertical;">{{ $contents['vision']->value ?? '' }}</textarea>
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Mission</label>
+                    <label class="f-label">Mission</label>
                     <textarea name="mission" rows="3" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem; resize: vertical;">{{ $contents['mission']->value ?? '' }}</textarea>
                 </div>
             </div>
         </div>
 
         <!-- Stats Section -->
-        <div class="card" style="margin-bottom: 1.5rem;">
-            <div class="stat-label" style="margin-bottom: 1rem; font-size: 1rem;">Statistics</div>
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;">
+        <div class="card mb-lg">
+            <div class="stat-label f-subhead">Statistics</div>
+            <div class="f-grid-5">
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Active Members</label>
-                    <input type="text" name="stat_active_members" value="{{ $contents['stat_active_members']->value ?? '' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Active Members</label>
+                    <input type="text" name="stat_active_members" value="{{ $contents['stat_active_members']->value ?? '' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Projects</label>
-                    <input type="text" name="stat_projects" value="{{ $contents['stat_projects']->value ?? '' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Projects</label>
+                    <input type="text" name="stat_projects" value="{{ $contents['stat_projects']->value ?? '' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Awards</label>
-                    <input type="text" name="stat_awards" value="{{ $contents['stat_awards']->value ?? '' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Awards</label>
+                    <input type="text" name="stat_awards" value="{{ $contents['stat_awards']->value ?? '' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Years</label>
-                    <input type="text" name="stat_years" value="{{ $contents['stat_years']->value ?? '' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Years</label>
+                    <input type="text" name="stat_years" value="{{ $contents['stat_years']->value ?? '' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Partnerships</label>
-                    <input type="text" name="stat_partnerships" value="{{ $contents['stat_partnerships']->value ?? '15+' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Partnerships</label>
+                    <input type="text" name="stat_partnerships" value="{{ $contents['stat_partnerships']->value ?? '15+' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Dedication</label>
-                    <input type="text" name="stat_dedication" value="{{ $contents['stat_dedication']->value ?? '100%' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Dedication</label>
+                    <input type="text" name="stat_dedication" value="{{ $contents['stat_dedication']->value ?? '100%' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Active Members Label</label>
-                    <input type="text" name="stat_active_members_label" value="{{ $contents['stat_active_members_label']->value ?? 'Anggota Aktif' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Active Members Label</label>
+                    <input type="text" name="stat_active_members_label" value="{{ $contents['stat_active_members_label']->value ?? 'Anggota Aktif' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Projects Label</label>
-                    <input type="text" name="stat_projects_label" value="{{ $contents['stat_projects_label']->value ?? 'Proyek Selesai' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Projects Label</label>
+                    <input type="text" name="stat_projects_label" value="{{ $contents['stat_projects_label']->value ?? 'Proyek Selesai' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Awards Label</label>
-                    <input type="text" name="stat_awards_label" value="{{ $contents['stat_awards_label']->value ?? 'Penghargaan' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Awards Label</label>
+                    <input type="text" name="stat_awards_label" value="{{ $contents['stat_awards_label']->value ?? 'Penghargaan' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Years Label</label>
-                    <input type="text" name="stat_years_label" value="{{ $contents['stat_years_label']->value ?? 'Tahun Berdiri' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Years Label</label>
+                    <input type="text" name="stat_years_label" value="{{ $contents['stat_years_label']->value ?? 'Tahun Berdiri' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Partnerships Label</label>
-                    <input type="text" name="stat_partnerships_label" value="{{ $contents['stat_partnerships_label']->value ?? 'Kerjasama' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Partnerships Label</label>
+                    <input type="text" name="stat_partnerships_label" value="{{ $contents['stat_partnerships_label']->value ?? 'Kerjasama' }}" class="f-input">
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Dedication Label</label>
-                    <input type="text" name="stat_dedication_label" value="{{ $contents['stat_dedication_label']->value ?? 'Dedikasi' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
-                </div>
-            </div>
-        </div>
-
-        <!-- Achievements Section -->
-        <div class="card" style="margin-bottom: 1.5rem;">
-            <div class="stat-label" style="margin-bottom: 1rem; font-size: 1rem;">Achievements Section</div>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-                <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Section Title</label>
-                    <input type="text" name="achievement_section_title" value="{{ $contents['achievement_section_title']->value ?? '' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
-                </div>
-                <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">Section Subtitle</label>
-                    <input type="text" name="achievement_section_subtitle" value="{{ $contents['achievement_section_subtitle']->value ?? '' }}" style="width: 100%; padding: 0.625rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.875rem;">
+                    <label class="f-label">Dedication Label</label>
+                    <input type="text" name="stat_dedication_label" value="{{ $contents['stat_dedication_label']->value ?? 'Dedikasi' }}" class="f-input">
                 </div>
             </div>
         </div>
 
-        <button type="submit" class="btn-login" style="border: none; padding: 0.75rem 2rem; font-size: 0.875rem; border-radius: 8px; cursor: pointer;">Save Settings</button>
+        <button type="submit" class="btn-save" ><svg class="btn-save-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg><span class="btn-save-label">Save Settings</span></button>
     </form>
 @endsection

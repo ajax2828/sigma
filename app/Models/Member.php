@@ -12,6 +12,7 @@ class Member extends Model
         'role',
         'code',
         'description',
+        'motto',
         'photo',
         'sort_order',
     ];

@@ -167,21 +167,21 @@
                 datasets: [{
                     label: 'Revenue',
                     data: [65, 72, 68, 82, 78, 85, 82],
-                    borderColor: '#38bdf8',
+                    borderColor: '#d4a24c',
                     backgroundColor: 'rgba(56, 189, 248, 0.1)',
                     fill: true,
                     tension: 0.4,
                     pointRadius: 4,
-                    pointBackgroundColor: '#38bdf8'
+                    pointBackgroundColor: '#d4a24c'
                 }, {
                     label: 'Users',
                     data: [45, 52, 48, 65, 62, 70, 65],
-                    borderColor: '#4ade80',
+                    borderColor: '#5fb98a',
                     backgroundColor: 'rgba(74, 222, 128, 0.1)',
                     fill: true,
                     tension: 0.4,
                     pointRadius: 4,
-                    pointBackgroundColor: '#4ade80'
+                    pointBackgroundColor: '#5fb98a'
                 }]
             },
             options: {
@@ -204,12 +204,12 @@
                 datasets: [{
                     label: 'Visits',
                     data: [42, 45, 38, 52, 48, 35, 28],
-                    borderColor: '#38bdf8',
+                    borderColor: '#d4a24c',
                     backgroundColor: 'rgba(56, 189, 248, 0.1)',
                     fill: true,
                     tension: 0.4,
                     pointRadius: 3,
-                    pointBackgroundColor: '#38bdf8'
+                    pointBackgroundColor: '#d4a24c'
                 }]
             },
             options: {

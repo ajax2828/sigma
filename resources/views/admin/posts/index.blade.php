@@ -6,47 +6,53 @@
     <div class="page-header">
         <div>
             <h1 class="page-title">Posts <span class="badge-count">{{ $posts->total() }}</span></h1>
-            <p class="page-subtitle">Manage your content and publications</p>
+            <p class="page-subtitle">Kelola artikel dan publikasi organisasi.</p>
         </div>
         <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">+ New Post</a>
     </div>
 
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+    <div class="card flush">
+        <form method="GET" action="{{ route('admin.posts.index') }}" class="toolbar">
+            <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari judul atau isi post..." aria-label="Cari post">
+            <select name="status" onchange="this.form.submit()" aria-label="Filter status">
+                <option value="">Semua status</option>
+                @foreach(['draft' => 'Draft', 'published' => 'Published', 'archived' => 'Archived'] as $value => $label)
+                    <option value="{{ $value }}" {{ request('status') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-secondary">Cari</button>
+            @if(request()->hasAny(['q', 'status']))
+                <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Reset</a>
+            @endif
+        </form>
 
-    <div class="card">
         @if ($posts->count())
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Title</th>
                         <th>Status</th>
                         <th>Author</th>
                         <th>Created</th>
-                        <th>Actions</th>
+                        <th class="text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($posts as $post)
                         <tr>
                             <td>
-                                <a href="{{ route('admin.posts.show', $post) }}" style="color:#1e293b;text-decoration:none;font-weight:600;">
-                                    {{ Str::limit($post->title, 50) }}
-                                </a>
+                                <a href="{{ route('admin.posts.show', $post) }}" class="post-title">{{ $post->title }}</a>
+                                <div class="post-excerpt">{{ Str::limit(strip_tags($post->content), 70) }}</div>
                             </td>
-                            <td>
-                                <span class="badge badge-{{ $post->status }}">{{ ucfirst($post->status) }}</span>
-                            </td>
+                            <td><span class="badge badge-{{ $post->status }}">{{ ucfirst($post->status) }}</span></td>
                             <td>{{ $post->user->name }}</td>
                             <td>{{ $post->created_at->format('M d, Y') }}</td>
                             <td>
                                 <div class="actions">
-                                    <a href="{{ route('admin.posts.show', $post) }}" class="btn btn-secondary">View</a>
                                     <a href="{{ route('admin.posts.edit', $post) }}" class="btn btn-primary">Edit</a>
-                                    <form action="{{ route('admin.posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Delete this post?');">
+                                    <form action="{{ route('admin.posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Hapus post &quot;{{ Str::limit($post->title, 30) }}&quot;? Tindakan ini tidak bisa dibatalkan.');">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                        <button type="submit" class="btn btn-danger">Hapus</button>
                                     </form>
                                 </div>
                             </td>
@@ -54,13 +60,18 @@
                     @endforeach
                 </tbody>
             </table>
-            <div style="padding:1.25rem;border-top:1px solid #f1f5f9;">
+            <div style="padding: 1.25rem; border-top: 1px solid rgba(255,255,255,0.08);">
                 {{ $posts->links() }}
             </div>
         @else
             <div class="empty-state">
-                <p>No posts yet. Create your first post to get started.</p>
-                <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">Create Post</a>
+                @if(request()->hasAny(['q', 'status']))
+                    <p>Tidak ada post yang cocok dengan filter ini.</p>
+                    <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Reset Filter</a>
+                @else
+                    <p>Belum ada post. Buat post pertama Anda untuk memulai.</p>
+                    <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">Create Post</a>
+                @endif
             </div>
         @endif
     </div>

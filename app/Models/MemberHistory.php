@@ -16,6 +16,7 @@ class MemberHistory extends Model
         'role',
         'code',
         'description',
+        'motto',
         'photo',
         'created_by',
     ];

@@ -8,6 +8,7 @@ class Achievement extends Model
 {
     protected $fillable = [
         'icon',
+        'image',
         'title',
         'year',
         'description',

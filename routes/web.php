@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 
+// Publik: post published saja, 404 kalau draft/archived.
+Route::get('/posts/{post}', [PostController::class, 'publicShow'])->name('posts.show');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.process');
@@ -36,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/settings/members/{member}', [SettingController::class, 'destroyMember'])->name('admin.settings.members.destroy');
     Route::post('/admin/settings/members/histories/{history}/restore', [SettingController::class, 'restoreMember'])->name('admin.settings.members.restore');
     Route::post('/admin/settings/members/section', [SettingController::class, 'updateMemberSection'])->name('admin.settings.members.section');
+    Route::get('/admin/settings/members-print', [SettingController::class, 'membersPrint'])->name('admin.settings.members.print');
     Route::get('/admin/settings/achievements', [SettingController::class, 'achievements'])->name('admin.settings.achievements');
     Route::post('/admin/settings/achievements', [SettingController::class, 'storeAchievement'])->name('admin.settings.achievements.store');
     Route::put('/admin/settings/achievements/{achievement}', [SettingController::class, 'updateAchievement'])->name('admin.settings.achievements.update');

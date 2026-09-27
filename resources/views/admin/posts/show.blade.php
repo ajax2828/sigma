@@ -11,19 +11,17 @@
                 · <span class="badge badge-{{ $post->status }}">{{ ucfirst($post->status) }}</span>
             </p>
         </div>
-        <div style="display:flex;gap:0.75rem;">
+        <div class="form-actions">
             <a href="{{ route('admin.posts.edit', $post) }}" class="btn btn-primary">Edit</a>
-            <form action="{{ route('admin.posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Delete this post?');">
+            <form action="{{ route('admin.posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Hapus post &quot;{{ Str::limit($post->title, 30) }}&quot;? Tindakan ini tidak bisa dibatalkan.');">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" class="btn btn-danger">Hapus</button>
             </form>
             <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Back</a>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-body">
-            <div style="line-height:1.8;color:#374151;font-size:1.0625rem;max-width:720px;">{{ $post->content }}</div>
-        </div>
+        <div class="post-body">{{ $post->content }}</div>
     </div>
 @endsection

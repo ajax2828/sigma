@@ -1,0 +1,42 @@
+# ===== Environment & secrets =====
+# .env hanya untuk mesin lokal. Salin dari .env.example lalu isi sendiri.
+.env
+.env.*
+!.env.example
+
+# Kunci aplikasi Laravel (APP_KEY) dan key ini tidak pernah masuk repo.
+*.key
+
+# ===== Tooling & asisten =====
+# Berisi skill/prompt lokal, bukan bagian dari aplikasi.
+.hermes/
+openspec/
+
+# ===== Dependencies =====
+# Dip reinstall dari package-lock.json / composer.lock.
+node_modules/
+vendor/
+
+# ===== Cache, log, data lokal =====
+.phpunit.result.cache
+.php-cs-fixer.cache
+npm-debug.log*
+yarn-error.log*
+*.log
+docker-compose.override.yml
+
+# Laravel sudah punya .gitignore per direktori di dalam storage/, bootstrap/cache/,
+# dan database/ (semua ikut ter-commit). Yang di bawah ini untuk file yang
+# muncul di root atau path yang tidak dijaga .gitignore tersebut.
+storage/*.key
+database/*.sqlite
+database/*.sqlite-journal
+database/*.sqlite-shm
+database/*.sqlite-wal
+
+# ===== Editor & OS =====
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

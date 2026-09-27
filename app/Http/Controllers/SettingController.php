@@ -134,17 +134,10 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        $validated = $request->validate([
-            'hero_background_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-        ]);
-
-        // Define fields yang bisa di-update
+        // Field hero_* dan achievement_section_* sengaja tidak ada di sini:
+        // keduanya sudah punya halaman sendiri (Hero, Achievements).
         $fields = [
             ['key' => 'site_title', 'type' => 'text'],
-            ['key' => 'hero_title', 'type' => 'text'],
-            ['key' => 'hero_tagline', 'type' => 'text'],
-            ['key' => 'hero_description', 'type' => 'textarea'],
-            ['key' => 'hero_cta_label', 'type' => 'text'],
             ['key' => 'nav_brand', 'type' => 'text'],
             ['key' => 'nav_about_label', 'type' => 'text'],
             ['key' => 'nav_members_label', 'type' => 'text'],
@@ -159,8 +152,6 @@ class SettingController extends Controller
             ['key' => 'about_description', 'type' => 'textarea'],
             ['key' => 'vision', 'type' => 'textarea'],
             ['key' => 'mission', 'type' => 'textarea'],
-            ['key' => 'achievement_section_title', 'type' => 'text'],
-            ['key' => 'achievement_section_subtitle', 'type' => 'text'],
             ['key' => 'stat_active_members', 'type' => 'text'],
             ['key' => 'stat_projects', 'type' => 'text'],
             ['key' => 'stat_awards', 'type' => 'text'],
@@ -175,10 +166,6 @@ class SettingController extends Controller
             ['key' => 'stat_dedication_label', 'type' => 'text'],
         ];
 
-        // Handle uploaded images
-        $this->storeHeroBackgroundImage($request);
-
-        // Handle basic fields
         foreach ($fields as $field) {
             if ($request->has($field['key'])) {
                 LandingContent::updateOrCreate(
@@ -199,6 +186,13 @@ class SettingController extends Controller
         $histories = MemberHistory::with('creator')->latest('id')->limit(50)->get();
 
         return view('admin.settings.members', compact('contents', 'members', 'histories'));
+    }
+
+    public function membersPrint()
+    {
+        $members = Member::orderBy('sort_order')->orderBy('id')->get();
+
+        return view('admin.settings.members-print', compact('members'));
     }
 
     public function storeMember(Request $request)
@@ -246,6 +240,7 @@ class SettingController extends Controller
             'role' => $history->role,
             'code' => $history->code,
             'description' => $history->description,
+            'motto' => $history->motto,
             'photo' => $history->photo,
             'sort_order' => ((int) Member::max('sort_order')) + 1,
         ]);
@@ -277,6 +272,7 @@ class SettingController extends Controller
             'role' => ['nullable', 'string', 'max:100'],
             'code' => ['nullable', 'string', 'max:100'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'motto' => ['nullable', 'string', 'max:200'],
             'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
     }
@@ -305,6 +301,7 @@ class SettingController extends Controller
             'role' => $member->role,
             'code' => $member->code,
             'description' => $member->description,
+            'motto' => $member->motto,
             'photo' => $member->photo,
             'created_by' => auth()->id(),
         ]);
@@ -383,11 +380,33 @@ class SettingController extends Controller
 
     private function validateAchievement(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'icon' => ['nullable', 'string', 'max:20'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'title' => ['required', 'string', 'max:200'],
             'year' => ['nullable', 'string', 'max:20'],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
+
+        $image = $this->storeAchievementImage($request);
+        if ($image !== null) {
+            $data['image'] = $image;
+        }
+
+        return $data;
+    }
+
+    private function storeAchievementImage(Request $request): ?string
+    {
+        if (! $request->hasFile('image')) {
+            return null;
+        }
+
+        File::ensureDirectoryExists(public_path('images/achievements'), 0775);
+        $file = $request->file('image');
+        $filename = 'achievement-' . time() . '-' . bin2hex(random_bytes(4)) . '.' . $file->extension();
+        $file->move(public_path('images/achievements'), $filename);
+
+        return '/images/achievements/' . $filename;
     }
 }
