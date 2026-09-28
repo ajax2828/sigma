@@ -276,15 +276,17 @@
                                 @if(!empty($slide['text']))
                                     <p class="hero-banner-text">{{ $slide['text'] }}</p>
                                 @endif
-                                <div class="head-actions">
-                                    @if(!empty($slide['url']))
+                                {{-- Wadah tombol ikut disembunyikan kalau slide ini
+                                     tidak punya link, supaya tidak menyisakan
+                                     ruang kosong di bawah deskripsi. --}}
+                                @if(!empty($slide['url']))
+                                    <div class="head-actions">
                                         <a href="{{ $slide['url'] }}" class="btn btn-primary"
                                            @if(\Illuminate\Support\Str::startsWith($slide['url'], 'http')) target="_blank" rel="noopener noreferrer"@endif>
                                             {{ $slide['label'] }}
                                         </a>
-                                    @endif
-                                    <a href="#members" class="btn btn-ghost">{{ $contents['nav_members_label']->value ?? 'Anggota' }}</a>
-                                </div>
+                                    </div>
+                                @endif
                             </div>
                         </article>
                     @endforeach
@@ -310,8 +312,10 @@
                 <p class="tagline">{{ $contents['hero_tagline']->value ?? 'Sistem Informasi dan Manajemen Terpadu' }}</p>
                 <p class="lede">{{ $contents['hero_description']->value ?? 'Organisasi mahasiswa yang bergerak di bidang teknologi dan informasi.' }}</p>
                 <div class="head-actions">
-                    <a href="#members" class="btn btn-primary">{{ $contents['hero_cta_label']->value ?? 'Pelajari Lebih' }}</a>
-                    <a href="#achievements" class="btn btn-ghost">Prestasi</a>
+                    {{-- Label dan tujuan harus cocok: "Pelajari Lebih" ke
+                         Tentang Kami, bukan ke daftar anggota. --}}
+                    <a href="#about" class="btn btn-primary">{{ $contents['hero_cta_label']->value ?? 'Pelajari Lebih' }}</a>
+                    <a href="#achievements" class="btn btn-ghost">{{ $contents['nav_achievements_label']->value ?? 'Prestasi' }}</a>
                 </div>
             </div>
         @endif

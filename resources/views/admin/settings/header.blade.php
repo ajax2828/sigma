@@ -29,6 +29,7 @@
                 <div>
                     <label class="f-label f-label-sm">Label Tombol</label>
                     <input type="text" name="cta_label" value="{{ old('cta_label') }}" maxlength="50" placeholder="Pelajari Lebih" class="f-input f-input-sm">
+                    <p class="f-hint f-hint-sm">Hanya muncul kalau Link di bawah diisi.</p>
                 </div>
                 <div class="f-span-all">
                     <label class="f-label f-label-sm">Deskripsi</label>
@@ -37,7 +38,7 @@
                 <div>
                     <label class="f-label f-label-sm">Link (opsional)</label>
                     <input type="text" name="link" value="{{ old('link') }}" maxlength="2048" placeholder="blog.sigma.id/artikel" class="f-input f-input-sm">
-                    <p class="f-hint f-hint-sm">Tanpa skema akan jadi https://. Kosongkan kalau slide ini tidak perlu tautan.</p>
+                    <p class="f-hint f-hint-sm">Tanpa skema akan jadi https://. Kalau dikosongkan, slide ini tampil tanpa tombol — label tombol di atas ikut tidak dipakai.</p>
                 </div>
                 <div>
                     <label class="f-label f-label-sm">Gambar</label>

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Achievement;
 use App\Models\Member;
 use App\Models\HeaderSlide;
+use App\Models\LandingContent;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -395,15 +396,71 @@ class PublicPostTest extends TestCase
         $this->assertSame(5, substr_count($this->landingBody(), '<article class="hero-banner-slide'), 'tetap 5 slide dari kabar');
     }
 
-    public function test_header_slide_without_link_hides_the_primary_button(): void
+    public function test_header_slide_without_link_shows_no_button_at_all(): void
     {
         HeaderSlide::create(['title' => 'Tanpa Link', 'is_active' => true]);
 
         $body = $this->landingBody();
         $header = substr($body, strpos($body, '<header class="site-header"'), strpos($body, '</header>'));
 
+        // Tanpa link, tidak ada tombol sama sekali — lebih baik daripada
+        // tombol generik yang tidak berasal dari data slide.
         $this->assertStringNotContainsString('btn-primary', $header, 'tidak ada tombol utama kalau slide tanpa link');
-        $this->assertStringContainsString('btn-ghost', $header, 'tombol anggota tetap ada');
+        $this->assertStringNotContainsString('btn-ghost', $header, 'tidak ada tombol tambahan yang hardcode');
+        // Wadah tombol kosong menyisakan ruang kosong di bawah deskripsi.
+        $this->assertStringNotContainsString('head-actions', $header, 'wadah tombol tidak perlu dirender');
+    }
+
+    public function test_header_buttons_come_from_the_slide_and_not_from_hardcoded_anchors(): void
+    {
+        foreach (range(1, 2) as $i) {
+            HeaderSlide::create([
+                'title' => "Slide {$i}",
+                'link' => "blog.sigma.id/artikel-{$i}",
+                'cta_label' => "Buka {$i}",
+                'is_active' => true,
+            ]);
+        }
+
+        $body = $this->landingBody();
+        $header = substr($body, strpos($body, '<header class="site-header"'), strpos($body, '</header>'));
+
+        // Tombol Member lama di-hardcode ke #members dan tidak bisa diatur dari
+        // admin; sekarang tidak boleh ada.
+        $this->assertStringNotContainsString('href="#members"', $header, 'tidak ada tombol anchor hardcode di header');
+        $this->assertStringContainsString('https://blog.sigma.id/artikel-1', $header, 'tombol ikut link slide');
+        $this->assertStringContainsString('Buka 1', $header, 'label tombol ikut slide');
+    }
+
+    public function test_post_slides_do_not_borrow_the_fallback_hero_cta_label(): void
+    {
+        // hero_cta_label = "Pelajari Lebih" milik hero cadangan. Kalau dipakai
+        // untuk slide berita, tombolnya(label) tidak cocok dengan tujuan(artikel).
+        LandingContent::updateOrCreate(['key' => 'hero_cta_label'], ['value' => 'Pelajari']);
+
+        Post::create([
+            'user_id' => User::factory()->create()->id,
+            'title' => 'Kabar Baru SIGMA',
+            'content' => 'Isi kabar.',
+            'status' => 'published',
+            'is_featured' => true,
+        ]);
+
+        $body = $this->landingBody();
+        $this->assertStringContainsString('Baca Selengkapnya', $body, 'slide berita memakai label yang cocok');
+        $this->assertStringNotContainsString('>Pelajari<', $body, 'label hero cadangan tidak ikut dipakai di slide berita');
+    }
+
+    public function test_fallback_hero_cta_points_where_its_label_promises(): void
+    {
+        // Tanpa post dan tanpa slide header, hero statis yang tampil.
+        $body = $this->landingBody();
+        $header = substr($body, strpos($body, '<header class="site-header"'), strpos($body, '</header>'));
+
+        // "Pelajari Lebih" harus ke Tentang Kami, bukan ke daftar anggota.
+        $this->assertStringContainsString('href="#about"', $header, 'CTA "Pelajari Lebih" menuju Tentang Kami');
+        $this->assertStringNotContainsString('href="#members"', $header, 'tidak lagi melompat ke daftar anggota');
+        $this->assertStringContainsString('href="#achievements"', $header, 'tombol Prestasi tetap ada');
     }
 
     public function test_carousel_has_no_arrow_buttons_only_dots(): void

@@ -71,7 +71,10 @@ class LandingPageController extends Controller
                     'text' => \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($slide->content))), 150),
                     'image' => null,
                     'url' => $slide->readUrl(),
-                    'label' => $contents['hero_cta_label']->value ?? 'Baca Selengkapnya',
+                    // Label ikut jenis kontennya: slide berita menuju artikel,
+                    // bukan "Pelajari Lebih" milik hero cadangan. Label harus
+                    // cocok dengan tujuan tombolnya.
+                    'label' => 'Baca Selengkapnya',
                     'date' => $slide->created_at?->format('d M Y'),
                 ];
             }
