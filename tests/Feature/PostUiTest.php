@@ -213,6 +213,45 @@ class PostUiTest extends TestCase
             ->assertSee('name="link"', false);
     }
 
+    public function test_is_featured_survives_an_edit_and_unchecks_cleanly(): void
+    {
+        $admin = $this->admin();
+        $post = $this->makePost($admin, 'Post Banner', 'published');
+
+        $this->put(route('admin.posts.update', $post), [
+            'title' => 'Post Banner',
+            'content' => 'Isi post.',
+            'status' => 'published',
+            'is_featured' => '1',
+        ])->assertRedirect(route('admin.posts.index'));
+
+        $this->assertTrue($post->fresh()->is_featured, 'centang harus tersimpan');
+
+        // Checkbox yang tidak dicentang tidak mengirim apa pun sama sekali.
+        $this->put(route('admin.posts.update', $post), [
+            'title' => 'Post Banner',
+            'content' => 'Isi post.',
+            'status' => 'published',
+        ])->assertRedirect(route('admin.posts.index'));
+
+        $this->assertFalse($post->fresh()->is_featured, 'centang harus hilang saat form disimpan tanpa is_featured');
+    }
+
+    public function test_edit_form_reflects_the_current_featured_state(): void
+    {
+        $admin = $this->admin();
+        $post = $this->makePost($admin, 'Post Banner', 'published');
+        $post->update(['is_featured' => true]);
+
+        $html = $this->get(route('admin.posts.edit', $post))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression(
+            '/name="is_featured"[^>]*value="1"[^>]*checked|checked[^>]*name="is_featured"/',
+            $html,
+            'checkbox harus tercentang kalau postnya memang ada di banner'
+        );
+    }
+
     public function test_update_saves_link_and_empty_link_clears_it(): void
     {
         $admin = $this->admin();

@@ -40,6 +40,12 @@
                 </select>
                 @error('status')<div class="alert alert-danger">{{ $message }}</div>@enderror
             </div>
+            <div class="form-group">
+                <label for="is_featured">Tampilkan di Banner</label>
+                <label class="checkbox-row"><input type="checkbox" id="is_featured" name="is_featured" value="1" @checked(old('is_featured', $post->is_featured))> Masukkan banner hero yang berganti otomatis</label>
+                <p class="field-hint">Kalau ada post yang dicentang, banner hero memakai post-post itu. Kalau tidak ada, banner memakai 5 kabar terbaru.</p>
+                @error('is_featured')<div class="alert alert-danger">{{ $message }}</div>@enderror
+            </div>
             <div class="form-actions">
                 <button type="submit" class="btn-save"><svg class="btn-save-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg><span class="btn-save-label">Update Post</span></button>
                 <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Cancel</a>

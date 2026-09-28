@@ -18,7 +18,7 @@ class AdminNavTest extends TestCase
             'admin.dashboard' => 'Dashboard',
             'admin.posts.index' => 'Posts',
             'admin.settings.landing' => 'Landing Page',
-            'admin.settings.hero' => 'Hero',
+            'admin.settings.header' => 'Header',
             'admin.settings.backgrounds' => 'Background',
             'admin.settings.members' => 'Member',
             'admin.settings.achievements' => 'Achievements',
@@ -51,7 +51,7 @@ class AdminNavTest extends TestCase
         $end = strpos($html, '</details>');
         $menu = substr($html, $start, $end - $start);
 
-        foreach (['admin.posts.index', 'admin.settings.landing', 'admin.settings.hero', 'admin.settings.backgrounds'] as $name) {
+        foreach (['admin.posts.index', 'admin.settings.landing', 'admin.settings.header', 'admin.settings.backgrounds'] as $name) {
             $this->assertStringContainsString(route($name), $menu, "$name harus ada di dropdown Posts");
         }
 
@@ -66,7 +66,7 @@ class AdminNavTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
 
-        foreach (['admin.posts.index', 'admin.settings.landing', 'admin.settings.hero', 'admin.settings.backgrounds'] as $name) {
+        foreach (['admin.posts.index', 'admin.settings.landing', 'admin.settings.header', 'admin.settings.backgrounds'] as $name) {
             $this->get(route($name))
                 ->assertOk()
                 ->assertSee('<details class="nav-dropdown" open', false);

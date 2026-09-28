@@ -91,6 +91,11 @@ class PostController extends Controller
 
         $validated['link'] = blank($validated['link'] ?? null) ? null : trim($validated['link']);
 
+        // Checkbox yang tidak dicentang tidak mengirim nilai sama sekali, jadi
+        // harus selalu ditulis eksplisit — kalau tidak, centang lama ikut hilang
+        // setiap kali post disimpan.
+        $validated['is_featured'] = $request->boolean('is_featured');
+
         return $validated;
     }
 }

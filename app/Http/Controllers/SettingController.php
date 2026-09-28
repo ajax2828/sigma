@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Achievement;
+use App\Models\HeaderSlide;
 use App\Models\LandingContent;
 use App\Models\Member;
 use App\Models\MemberHistory;
@@ -17,10 +18,13 @@ class SettingController extends Controller
         return view('admin.settings.landing', compact('contents'));
     }
 
-    public function hero()
+    /** Header banner: satu baris = satu slide, urut dari sort_order. */
+    public function header()
     {
         $contents = LandingContent::all()->keyBy('key');
-        return view('admin.settings.hero', compact('contents'));
+        $slides = HeaderSlide::orderBy('sort_order')->orderBy('id')->get();
+
+        return view('admin.settings.header', compact('contents', 'slides'));
     }
 
     public function backgrounds()
@@ -104,14 +108,17 @@ class SettingController extends Controller
             ->with('success', 'Background settings updated successfully!');
     }
 
-    public function updateHero(Request $request)
+    /**
+     * Teks cadangan untuk header. Dipakai hanya kalau tidak ada slide header
+     * dan tidak ada kabar published, jadi banner tidak pernah kosong.
+     */
+    public function updateHeaderFallback(Request $request)
     {
         $validated = $request->validate([
             'hero_title' => ['required', 'string', 'max:100'],
             'hero_tagline' => ['nullable', 'string', 'max:200'],
             'hero_description' => ['nullable', 'string', 'max:1000'],
             'hero_cta_label' => ['nullable', 'string', 'max:50'],
-            'hero_background_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
         foreach ([
@@ -126,10 +133,34 @@ class SettingController extends Controller
             );
         }
 
-        $this->storeHeroBackgroundImage($request);
+        return redirect()->route('admin.settings.header')
+            ->with('success', 'Teks cadangan header berhasil disimpan.');
+    }
 
-        return redirect()->route('admin.settings.hero')
-            ->with('success', 'Hero settings updated successfully!');
+    public function storeHeaderSlide(Request $request)
+    {
+        HeaderSlide::create($this->validateHeaderSlide($request) + [
+            'sort_order' => ((int) HeaderSlide::max('sort_order')) + 1,
+        ]);
+
+        return redirect()->route('admin.settings.header')
+            ->with('success', 'Slide header berhasil ditambahkan.');
+    }
+
+    public function updateHeaderSlide(Request $request, HeaderSlide $headerSlide)
+    {
+        $headerSlide->update($this->validateHeaderSlide($request));
+
+        return redirect()->route('admin.settings.header')
+            ->with('success', 'Slide header berhasil diperbarui.');
+    }
+
+    public function destroyHeaderSlide(HeaderSlide $headerSlide)
+    {
+        $headerSlide->delete();
+
+        return redirect()->route('admin.settings.header')
+            ->with('success', 'Slide header berhasil dihapus.');
     }
 
     public function update(Request $request)
@@ -408,5 +439,49 @@ class SettingController extends Controller
         $file->move(public_path('images/achievements'), $filename);
 
         return '/images/achievements/' . $filename;
+    }
+
+    private function validateHeaderSlide(Request $request): array
+    {
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:200'],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'link' => ['nullable', 'string', 'max:2048'],
+            'cta_label' => ['nullable', 'string', 'max:50'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            // Absen di form tambah (urutan auto), jadi hanya ikut ter-update
+            // kalau field-nya benar-benar dikirim dari form edit.
+            'sort_order' => ['nullable', 'integer', 'min:0', 'max:999'],
+            // Checkbox tidak mengirim apa pun kalau tidak dicentang, jadi harus
+            // selalu ditulis eksplisit — kalau tidak, status lama ikut hilang.
+            'is_active' => ['nullable', 'boolean'],
+        ]);
+
+        $data['is_active'] = $request->boolean('is_active');
+
+        $image = $this->storeHeaderSlideImage($request);
+        if ($image !== null) {
+            $data['image'] = $image;
+        } else {
+            // Tidak ada file baru: jangan sentuh kolom image, supaya gambar
+            // lama tidak terhapus setiap kali judul diedit.
+            unset($data['image']);
+        }
+
+        return $data;
+    }
+
+    private function storeHeaderSlideImage(Request $request): ?string
+    {
+        if (! $request->hasFile('image')) {
+            return null;
+        }
+
+        File::ensureDirectoryExists(public_path('images/header'), 0775);
+        $file = $request->file('image');
+        $filename = 'header-slide-' . time() . '-' . bin2hex(random_bytes(4)) . '.' . $file->extension();
+        $file->move(public_path('images/header'), $filename);
+
+        return '/images/header/' . $filename;
     }
 }

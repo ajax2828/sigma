@@ -8,7 +8,13 @@
             <h1 class="page-title">Posts <span class="badge-count">{{ $posts->total() }}</span></h1>
             <p class="page-subtitle">Kelola artikel dan publikasi organisasi.</p>
         </div>
-        <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">+ New Post</a>
+        <div class="page-actions">
+            <a href="{{ route('landing') }}" class="btn btn-secondary" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 15px; height: 15px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+                <span>Lihat Landing Page</span>
+            </a>
+            <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">+ New Post</a>
+        </div>
     </div>
 
     <div class="card flush">

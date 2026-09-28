@@ -199,8 +199,12 @@
         .form-group textarea { resize: vertical; min-height: 140px; line-height: 1.6; }
         .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dim); }
         .field-hint { margin: 0.5rem 0 0; font-size: 0.75rem; color: var(--text-dim); }
+        .checkbox-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text); cursor: pointer; }
+        .checkbox-row input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+        .checkbox-row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         .form-group .alert { margin-top: 0.75rem; }
         .form-actions { display: flex; gap: 0.75rem; }
+        .page-actions { display: flex; gap: 0.625rem; align-items: center; flex-wrap: wrap; }
         .table { width: 100%; border-collapse: collapse; }
         .table th { padding: 0 1.25rem 0.75rem; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); text-align: left; border-bottom: 1px solid var(--border-strong); }
         .table td { padding: 0.875rem 1.25rem; font-size: 0.875rem; color: var(--text-muted); border-bottom: 1px solid rgba(255, 255, 255, 0.05); vertical-align: middle; }
@@ -365,14 +369,14 @@
         <div class="nav-left">
             <a href="{{ route('admin.dashboard') }}" class="navbar-brand">SIGMA<span>.</span></a>
             <div class="navbar-nav" id="navbarNav">
-                @php($inPostsDropdown = request()->routeIs('admin.posts.*', 'admin.settings.landing*', 'admin.settings.hero*', 'admin.settings.backgrounds*'))
+                @php($inPostsDropdown = request()->routeIs('admin.posts.*', 'admin.settings.landing*', 'admin.settings.header*', 'admin.settings.backgrounds*'))
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
                 <details class="nav-dropdown" {{ $inPostsDropdown ? 'open' : '' }}>
                     <summary class="{{ $inPostsDropdown ? 'active' : '' }}">Posts</summary>
                     <div class="nav-dropdown-menu">
                         <a href="{{ route('admin.posts.index') }}" class="{{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">All Posts</a>
                         <a href="{{ route('admin.settings.landing') }}" class="{{ request()->routeIs('admin.settings.landing*') ? 'active' : '' }}">Landing Page</a>
-                        <a href="{{ route('admin.settings.hero') }}" class="{{ request()->routeIs('admin.settings.hero*') ? 'active' : '' }}">Hero</a>
+                        <a href="{{ route('admin.settings.header') }}" class="{{ request()->routeIs('admin.settings.header*') ? 'active' : '' }}">Header</a>
                         <a href="{{ route('admin.settings.backgrounds', ['section' => 'hero']) }}" class="{{ request()->routeIs('admin.settings.backgrounds*') ? 'active' : '' }}">Background</a>
                     </div>
                 </details>

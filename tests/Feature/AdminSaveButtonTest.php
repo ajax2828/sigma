@@ -26,7 +26,7 @@ class AdminSaveButtonTest extends TestCase
             route('admin.posts.create'),
             route('admin.posts.edit', ['post' => $this->post->id]),
             route('admin.settings.landing'),
-            route('admin.settings.hero'),
+            route('admin.settings.header'),
             route('admin.settings.backgrounds', ['section' => 'hero']),
             route('admin.settings.members'),
             route('admin.settings.achievements'),

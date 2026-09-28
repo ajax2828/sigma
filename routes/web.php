@@ -17,6 +17,15 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 });
 
+// Panel admin beralamat /admin/dashboard. Tanpa redirect ini, mengetik
+// "/admin" menghasilkan 404 dan bikin terlihat seperti panelnya rusak.
+Route::get('/admin', fn () => redirect()->route('admin.dashboard'));
+Route::get('/dashboard', fn () => redirect()->route('admin.dashboard'));
+
+// Halaman ini sebelumnya bernama Hero dan sudah di-bookmark/dibuka banyak orang;
+// arahkan ke bentuk barunya supaya tautan lama tidak mati.
+Route::get('/admin/settings/hero', fn () => redirect()->route('admin.settings.header'));
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -27,8 +36,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/posts/{post}/edit', [PostController::class, 'edit'])->name('admin.posts.edit');
     Route::put('/admin/posts/{post}', [PostController::class, 'update'])->name('admin.posts.update');
     Route::delete('/admin/posts/{post}', [PostController::class, 'destroy'])->name('admin.posts.destroy');
-    Route::get('/admin/settings/hero', [SettingController::class, 'hero'])->name('admin.settings.hero');
-    Route::post('/admin/settings/hero', [SettingController::class, 'updateHero'])->name('admin.settings.hero.update');
+    Route::get('/admin/settings/header', [SettingController::class, 'header'])->name('admin.settings.header');
+    Route::post('/admin/settings/header', [SettingController::class, 'storeHeaderSlide'])->name('admin.settings.header.store');
+    Route::put('/admin/settings/header/{headerSlide}', [SettingController::class, 'updateHeaderSlide'])->name('admin.settings.header.update');
+    Route::delete('/admin/settings/header/{headerSlide}', [SettingController::class, 'destroyHeaderSlide'])->name('admin.settings.header.destroy');
+    Route::post('/admin/settings/header/fallback', [SettingController::class, 'updateHeaderFallback'])->name('admin.settings.header.fallback');
     Route::get('/admin/settings/backgrounds', [SettingController::class, 'backgrounds'])->name('admin.settings.backgrounds');
     Route::post('/admin/settings/backgrounds', [SettingController::class, 'updateBackgrounds'])->name('admin.settings.backgrounds.update');
     Route::get('/admin/settings/landing', [SettingController::class, 'index'])->name('admin.settings.landing');

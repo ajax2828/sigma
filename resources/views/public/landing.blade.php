@@ -64,11 +64,56 @@
         .site-head .tagline { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.15rem; color: var(--accent); font-weight: 700; margin-top: 0.5rem; }
         .site-head .lede { color: var(--ink-soft); font-size: 1.05rem; max-width: 640px; margin-top: 0.875rem; }
         .head-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+
+        /* ===== HERO BANNER (geser otomatis) =====
+           Slide ditumpuk absolute, yang aktif opacity 1. Tidak pakai animasi
+           transform supaya teks tetap selectable dan tidak bikin CLS. */
+        .hero-banner { position: relative; }
+        .hero-banner:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+        .hero-banner-slides { position: relative; }
+
+        /* Scrim terang di sisi kiri tempat teks berdiri. Warna header hanya
+           25% opaque di atas, jadi tanpa ini judul panjang + ringkasan post
+           jadi dark-on-dark di atas foto gelap. Ikut idiom section lain:
+           kabut hangat di atas gambar, makin tembus ke kanan. */
+        .hero-banner-slides::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(100deg, rgba(244, 240, 230, 0.95) 0%, rgba(244, 240, 230, 0.9) 40%, rgba(244, 240, 230, 0.55) 68%, rgba(244, 240, 230, 0.22) 100%);
+        }
+        /* Konten dan kontrol harus di atas scrim, bukan di bawahnya.
+           z-index cuma berlaku kalau posisinya bukan static. */
+        .hero-banner-inner { position: relative; z-index: 2; }
+        .hero-banner-slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity 0.55s ease; background-size: cover; background-position: center; background-repeat: no-repeat; }
+        .hero-banner-slide.active { position: relative; opacity: 1; visibility: visible; }
+        .hero-banner-inner { max-width: 1180px; margin: 0 auto; padding: 3.5rem 2rem 4.5rem; }
+        .hero-banner-date { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.625rem; }
+        .hero-banner-title { font-family: 'Libre Baskerville', Georgia, serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; }
+        .hero-banner-text { color: var(--ink-soft); font-size: 1.05rem; max-width: 640px; margin-top: 0.875rem; }
+
+        /* Kontrol banner: satu blok untuk seluruh banner, bukan per slide.
+           Tidak ada tombol panah; dots saja yang jadi penanda posisi sekaligus
+           kontrol manual, jadi banner tetap bisa dijalankan tanpa mouse. */
+        .carousel-nav { position: absolute; left: 0; right: 0; bottom: 1.5rem; z-index: 2; max-width: 1180px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; gap: 0.875rem; }
+        .carousel-dots { display: flex; align-items: center; gap: 0.5rem; }
+        .carousel-dot { width: 26px; height: 4px; padding: 0; border: 0; border-radius: 2px; background: rgba(24, 24, 24, 0.25); cursor: pointer; transition: background 0.25s ease, width 0.25s ease; }
+        .carousel-dot.active { background: var(--accent); width: 40px; }
+        .carousel-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
         .btn { display: inline-block; padding: 0.7rem 1.4rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--ink); transition: background 0.2s, color 0.2s, border-color 0.2s; }
         .btn-primary { background: var(--ink); color: var(--paper); }
         .btn-primary:hover { background: var(--accent); border-color: var(--accent); }
         .btn-ghost { background: transparent; color: var(--ink); }
         .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+
+        /* Gerak otomatis dihentikan untuk pengguna yang memintanya. JS juga
+           berhenti menggeser, bukan cuma CSS yang meredam animasinya. */
+        @media (prefers-reduced-motion: reduce) {
+            .hero-banner-slide, .carousel-dot, .btn, .nav-links a { transition-duration: 0.01ms !important; }
+            .hero-banner { scroll-behavior: auto; }
+        }
 
         .news { background: var(--ink); color: var(--paper); padding: 2.25rem 0 2.5rem; }
         .news-head { max-width: 1180px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 1.25rem; }
@@ -175,6 +220,16 @@
             .nav-links a { padding: 0.625rem 0; border-bottom: 1px solid rgba(200, 189, 169, 0.4); }
             .nav-links a.nav-login { margin-top: 0.5rem; text-align: center; border-bottom: 0; }
             .site-head-inner { padding: 2.5rem 1.25rem 2.25rem; }
+            /* Banner: ruang bawah lebih lega buat dots, panah geser ke tepi. */
+            .hero-banner-inner { padding: 2.5rem 1.25rem 4.25rem; }
+            .hero-banner-title { font-size: clamp(1.75rem, 7.5vw, 2.25rem); }
+            .hero-banner-text { font-size: 0.95rem; }
+            .carousel-nav { padding: 0 1.25rem; bottom: 1.25rem; }
+            .carousel-dot { width: 20px; }
+            .carousel-dot.active { width: 32px; }
+            /* Di layar sempit teksnya memenuhi lebar layar, jadi scrim horizontal
+               tidak menutupi sisi kanan — ganti jadi vertikal. */
+            .hero-banner-slides::after { background: linear-gradient(180deg, rgba(244, 240, 230, 0.95) 0%, rgba(244, 240, 230, 0.9) 62%, rgba(244, 240, 230, 0.82) 100%); }
             .news-head, .news-rail, .news-empty, .section > .wrap, .section-head { padding-left: 1.25rem; padding-right: 1.25rem; }
             .news-card { flex-basis: 78%; }
             .section { padding: 3rem 0; }
@@ -202,17 +257,64 @@
         </div>
     </nav>
 
-    <header class="site-header" id="kabar">
-        <div class="site-head-inner">
-            <h1>{{ $contents['hero_title']->value ?? 'SIGMA' }}</h1>
-            <p class="tagline">{{ $contents['hero_tagline']->value ?? 'Sistem Informasi dan Manajemen Terpadu' }}</p>
-            <p class="lede">{{ $contents['hero_description']->value ?? 'Organisasi mahasiswa yang bergerak di bidang teknologi dan informasi.' }}</p>
-            <div class="head-actions">
-                <a href="#members" class="btn btn-primary">{{ $contents['hero_cta_label']->value ?? 'Pelajari Lebih' }}</a>
-                <a href="#achievements" class="btn btn-ghost">Prestasi</a>
+    <header class="site-header" id="hero">
+        @if($slides->count())
+            @php $isRotating = $slides->count() > 1; @endphp
+            <div class="hero-banner" data-hero-banner data-interval="6000" data-reduced-motion="no-rotate"
+                 @if($isRotating) tabindex="0" role="region" aria-roledescription="banner" aria-label="{{ $contents['hero_title']->value ?? 'SIGMA' }}"@endif>
+                <div class="hero-banner-slides">
+                    @foreach($slides as $i => $slide)
+                        <article class="hero-banner-slide{{ $i === 0 ? ' active' : '' }}"
+                                 data-hero-slide
+                                 @if(!empty($slide['image'])) style="background-image: url('{{ $slide['image'] }}');"@endif
+                                 aria-hidden="{{ $i === 0 ? 'false' : 'true' }}">
+                            <div class="hero-banner-inner">
+                                @if(!empty($slide['date']))
+                                    <p class="hero-banner-date">{{ $slide['date'] }}</p>
+                                @endif
+                                <h1 class="hero-banner-title">{{ $slide['title'] }}</h1>
+                                @if(!empty($slide['text']))
+                                    <p class="hero-banner-text">{{ $slide['text'] }}</p>
+                                @endif
+                                <div class="head-actions">
+                                    @if(!empty($slide['url']))
+                                        <a href="{{ $slide['url'] }}" class="btn btn-primary"
+                                           @if(\Illuminate\Support\Str::startsWith($slide['url'], 'http')) target="_blank" rel="noopener noreferrer"@endif>
+                                            {{ $slide['label'] }}
+                                        </a>
+                                    @endif
+                                    <a href="#members" class="btn btn-ghost">{{ $contents['nav_members_label']->value ?? 'Anggota' }}</a>
+                                </div>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+
+                @if($isRotating)
+                    {{-- Satu blok kontrol untuk seluruh banner, bukan di dalam loop slide. --}}
+                    <div class="carousel-nav">
+                        <div class="carousel-dots" data-hero-dots>
+                            @foreach($slides as $i => $slide)
+                                <button type="button" class="carousel-dot{{ $i === 0 ? ' active' : '' }}"
+                                        data-hero-dot="{{ $i }}"
+                                        aria-label="Banner {{ $i + 1 }}: {{ \Illuminate\Support\Str::limit($slide['title'], 40) }}"
+                                        @if($i === 0) aria-current="true"@endif></button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
-        </div>
-        </div>
+        @else
+            <div class="site-head-inner">
+                <h1>{{ $contents['hero_title']->value ?? 'SIGMA' }}</h1>
+                <p class="tagline">{{ $contents['hero_tagline']->value ?? 'Sistem Informasi dan Manajemen Terpadu' }}</p>
+                <p class="lede">{{ $contents['hero_description']->value ?? 'Organisasi mahasiswa yang bergerak di bidang teknologi dan informasi.' }}</p>
+                <div class="head-actions">
+                    <a href="#members" class="btn btn-primary">{{ $contents['hero_cta_label']->value ?? 'Pelajari Lebih' }}</a>
+                    <a href="#achievements" class="btn btn-ghost">Prestasi</a>
+                </div>
+            </div>
+        @endif
     </header>
 
     <section class="news" aria-labelledby="newsTitle" id="kabar">
@@ -348,6 +450,120 @@
     </section>
 
     <script>
+        // ===== HERO BANNER: geser otomatis =====
+        // Delegasi di document supaya tetap hidup kalau node-nya diganti, dan
+        // satu handler untuk semua banner (halaman ini cuma punya satu).
+        (function () {
+            const banner = document.querySelector('[data-hero-banner]');
+            const slides = banner ? banner.querySelectorAll('[data-hero-slide]') : [];
+
+            if (slides.length < 2) {
+                return; // satu slide tidak perlu digeser, tidak ada kontrolnya.
+            }
+
+            const dots = banner.querySelectorAll('[data-hero-dot]');
+            const interval = parseInt(banner.dataset.interval, 10) || 6000;
+            let index = 0;
+            let timer = null;
+
+            const reducedMotion = function () {
+                return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            };
+
+            function show(next) {
+                index = (next + slides.length) % slides.length;
+
+                slides[index].classList.add('active');
+                slides[index].setAttribute('aria-hidden', 'false');
+
+                // Slide lain disembunyikan dari screen reader, bukan cuma transparan.
+                slides.forEach(function (slide, i) {
+                    if (i !== index) {
+                        slide.classList.remove('active');
+                        slide.setAttribute('aria-hidden', 'true');
+                    }
+                });
+
+                dots.forEach(function (dot, i) {
+                    dot.classList.toggle('active', i === index);
+                    if (i === index) {
+                        dot.setAttribute('aria-current', 'true');
+                    } else {
+                        dot.removeAttribute('aria-current');
+                    }
+                });
+            }
+
+            function stop() {
+                if (timer !== null) {
+                    window.clearInterval(timer);
+                    timer = null;
+                }
+            }
+
+            // Dipakai baik oleh timer maupun oleh klik, jadi prefs dicek di
+            // dalam fungsi: kalau pengguna berubah setelan di tengah jalan,
+            // resume dari hover tidak boleh menghidupkan rotasi lagi.
+            function play() {
+                stop();
+                if (reducedMotion()) {
+                    return;
+                }
+                timer = window.setInterval(function () {
+                    show(index + 1);
+                }, interval);
+            }
+
+            // Hanya dots yang bisa diklik; navigasi panah lewat keyboard
+            // (ArrowLeft/ArrowRight) di bawah, jadi tetap ada jalan manual.
+            document.addEventListener('click', function (event) {
+                const target = event.target instanceof Element
+                    ? event.target.closest('[data-hero-dot]')
+                    : null;
+
+                if (!target || !banner.contains(target)) {
+                    return;
+                }
+
+                show(parseInt(target.dataset.heroDot, 10));
+
+                // Menahan rotasi sebentar setelah klik manual, lalu lanjut lagi.
+                stop();
+                window.setTimeout(play, interval);
+            });
+
+            banner.addEventListener('mouseenter', stop);
+            banner.addEventListener('mouseleave', play);
+            banner.addEventListener('focusin', stop);
+            banner.addEventListener('focusout', function (event) {
+                if (!banner.contains(event.relatedTarget)) {
+                    play();
+                }
+            });
+
+            banner.addEventListener('keydown', function (event) {
+                if (event.key === 'ArrowLeft') {
+                    show(index - 1);
+                    stop();
+                    window.setTimeout(play, interval);
+                } else if (event.key === 'ArrowRight') {
+                    show(index + 1);
+                    stop();
+                    window.setTimeout(play, interval);
+                }
+            });
+
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    stop();
+                } else {
+                    play();
+                }
+            });
+
+            play();
+        })();
+
         // Navbar: buka/tutup menu di layar kecil.
         const navToggle = document.getElementById('navToggle');
         const navLinks = document.getElementById('navLinks');

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Achievement;
 use App\Models\Member;
+use App\Models\HeaderSlide;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -230,8 +231,215 @@ class PublicPostTest extends TestCase
         $header = substr($body, $headerStart, $headerEnd - $headerStart);
 
         $this->assertStringNotContainsString('news-rail', $header, 'rail tidak lagi di dalam hero');
-        $this->assertStringNotContainsString('carousel', $header, 'carousel sudah dihapus');
+        $this->assertStringContainsString('hero-banner', $header, 'banner ada di header');
         $this->assertTrue(strpos($body, '</header>') < strpos($body, 'class="news-rail"'), 'news section setelah header');
+    }
+
+    // ===== HERO BANNER (geser otomatis) =====
+
+    public function test_hero_banner_shows_one_slide_per_post_with_a_single_control_block(): void
+    {
+        foreach (range(1, 4) as $i) {
+            $this->makePost("Banner {$i}", 'published');
+        }
+
+        $body = $this->landingBody();
+
+        $this->assertSame(4, substr_count($body, '<article class="hero-banner-slide'), 'satu slide per kabar');
+        // Kontrol di luar loop: 4 slide harus tetap 1 blok nav dan 4 dots.
+        $this->assertSame(1, substr_count($body, '<div class="carousel-nav">'), 'satu blok kontrol, bukan per slide');
+        $this->assertSame(4, substr_count($body, 'data-hero-dot='), 'dots sama banyak dengan slide');
+    }
+
+    public function test_only_the_active_slide_is_exposed_to_screen_readers(): void
+    {
+        foreach (range(1, 3) as $i) {
+            $this->makePost("Banner {$i}", 'published');
+        }
+
+        $body = $this->landingBody();
+
+        $this->assertSame(1, substr_count($body, 'aria-hidden="false"'), 'tepat satu slide terbaca');
+        $this->assertSame(2, substr_count($body, 'aria-hidden="true"'), 'sisanya disembunyikan');
+        $this->assertSame(1, substr_count($body, 'aria-current="true"'), 'tepat satu dot aktif');
+    }
+
+    public function test_featured_posts_are_the_only_ones_in_the_banner(): void
+    {
+        $admin = User::factory()->create();
+        foreach (['Ditonton', 'Tidak Ditonton'] as $title) {
+            $this->makePost($title, 'published', 'Isi.');
+        }
+
+        $featured = Post::where('title', 'Ditonton')->first();
+        $featured->update(['is_featured' => true]);
+
+        $body = $this->landingBody();
+
+        $this->assertSame(1, substr_count($body, '<article class="hero-banner-slide'), 'hanya post yang dicentang');
+        $this->assertStringContainsString('Ditonton', $body);
+    }
+
+    public function test_banner_slides_are_absolute_and_active_one_is_relative(): void
+    {
+        $css = $this->css();
+
+        preg_match('/\.hero-banner-slide \{[^}]*\}/', $css, $m);
+        $this->assertStringContainsString('position: absolute', $m[0] ?? '', 'slide non-aktif ditumpuk, bukan menambah tinggi banner');
+
+        preg_match('/\.hero-banner-slide\.active \{[^}]*\}/', $css, $a);
+        $this->assertStringContainsString('position: relative', $a[0] ?? '', 'slide aktif yang memegang tinggi banner');
+    }
+
+    public function test_banner_respects_reduced_motion_in_css_and_javascript(): void
+    {
+        $css = $this->css();
+        $this->assertStringContainsString('@media (prefers-reduced-motion: reduce)', $css, 'CSS harus meredam animasi');
+
+        $view = file_get_contents(resource_path('views/public/landing.blade.php'));
+        // Prefs dicek di dalam play(), bukan hanya sekali di load: kalau dicek
+        // sekali, resume dari hover akan menghidupkan rotasi lagi.
+        preg_match('/function play\(\) \{\s*stop\(\);\s*if \(reducedMotion\(\)\)/', $view, $m);
+        $this->assertNotEmpty($m, 'resume rotasi harus mengecek prefers-reduced-motion');
+        $this->assertStringContainsString("window.matchMedia('(prefers-reduced-motion: reduce)')", $view);
+    }
+
+    public function test_banner_pauses_on_hover_and_focus_and_keeps_a_keyboard_way_out(): void
+    {
+        $view = file_get_contents(resource_path('views/public/landing.blade.php'));
+
+        foreach (["banner.addEventListener('mouseenter', stop)", "banner.addEventListener('mouseleave', play)",
+                  "banner.addEventListener('focusin', stop)"] as $hook) {
+            $this->assertStringContainsString($hook, $view);
+        }
+        $this->assertStringContainsString("'visibilitychange'", $view, 'rotasi berhenti saat tab disembunyikan');
+
+        // Tombol panah dihapus, tapi rotasi wajib masih punya jalan
+        // manual: klik dot dan tombol panah keyboard di banner yang terfokus.
+        $this->assertStringContainsString('[data-hero-dot]', $view, 'dot bisa diklik');
+        $this->assertStringContainsString("'ArrowLeft'", $view);
+        $this->assertStringContainsString("'ArrowRight'", $view);
+    }
+
+    public function test_banner_text_sits_on_a_scrim_so_it_stays_readable_over_any_photo(): void
+    {
+        $css = $this->css();
+
+        // Warna header hanya 25% opaque di atas; tanpa scrim, teks banner
+        // jadi dark-on-dark di foto gelap (terukur 1.87:1 sebelum scrim).
+        preg_match('/\.hero-banner-slides::after \{[^}]*\}/', $css, $m);
+        $this->assertNotEmpty($m, 'banner harus punya scrim di atas gambar');
+        preg_match_all('/rgba\(244, 240, 230, (0\.\d+)\)/', $m[0], $op);
+        $this->assertNotEmpty($op[1], 'scrim memakai kabut hangat, bukan hitam');
+        $this->assertGreaterThanOrEqual(0.9, (float) max($op[1]), 'scrim di sisi teks harus hampir opaque');
+
+        // Konten dan kontrol harus berada di atas scrim.
+        $this->assertMatchesRegularExpression(
+            '/\.hero-banner-inner \{[^}]*position: relative[^}]*z-index: 2/',
+            $css,
+            'z-index tanpa position tidak berlaku, teks akan tenggelam di bawah scrim'
+        );
+    }
+
+    public function test_header_slides_win_over_posts_as_banner_content(): void
+    {
+        $this->makePost('Kabar Latest', 'published', 'Isi kabar.');
+
+        HeaderSlide::create([
+            'title' => 'Slide Header',
+            'description' => 'Deskripsi header.',
+            'image' => '/images/header/satu.jpg',
+            'link' => 'blog.sigma.id/artikel',
+            'cta_label' => 'Lihat Detail',
+            'sort_order' => 1,
+        ]);
+
+        $body = $this->landingBody();
+
+        $this->assertStringContainsString('Slide Header', $body, 'slide header yang dipakai');
+        $this->assertStringContainsString('Lihat Detail', $body, 'label tombol ikut dari slide');
+        $this->assertStringContainsString('/images/header/satu.jpg', $body, 'gambar slide dipakai sebagai latar');
+        $this->assertStringNotContainsString('Kabar Latest', substr($body, 0, strpos($body, 'news-rail')), 'kabar tidak lagi jadi banner');
+    }
+
+    public function test_inactive_header_slide_is_skipped(): void
+    {
+        HeaderSlide::create(['title' => 'Aktif', 'is_active' => true, 'sort_order' => 1]);
+        HeaderSlide::create(['title' => 'Mati', 'is_active' => false, 'sort_order' => 2]);
+
+        $body = $this->landingBody();
+
+        $this->assertStringContainsString('Aktif', $body);
+        $this->assertStringNotContainsString('Mati', $body, 'slide nonaktif tidak boleh tampil');
+    }
+
+    public function test_header_slides_are_ordered_by_sort_order(): void
+    {
+        HeaderSlide::create(['title' => 'Kedua', 'sort_order' => 2]);
+        HeaderSlide::create(['title' => 'Pertama', 'sort_order' => 1]);
+
+        $body = $this->landingBody();
+        $this->assertLessThan(
+            strpos($body, 'Kedua'),
+            strpos($body, 'Pertama'),
+            'urutan kecil harus tampil lebih dulu'
+        );
+    }
+
+    public function test_banner_falls_back_to_latest_posts_when_there_is_no_header_slide(): void
+    {
+        foreach (range(1, 7) as $i) {
+            $this->makePost("Kabar {$i}", 'published', 'Isi.');
+        }
+
+        $this->assertSame(5, substr_count($this->landingBody(), '<article class="hero-banner-slide'), 'tetap 5 slide dari kabar');
+    }
+
+    public function test_header_slide_without_link_hides_the_primary_button(): void
+    {
+        HeaderSlide::create(['title' => 'Tanpa Link', 'is_active' => true]);
+
+        $body = $this->landingBody();
+        $header = substr($body, strpos($body, '<header class="site-header"'), strpos($body, '</header>'));
+
+        $this->assertStringNotContainsString('btn-primary', $header, 'tidak ada tombol utama kalau slide tanpa link');
+        $this->assertStringContainsString('btn-ghost', $header, 'tombol anggota tetap ada');
+    }
+
+    public function test_carousel_has_no_arrow_buttons_only_dots(): void
+    {
+        foreach (range(1, 3) as $i) {
+            $this->makePost("Banner {$i}", 'published');
+        }
+
+        $body = $this->landingBody();
+        $css = $this->css();
+
+        $this->assertStringNotContainsString('data-hero-prev', $body, 'tidak ada tombol panah kiri');
+        $this->assertStringNotContainsString('data-hero-next', $body, 'tidak ada tombol panah kanan');
+        $this->assertStringNotContainsString('carousel-arrow', $body, 'tidak ada markup tombol panah');
+        $this->assertStringNotContainsString('.carousel-arrow', $css, 'CSS tombol panah ikut dibuang');
+        $this->assertStringNotContainsString('.carousel-arrows', $css, 'grup panah ikut dibuang');
+
+        // Dots tetap ada: penanda posisi sekaligus satu-satunya kontrol manual.
+        // Pakai atributnya — prefix "class=\"carousel-dot" juga cocok dengan
+        // elemen pembungkus carousel-dots.
+        $this->assertSame(3, substr_count($body, 'data-hero-dot="'), 'satu dot per slide');
+        $this->assertSame(1, substr_count($body, '<div class="carousel-dots"'), 'satu blok dots');
+    }
+
+    public function test_banner_is_a_landmark_with_a_focus_ring(): void
+    {
+        foreach (range(1, 2) as $i) {
+            $this->makePost("Banner {$i}", 'published');
+        }
+
+        $body = $this->landingBody();
+
+        $this->assertStringContainsString('role="region"', $body);
+        $this->assertStringContainsString('aria-roledescription="banner"', $body);
+        $this->assertStringContainsString('tabindex="0"', $body, 'banner bisa difokus untuk kontrol keyboard');
+        $this->assertStringContainsString('.hero-banner:focus-visible', $this->css());
     }
 
     // ===== ABOUT SEBAGAI CARD =====
@@ -423,7 +631,6 @@ class PublicPostTest extends TestCase
     {
         $body = $this->landingBody();
 
-        $this->assertStringNotContainsString('hero-banner', $body, 'banner lama diganti news rail');
         $this->assertStringNotContainsString('aboutSlider', $body, 'slider lama diganti tab');
         $this->assertStringNotContainsString('class="hero"', $body, 'section hero diganti header + news');
     }
