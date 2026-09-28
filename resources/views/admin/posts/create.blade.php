@@ -21,6 +21,12 @@
                 @error('title')<div class="alert alert-danger">{{ $message }}</div>@enderror
             </div>
             <div class="form-group">
+                <label for="author">Author</label>
+                <input type="text" id="author" name="author" value="{{ old('author') }}" placeholder="{{ auth()->user()?->name }}" maxlength="100">
+                <p class="field-hint">Ditampilkan di kartu Kabar Terbaru. Kosongkan untuk memakai nama pembuat post.</p>
+                @error('author')<div class="alert alert-danger">{{ $message }}</div>@enderror
+            </div>
+            <div class="form-group">
                 <label for="content">Content</label>
                 <textarea id="content" name="content" placeholder="Write your content here..." required>{{ old('content') }}</textarea>
                 @error('content')<div class="alert alert-danger">{{ $message }}</div>@enderror

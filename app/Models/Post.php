@@ -10,7 +10,7 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content', 'link', 'status', 'is_featured', 'user_id'];
+    protected $fillable = ['title', 'author', 'content', 'link', 'status', 'is_featured', 'user_id'];
 
     protected $casts = [
         'is_featured' => 'boolean',
@@ -19,6 +19,23 @@ class Post extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Nama penulis yang tampil di Kabar Terbaru.
+     *
+     * Kalau kolom author kosong, jatuh ke user pembuat post supaya kartu
+     * berita tidak pernah tampil tanpa penulis.
+     */
+    public function authorName(): string
+    {
+        $author = trim((string) $this->author);
+
+        if ($author !== '') {
+            return $author;
+        }
+
+        return $this->user?->name ?? 'Admin SIGMA';
     }
 
     public function isPublished(): bool

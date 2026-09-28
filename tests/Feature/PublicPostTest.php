@@ -358,9 +358,12 @@ class PublicPostTest extends TestCase
         $body = $this->landingBody();
 
         $this->assertStringContainsString('Slide Header', $body, 'slide header yang dipakai');
-        $this->assertStringContainsString('Lihat Detail', $body, 'label tombol ikut dari slide');
         $this->assertStringContainsString('/images/header/satu.jpg', $body, 'gambar slide dipakai sebagai latar');
-        $this->assertStringNotContainsString('Kabar Latest', substr($body, 0, strpos($body, 'news-rail')), 'kabar tidak lagi jadi banner');
+
+        // Admin slide didahulukan; kabar terbaru hanya boleh menyusul sebagai
+        // pengisi supaya carousel tetap berputar.
+        $slides = substr($body, strpos($body, 'hero-banner-slides'), strpos($body, 'news-rail'));
+        $this->assertLessThan(strpos($slides, 'Kabar Latest'), strpos($slides, 'Slide Header'), 'slide admin tampil lebih dulu');
     }
 
     public function test_inactive_header_slide_is_skipped(): void
@@ -396,59 +399,57 @@ class PublicPostTest extends TestCase
         $this->assertSame(5, substr_count($this->landingBody(), '<article class="hero-banner-slide'), 'tetap 5 slide dari kabar');
     }
 
-    public function test_header_slide_without_link_shows_no_button_at_all(): void
+    public function test_header_banner_has_no_buttons_at_all(): void
     {
-        HeaderSlide::create(['title' => 'Tanpa Link', 'is_active' => true]);
+        // Permintaan eksplisit: banner header tanpa tombol. Tombol hardcode
+        // (Member) sudah dihapus, dan tombol CTA per-slide ikut dihapus.
+        // Posts ini memastikan banner benar-benarcarousel, bukan jatuh ke
+        // hero cadangan (yang tombolnya memang diatur terpisah di admin).
+        $this->makePost('Kabar Pembatas', 'published', 'Isi kabar.');
 
-        $body = $this->landingBody();
-        $header = substr($body, strpos($body, '<header class="site-header"'), strpos($body, '</header>'));
+        foreach ([1, 2] as $total) {
+            HeaderSlide::query()->delete();
+            for ($i = 1; $i <= $total; $i++) {
+                HeaderSlide::create([
+                    'title' => "Slide {$i}",
+                    'description' => 'Isi slide.',
+                    'link' => "blog.sigma.id/artikel-{$i}",
+                    'cta_label' => "Buka {$i}",
+                    'is_active' => true,
+                ]);
+            }
 
-        // Tanpa link, tidak ada tombol sama sekali — lebih baik daripada
-        // tombol generik yang tidak berasal dari data slide.
-        $this->assertStringNotContainsString('btn-primary', $header, 'tidak ada tombol utama kalau slide tanpa link');
-        $this->assertStringNotContainsString('btn-ghost', $header, 'tidak ada tombol tambahan yang hardcode');
-        // Wadah tombol kosong menyisakan ruang kosong di bawah deskripsi.
-        $this->assertStringNotContainsString('head-actions', $header, 'wadah tombol tidak perlu dirender');
+            $body = $this->landingBody();
+            $header = substr($body, strpos($body, '<header class="site-header"'), strpos($body, '</header>'));
+
+            $this->assertStringNotContainsString('head-actions', $header, "slide ke-{$total}: tidak ada wadah tombol");
+            $this->assertStringNotContainsString('btn-primary', $header, "slide ke-{$total}: tidak ada tombol CTA");
+            $this->assertStringNotContainsString('btn-ghost', $header, "slide ke-{$total}: tidak ada tombol Member");
+            $this->assertStringNotContainsString('#members', $header, "slide ke-{$total}: tidak ada anchor hardcode");
+            // Isi banner tetap utuh: semua judul slide masih muncul.
+            for ($n = 1; $n <= $total; $n++) {
+                $this->assertStringContainsString("Slide {$n}", $header, "judul slide {$n} tampil");
+            }
+        }
     }
 
-    public function test_header_buttons_come_from_the_slide_and_not_from_hardcoded_anchors(): void
+    public function test_one_admin_slide_is_filled_with_news_so_the_banner_still_rotates(): void
     {
-        foreach (range(1, 2) as $i) {
-            HeaderSlide::create([
-                'title' => "Slide {$i}",
-                'link' => "blog.sigma.id/artikel-{$i}",
-                'cta_label' => "Buka {$i}",
-                'is_active' => true,
-            ]);
+        // Admin hanya menambah 1 slide; kalau banner ikut hilang atau diam,
+        // kabar terbaru harus mengisinya supaya carousel tetap berputar.
+        HeaderSlide::create(['title' => 'Satu Slide Admin', 'is_active' => true]);
+        foreach (range(1, 3) as $n) {
+            $this->makePost("Kabar {$n}", 'published', "Isi kabar {$n}.");
         }
 
         $body = $this->landingBody();
-        $header = substr($body, strpos($body, '<header class="site-header"'), strpos($body, '</header>'));
 
-        // Tombol Member lama di-hardcode ke #members dan tidak bisa diatur dari
-        // admin; sekarang tidak boleh ada.
-        $this->assertStringNotContainsString('href="#members"', $header, 'tidak ada tombol anchor hardcode di header');
-        $this->assertStringContainsString('https://blog.sigma.id/artikel-1', $header, 'tombol ikut link slide');
-        $this->assertStringContainsString('Buka 1', $header, 'label tombol ikut slide');
-    }
+        $this->assertStringContainsString('Satu Slide Admin', $body, 'slide admin tetap di Depan');
+        $this->assertStringContainsString('Kabar 1', $body, 'kabar terbaru mengisi banner');
 
-    public function test_post_slides_do_not_borrow_the_fallback_hero_cta_label(): void
-    {
-        // hero_cta_label = "Pelajari Lebih" milik hero cadangan. Kalau dipakai
-        // untuk slide berita, tombolnya(label) tidak cocok dengan tujuan(artikel).
-        LandingContent::updateOrCreate(['key' => 'hero_cta_label'], ['value' => 'Pelajari']);
-
-        Post::create([
-            'user_id' => User::factory()->create()->id,
-            'title' => 'Kabar Baru SIGMA',
-            'content' => 'Isi kabar.',
-            'status' => 'published',
-            'is_featured' => true,
-        ]);
-
-        $body = $this->landingBody();
-        $this->assertStringContainsString('Baca Selengkapnya', $body, 'slide berita memakai label yang cocok');
-        $this->assertStringNotContainsString('>Pelajari<', $body, 'label hero cadangan tidak ikut dipakai di slide berita');
+        $slides = substr_count($body, 'data-hero-slide');
+        $this->assertGreaterThanOrEqual(2, $slides, 'minimal 2 slide supaya banner berganti');
+        $this->assertStringContainsString('data-hero-dot', $body, 'ada titik navigasi carousel');
     }
 
     public function test_fallback_hero_cta_points_where_its_label_promises(): void

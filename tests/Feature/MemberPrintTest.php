@@ -13,7 +13,7 @@ class MemberPrintTest extends TestCase
 
     private function admin(): User
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
         $this->actingAs($admin);
 
         return $admin;

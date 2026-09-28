@@ -15,7 +15,7 @@ class HeaderSlideCrudTest extends TestCase
 
     private function admin(): User
     {
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
         $this->actingAs($user);
 
         return $user;
@@ -166,7 +166,7 @@ class HeaderSlideCrudTest extends TestCase
 
     public function test_posts_page_has_a_visible_link_to_the_landing_page(): void
     {
-        $this->actingAs(User::factory()->create());
+        $this->actingAs(User::factory()->admin()->create());
 
         $html = $this->get(route('admin.posts.index'))->assertOk()->getContent();
 
@@ -178,7 +178,7 @@ class HeaderSlideCrudTest extends TestCase
 
     public function test_the_landing_link_lives_only_on_the_posts_header(): void
     {
-        $this->actingAs(User::factory()->create());
+        $this->actingAs(User::factory()->admin()->create());
 
         // Permintaan eksplisit: tautannya hanya di header Posts, bukan di
         // navbar dan bukan di halaman lain. Yang dicek adalah href ke landing

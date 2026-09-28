@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGMA - Masuk</title>
+    <title>SIGMA - Daftar Pengelola</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,10 +27,11 @@
         .remember input { width: 16px; height: 16px; accent-color: #667eea; }
         .btn-login { width: 100%; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(102,126,234,0.4); }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102,126,234,0.5); }
+        .error { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 0.875rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.875rem; }
+        .hint { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.8125rem; line-height: 1.5; }
         .alt { text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: #64748b; }
         .alt a { color: #667eea; font-weight: 600; text-decoration: none; }
         .alt a:hover { text-decoration: underline; }
-        .error { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 0.875rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.875rem; }
         @media (max-width: 768px) {
             .left-panel { display: none; }
             .right-panel { padding: 2rem; }
@@ -46,29 +47,33 @@
     </div>
     <div class="right-panel">
         <div class="login-form">
-            <h2>Masuk</h2>
-            <p class="subtitle">Masuk dengan akun kamu</p>
+            <h2>Buat akun</h2>
+            <p class="subtitle">Akun pengelola untuk masuk ke panel SIGMA</p>
             @if ($errors->any())
                 <div class="error">{{ $errors->first() }}</div>
             @endif
-            <form method="POST" action="{{ route('login.process') }}">
+            <div class="hint">Akun yang dibuat di sini langsung bisa masuk ke panel admin. Buat satu akun untuk setiap pengelola.</div>
+            <form method="POST" action="{{ route('register.process') }}">
                 @csrf
                 <div class="form-group">
+                    <label for="name">Nama lengkap</label>
+                    <input type="text" id="name" name="name" value="{{ old('name') }}" placeholder="Nama kamu" required autofocus autocomplete="name">
+                </div>
+                <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="nama@giyama.id" required autofocus>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="nama@giyama.id" required autocomplete="email">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Masukkan password" required>
+                    <input type="password" id="password" name="password" placeholder="Minimal 8 karakter" required autocomplete="new-password">
                 </div>
-                <div class="form-options">
-                    <label class="remember">
-                        <input type="checkbox" name="remember"> Ingat saya
-                    </label>
+                <div class="form-group">
+                    <label for="password_confirmation">Ulangi password</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ketik ulang password" required autocomplete="new-password">
                 </div>
-                <button type="submit" class="btn-login">Masuk</button>
+                <button type="submit" class="btn-login">Daftar</button>
             </form>
-            <p class="alt">Belum punya akun? <a href="{{ route('register') }}">Daftar</a></p>
+            <p class="alt">Sudah punya akun? <a href="{{ route('login') }}">Masuk</a></p>
         </div>
     </div>
 </body>

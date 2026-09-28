@@ -84,12 +84,18 @@ class PostController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'author' => 'nullable|string|max:100',
             'content' => 'required|string',
             'link' => 'nullable|string|max:2048',
             'status' => 'required|in:draft,published,archived',
         ]);
 
         $validated['link'] = blank($validated['link'] ?? null) ? null : trim($validated['link']);
+
+        // Penulis kosong = pakai nama pembuat post, bukan string kosong yang
+        // akan tampil sebagai kartu tanpa nama.
+        $author = trim((string) ($validated['author'] ?? ''));
+        $validated['author'] = $author === '' ? null : $author;
 
         // Checkbox yang tidak dicentang tidak mengirim nilai sama sekali, jadi
         // harus selalu ditulis eksplisit — kalau tidak, centang lama ikut hilang

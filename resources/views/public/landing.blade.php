@@ -50,8 +50,9 @@
         .nav-links { display: flex; gap: 1.75rem; align-items: center; }
         .nav-links a { color: var(--ink); text-decoration: none; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
         .nav-links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
-        .nav-links a.nav-login { background: var(--ink); color: var(--paper); padding: 0.5rem 1.1rem; border-bottom: 0; }
-        .nav-links a.nav-login:hover { background: var(--accent); }
+        .page-notice { padding: 0.75rem 1.25rem; font-size: 0.875rem; text-align: center; }
+        .page-notice.is-error { background: #fef2f2; color: #b91c1c; border-bottom: 1px solid #fecaca; }
+        .page-notice.is-ok { background: #ecfdf5; color: #047857; border-bottom: 1px solid #a7f3d0; }
         .nav-toggle { display: none; background: none; border: 0; cursor: pointer; padding: 0.375rem; color: var(--ink); }
 
         /* ===== HEADER + BANNER KABAR (horizontal, full width) ===== */
@@ -218,7 +219,6 @@
             .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: var(--paper); border-bottom: 1px solid var(--line); padding: 0.5rem 1.25rem 1rem; }
             .nav-links.open { display: flex; }
             .nav-links a { padding: 0.625rem 0; border-bottom: 1px solid rgba(200, 189, 169, 0.4); }
-            .nav-links a.nav-login { margin-top: 0.5rem; text-align: center; border-bottom: 0; }
             .site-head-inner { padding: 2.5rem 1.25rem 2.25rem; }
             /* Banner: ruang bawah lebih lega buat dots, panah geser ke tepi. */
             .hero-banner-inner { padding: 2.5rem 1.25rem 4.25rem; }
@@ -242,6 +242,13 @@
 </head>
 <body>
 
+    {{-- Pesan dari middleware: akun biasa yang mencoba membuka panel. --}}
+    @if($errors->any() || session('status'))
+        <div class="page-notice {{ $errors->any() ? 'is-error' : 'is-ok' }}" role="status">
+            {{ $errors->first() ?: session('status') }}
+        </div>
+    @endif
+
     <nav class="navbar">
         <div class="nav-container">
             <a href="/" class="nav-brand">{{ $contents['nav_brand']->value ?? 'SIGMA' }}</a>
@@ -250,9 +257,9 @@
                 <a href="#about">{{ $contents['nav_about_label']->value ?? 'About' }}</a>
                 <a href="#members">{{ $contents['nav_members_label']->value ?? 'Anggota' }}</a>
                 <a href="#achievements">{{ $contents['nav_achievements_label']->value ?? 'Prestasi' }}</a>
-                @if(request()->getPort() === 8000)
-                    <a href="/login" class="nav-login">{{ $contents['nav_login_label']->value ?? 'Login' }}</a>
-                @endif
+                {{-- Tidak ada tombol Masuk/Daftar di sini: pendaftaran dan
+                     login hanya untuk pengelola yang membuka /register atau
+                     /login langsung. --}}
             </div>
         </div>
     </nav>
@@ -276,17 +283,9 @@
                                 @if(!empty($slide['text']))
                                     <p class="hero-banner-text">{{ $slide['text'] }}</p>
                                 @endif
-                                {{-- Wadah tombol ikut disembunyikan kalau slide ini
-                                     tidak punya link, supaya tidak menyisakan
-                                     ruang kosong di bawah deskripsi. --}}
-                                @if(!empty($slide['url']))
-                                    <div class="head-actions">
-                                        <a href="{{ $slide['url'] }}" class="btn btn-primary"
-                                           @if(\Illuminate\Support\Str::startsWith($slide['url'], 'http')) target="_blank" rel="noopener noreferrer"@endif>
-                                            {{ $slide['label'] }}
-                                        </a>
-                                    </div>
-                                @endif
+                                {{-- Banner header tanpa tombol: judul, tanggal, dan
+                                     deskripsi saja. Tautan tetap tersedia di
+                                     rail "Kabar Terbaru" di bawahnya. --}}
                             </div>
                         </article>
                     @endforeach
@@ -334,7 +333,7 @@
                     <h3><a href="{{ $post->readUrl() }}"@if($post->hasExternalLink()) target="_blank" rel="noopener noreferrer"@endif>{{ $post->title }}</a></h3>
                     <p>{{ Illuminate\Support\Str::limit(strip_tags($post->content), 130) }}</p>
                     <div class="meta">
-                        <span>{{ $post->user->name }}</span>
+                        <span>{{ $post->authorName() }}</span>
                         <a class="news-read" href="{{ $post->readUrl() }}"@if($post->hasExternalLink()) target="_blank" rel="noopener noreferrer"@endif>Baca &rsaquo;</a>
                     </div>
                 </article>

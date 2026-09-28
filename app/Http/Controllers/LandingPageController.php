@@ -55,12 +55,16 @@ class LandingPageController extends Controller
                 'date' => $slide->created_at?->format('d M Y'),
             ]);
 
-        if ($slides->isEmpty()) {
-            $slides = $published->where('is_featured', true)->values();
-        }
-
-        if ($slides->isEmpty()) {
-            $slides = $published->take(5);
+        if ($slides->count() >= 2) {
+            // Cukup untuk berputar; tidak perlu kabar untuk mengisinya.
+        } elseif ($slides->isNotEmpty() && $published->isNotEmpty()) {
+            // Admin baru menambah tepat satu slide. Tanpa pengisi, banner
+            // diam saja dan terlihat seperti bukan carousel, jadi kabar
+            // terbaru menyusul sampai total 5. Slide admin tetap di depan.
+            $slides = $slides->concat($published->take(5 - $slides->count()))->values();
+        } else {
+            $featured = $published->where('is_featured', true)->values();
+            $slides = $featured->isNotEmpty() ? $featured : $published->take(5);
         }
 
         // Bentuk seragam supaya view tidak perlu tahu asal slide tersebut.

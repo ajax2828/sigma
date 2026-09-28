@@ -20,7 +20,7 @@ class AdminThemeTest extends TestCase
 
     private function adminHtml(): string
     {
-        $this->actingAs(User::factory()->create());
+        $this->actingAs(User::factory()->admin()->create());
 
         return $this->get(route('admin.dashboard'))->assertOk()->getContent();
     }
@@ -107,15 +107,16 @@ class AdminThemeTest extends TestCase
     public function test_every_class_used_in_admin_views_is_defined(): void
     {
         $this->adminHtml();
-        $this->actingAs(User::factory()->create());
+        $this->actingAs(User::factory()->admin()->create());
 
         $views = glob(resource_path('views/admin/**/*.blade.php'));
         $skip = ['brand', 'btn-login', 'error', 'form-options', 'left-panel', 'login-form', 'remember', 'right-panel', 'subtitle'];
 
         $missing = [];
         foreach ($views as $view) {
-            // Login dan preview cetak punya stylesheet sendiri, bukan layout admin.
-            if (str_contains($view, 'auth/login') || str_contains($view, 'members-print')) {
+            // Halaman auth (login/register) dan preview cetak punya stylesheet
+            // sendiri, bukan layout admin.
+            if (str_contains($view, 'auth/login') || str_contains($view, 'auth/register') || str_contains($view, 'members-print')) {
                 continue;
             }
             preg_match_all('/class="([^"{}]+)"/', file_get_contents($view), $m);

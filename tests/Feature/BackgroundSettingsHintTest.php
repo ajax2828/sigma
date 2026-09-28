@@ -34,7 +34,7 @@ class BackgroundSettingsHintTest extends TestCase
 
     private function html(): string
     {
-        $this->actingAs(User::factory()->create());
+        $this->actingAs(User::factory()->admin()->create());
 
         return $this->get(route('admin.settings.backgrounds', ['section' => 'hero']))->assertOk()->getContent();
     }

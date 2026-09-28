@@ -77,6 +77,7 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL COMMENT 'sudah di-hash (bcrypt)',
+  `is_admin` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 = boleh masuk panel admin',
   `remember_token` varchar(100) NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -108,6 +109,7 @@ CREATE TABLE `header_slides` (
 CREATE TABLE `posts` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
+  `author` varchar(100) NULL COMMENT 'penulis yang tampil di Kabar terbaru',
   `content` longtext NOT NULL,
   `link` varchar(2048) NULL COMMENT 'URL blog tujuan; NULL = pakai halaman detail internal',
   `status` enum('draft','published','archived') NOT NULL DEFAULT 'draft' COMMENT 'published = tayang di landing page',
@@ -233,26 +235,66 @@ CREATE TABLE `posts` (
 -- =============================================================================
 --  DATA
 -- =============================================================================
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
--- users -----------------------------------------------------------------------
--- Password di bawah sudah berupa hash bcrypt milik admin ini. Password polosnya
--- tidak tersimpan di sini maupun di file mana pun.
--- users -----------------------------------------------------------------
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-  (1, 'Admin SIGMA', 'admin@sigma.id', NULL, '$2y$12$.rORTZnNvJiRV1TwT.AIUunwLwO1bj2Soo1zKTqaFPmtm9qEV8nEy', NULL, '2026-09-25 13:57:30', '2026-09-25 13:57:30');
--- posts -----------------------------------------------------------------
-INSERT INTO `posts` (`id`, `title`, `content`, `link`, `status`, `is_featured`, `user_id`, `created_at`, `updated_at`) VALUES
-  (12, 'Laporan Tahunan SIGMA 2025', 'Ringkasan kegiatan dan pencapaian organisasi sepanjang tahun 2025.', NULL, 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-27 02:42:12'),
-  (13, 'Panduan Lengkap Proyek SIGMA', 'Dokumentasi teknis untuk，维护 repository SIGMA.', 'ajawx.xyz', 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-27 02:46:27'),
-  (14, 'SIGMA Raih Juara Nasional', 'Tim SIGMA berhasil meraih juara pada kompetisi nasional.', NULL, 'archived', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
-  (15, 'Workshop Machine Learning', 'Materi workshop dan slide yang dapat diunduh.', NULL, 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
-  (16, 'Profil Anggota', 'Daftar anggota dan kontak organisasi.', NULL, 'draft', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
-  (17, 'Festival Teknologi 2024', 'Liputan acara teknologi tahunan.', NULL, 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
-  (18, 'Pelatihan Public Speaking', 'Materi pelatihan komunikasi.', NULL, 'draft', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
-  (19, 'Hackathon SIGMA', 'Rekaponnais hackathon internal.', NULL, 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
-  (20, 'Program Beasiswa', 'Informasi program beasiswa anggota.', NULL, 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
-  (21, 'Rapat Kerja Tahunan', 'Notulen rapat kerja.', NULL, 'draft', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34');
--- landing_contents ------------------------------------------------------
+-- users --------------------------------------------------------------
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `is_admin`, `remember_token`, `created_at`, `updated_at`) VALUES
+  (1, 'Admin SIGMA', 'admin@sigma.id', NULL, '$2y$12$.rORTZnNvJiRV1TwT.AIUunwLwO1bj2Soo1zKTqaFPmtm9qEV8nEy', 1, NULL, '2026-09-25 13:57:30', '2026-09-25 13:57:30'),
+  (4, 'ihsan', 'ihsan@sigma.id', NULL, '$2y$12$JNljDu2s4297KrLiMJ1DTeQ7BcA/AsgAb6rAEOkbrf4dWgcW7tk9S', 1, NULL, '2026-09-28 16:39:49', '2026-09-28 16:39:49');
+-- header_slides ------------------------------------------------------
+INSERT INTO `header_slides` (`id`, `title`, `description`, `image`, `link`, `cta_label`, `sort_order`, `is_active`, `created_at`, `updated_at`) VALUES
+  (3, 'juara IDX', 'qwertyuiopoiuytrewqwertyuiop', '/images/header/header-slide-1790607346-e4c35ecc.jpg', NULL, 'Lihat lebih lanjut', 1, 1, '2026-09-28 14:55:46', '2026-09-28 14:55:46');
+-- posts --------------------------------------------------------------
+INSERT INTO `posts` (`id`, `title`, `author`, `content`, `link`, `status`, `is_featured`, `user_id`, `created_at`, `updated_at`) VALUES
+  (12, 'Laporan Tahunan SIGMA 2025', 'Admin SIGMA', 'Ringkasan kegiatan dan pencapaian organisasi sepanjang tahun 2025.', NULL, 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-28 16:52:03'),
+  (13, 'Panduan Lengkap Proyek SIGMA', 'Admin SIGMA', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam convallis maximus nibh in aliquam. Aenean elementum magna sed elit tristique, ac sodales mi blandit. Aenean egestas quam id semper aliquet. Integer ante neque, lacinia nec nulla nec, imperdiet consectetur sapien. Praesent tempus volutpat ex nec malesuada. Proin tempor placerat risus, non elementum lacus mollis vitae. Maecenas turpis sem, vestibulum vel feugiat vitae, interdum sit amet odio. Mauris sodales risus ut fermentum ultrices. Donec nisl eros, sagittis vel dolor at, laoreet cursus est. Phasellus volutpat, leo interdum dictum aliquet, lorem ex bibendum leo, sagittis dapibus augue felis ut lacus. Cras ut placerat arcu. Praesent non pulvinar tellus, vitae vestibulum dolor. Aenean id elementum justo. Donec vel mi ac urna semper porta. Duis feugiat tincidunt turpis, eget placerat dui facilisis pulvinar. Phasellus vel viverra leo.', 'ajawx.xyz', 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-28 16:40:55'),
+  (14, 'SIGMA Raih Juara Nasional', 'Admin SIGMA', 'Tim SIGMA berhasil meraih juara pada kompetisi nasional.', NULL, 'archived', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
+  (15, 'Workshop Machine Learning', 'Admin SIGMA', 'Materi workshop dan slide yang dapat diunduh.', NULL, 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
+  (16, 'Profil Anggota', 'Admin SIGMA', 'Daftar anggota dan kontak organisasi.', NULL, 'draft', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
+  (17, 'Festival Teknologi 2024', 'Admin SIGMA', 'Liputan acara teknologi tahunan.', NULL, 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
+  (18, 'Pelatihan Public Speaking', 'Admin SIGMA', 'Materi pelatihan komunikasi.', NULL, 'draft', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
+  (19, 'Hackathon SIGMA', 'Admin SIGMA', 'Rekaponnais hackathon internal.', NULL, 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
+  (20, 'Program Beasiswa', 'Admin SIGMA', 'Informasi program beasiswa anggota.', NULL, 'published', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34'),
+  (21, 'Rapat Kerja Tahunan', 'Admin SIGMA', 'Notulen rapat kerja.', NULL, 'draft', 0, 1, '2026-09-26 03:39:34', '2026-09-26 03:39:34');
+-- migrations ---------------------------------------------------------
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+  (1, '0001_01_01_000000_create_users_table', 1),
+  (2, '0001_01_01_000001_create_cache_table', 1),
+  (3, '0001_01_01_000002_create_jobs_table', 1),
+  (4, '2026_09_21_000001_create_posts_table', 1),
+  (5, '2026_09_23_072255_create_landing_contents_table', 1),
+  (6, '2026_09_25_000003_create_member_tables', 2),
+  (8, '2026_09_26_000004_create_achievements_table', 3),
+  (9, '2026_09_26_000005_add_image_to_achievements_table', 4),
+  (10, '2026_09_26_000006_add_motto_to_members_table', 4),
+  (11, '2026_09_27_000007_add_link_to_posts_table', 5),
+  (12, '2026_09_27_000008_add_is_featured_to_posts_table', 6),
+  (13, '2026_09_27_000009_create_header_slides_table', 7),
+  (14, '2026_09_28_000010_add_is_admin_to_users_table', 8),
+  (15, '2026_09_28_000011_add_author_to_posts_table', 9);
+-- password_reset_tokens ----------------------------------------------
+-- Sengaja kosong: hanya dipakai Laravel saat runtime (cache/session), tidak perlu diisi manual.
+
+-- sessions -----------------------------------------------------------
+-- Sengaja kosong: hanya dipakai Laravel saat runtime (cache/session), tidak perlu diisi manual.
+
+-- cache --------------------------------------------------------------
+-- Sengaja kosong: hanya dipakai Laravel saat runtime (cache/session), tidak perlu diisi manual.
+
+-- cache_locks --------------------------------------------------------
+-- Sengaja kosong: hanya dipakai Laravel saat runtime (cache/session), tidak perlu diisi manual.
+
+-- jobs ---------------------------------------------------------------
+-- Belum ada data.
+
+-- job_batches --------------------------------------------------------
+-- Belum ada data.
+
+-- failed_jobs --------------------------------------------------------
+-- Belum ada data.
+
+-- landing_contents ---------------------------------------------------
 INSERT INTO `landing_contents` (`id`, `key`, `value`, `type`, `created_at`, `updated_at`) VALUES
   (1, 'hero_title', 'GALERI INVESTASI UNIVERSITAS YATSI MADANI', 'text', '2026-09-25 13:57:31', '2026-09-27 02:29:29'),
   (2, 'hero_tagline', 'Prestasi organisasi', 'text', '2026-09-25 13:57:31', '2026-09-27 02:29:29'),
@@ -303,8 +345,7 @@ INSERT INTO `landing_contents` (`id`, `key`, `value`, `type`, `created_at`, `upd
   (47, 'member_role_7', 'K Divisi Humas', 'text', '2026-09-25 13:57:36', '2026-09-25 13:57:36'),
   (48, 'member_code_7', 'Giyama/2025/007', 'text', '2026-09-25 13:57:36', '2026-09-25 13:57:36'),
   (49, 'member_desc_7', 'Menangani hubungan masyarakat, media sosial, dan kerjasama eksternal dengan berbagai stakeholder.', 'textarea', '2026-09-25 13:57:36', '2026-09-25 13:57:36'),
-  (50, 'member_initial_8', 'HN', 'text', '2026-09-25 13:57:36', '2026-09-25 13:57:36');
-INSERT INTO `landing_contents` (`id`, `key`, `value`, `type`, `created_at`, `updated_at`) VALUES
+  (50, 'member_initial_8', 'HN', 'text', '2026-09-25 13:57:36', '2026-09-25 13:57:36'),
   (51, 'member_name_8', 'Hana Nurhaliza', 'text', '2026-09-25 13:57:37', '2026-09-25 13:57:37'),
   (52, 'member_role_8', 'Staf Ahli', 'text', '2026-09-25 13:57:37', '2026-09-25 13:57:37'),
   (53, 'member_code_8', 'Giyama/2025/008', 'text', '2026-09-25 13:57:37', '2026-09-25 13:57:37'),
@@ -354,8 +395,7 @@ INSERT INTO `landing_contents` (`id`, `key`, `value`, `type`, `created_at`, `upd
   (129, 'footer_background_image', NULL, 'image', '2026-09-25 15:17:44', '2026-09-25 15:17:44'),
   (130, 'footer_gradient_start', '#e8e0d1', 'text', '2026-09-25 15:17:44', '2026-09-25 15:17:44'),
   (131, 'footer_gradient_end', '#f4f0e6', 'text', '2026-09-25 15:17:44', '2026-09-25 15:17:44'),
-  (132, 'footer_gradient_angle', '90', 'text', '2026-09-25 15:17:44', '2026-09-25 15:17:44');
-INSERT INTO `landing_contents` (`id`, `key`, `value`, `type`, `created_at`, `updated_at`) VALUES
+  (132, 'footer_gradient_angle', '90', 'text', '2026-09-25 15:17:44', '2026-09-25 15:17:44'),
   (133, 'achievement_1_icon', '🏆', 'text', '2026-09-27 01:48:41', '2026-09-27 01:48:41'),
   (134, 'achievement_1_title', 'Juara 1 - Nasional Innovation Challenge 2025', 'text', '2026-09-27 01:48:41', '2026-09-27 01:48:41'),
   (135, 'achievement_1_year', '2025', 'text', '2026-09-27 01:48:41', '2026-09-27 01:48:41'),
@@ -388,13 +428,11 @@ INSERT INTO `landing_contents` (`id`, `key`, `value`, `type`, `created_at`, `upd
   (162, 'achievement_8_title', 'Best Paper - Seminar Nasional Informatika', 'text', '2026-09-27 01:48:41', '2026-09-27 01:48:41'),
   (163, 'achievement_8_year', '2024', 'text', '2026-09-27 01:48:41', '2026-09-27 01:48:41'),
   (164, 'achievement_8_desc', 'Publikasi jurnal ilmiah tentang machine learning klasifikasi penyakit tanaman.', 'textarea', '2026-09-27 01:48:41', '2026-09-27 01:48:41');
--- members ---------------------------------------------------------------
+-- members ------------------------------------------------------------
 INSERT INTO `members` (`id`, `initial`, `name`, `role`, `code`, `description`, `motto`, `photo`, `sort_order`, `created_at`, `updated_at`) VALUES
   (6, 'FA', 'Fitri Aulia', 'K Divisi Desain', 'Giyama/2025/006', 'Desainer grafis profesional, berpengalaman membuat branding dan konten visual untuk berbagai komunitas.', 'Belajar dulu, askepan kemudian.', NULL, 6, '2026-09-25 15:44:10', '2026-09-26 04:16:38'),
-  (7, 'GH', 'Galih Prasetyo', 'K Divisi Humas', 'Giyama/2025/007', 'Menangani hubungan masyarakat, media sosial, dan kerjasama eksternal dengan berbagai stakeholder.', 'Karya kecil hari ini, dampak besar besok.', NULL, 7, '2026-09-25 15:44:10', '2026-09-26 04:16:38'),
-  (8, 'HN', 'Hana Nurhaliza', 'Staf Ahli', 'Giyama/2025/008', 'Mahasiswa Ilmu Komputer yang aktif mengajar programming dasar untuk anggota baru setiap semester.', 'Konsisten itu bos, bukan bosan.', NULL, 8, '2026-09-25 15:44:10', '2026-09-26 04:16:38'),
   (14, 'IH', 'Ihsan', 'Direktur IT', 'Giyama/09/23', 'eghjhngfsdghfgjfgfdagdhfgj', 'Teknologi berarti, humans tetap nomor satu.', '/images/members/member-1790351816-e75ededa.jpg', 9, '2026-09-25 15:56:56', '2026-09-26 04:16:38');
--- member_histories ------------------------------------------------------
+-- member_histories ---------------------------------------------------
 INSERT INTO `member_histories` (`id`, `member_id`, `action`, `initial`, `name`, `role`, `code`, `description`, `motto`, `photo`, `created_by`, `created_at`, `updated_at`) VALUES
   (1, 1, 'migrated', 'AI', 'Ahmad Ihsan', 'Ketua Organisasi', 'Giyama/2025/001', 'Mahasiswa Teknik Informatika yang memiliki pengalaman memimpin tim pengembangan aplikasi web dan mobile selama 3 tahun.', NULL, NULL, NULL, '2026-09-25 15:44:10', '2026-09-25 15:44:10'),
   (2, 2, 'migrated', 'BN', 'Bella Nadira', 'Wakil Ketua', 'Giyama/2025/002', 'Spesialis UI/UX Design dengan portfolio lebih dari 20 proyek desain untuk startup dan perusahaan lokal.', NULL, NULL, NULL, '2026-09-25 15:44:10', '2026-09-25 15:44:10'),
@@ -411,34 +449,18 @@ INSERT INTO `member_histories` (`id`, `member_id`, `action`, `initial`, `name`, 
   (26, 4, 'deleted', 'DP', 'Dian Permata', 'Bendahara', 'Giyama/2025/004', 'Ahli keuangan yang mengatur anggaran dan sponsorship, berpengalaman di organisasi kemahasiswaan.', NULL, NULL, 1, '2026-09-25 15:57:34', '2026-09-25 15:57:34'),
   (27, 3, 'deleted', 'CR', 'Candra Rizky', 'Sekretaris', 'Giyama/2025/003', 'Mengelola administrasi organisasi dan koordinasi event, aktif di kepanitiaan tingkat universitas.', NULL, NULL, 1, '2026-09-25 16:01:16', '2026-09-25 16:01:16'),
   (28, 5, 'deleted', 'EH', 'Eka Hidayat', 'K Divisi Teknologi', 'Giyama/2025/005', 'Full-stack developer dengan keahlian Laravel, React, dan Flutter. Juara 2 Hackathon Nasional 2025.', NULL, NULL, 1, '2026-09-25 16:01:44', '2026-09-25 16:01:44'),
-  (29, 14, 'updated', 'IH', 'Ihsan', 'Direktur IT', 'Giyama/09/23', 'eghjhngfsdghfgjfgfdagdhfgj', 'Teknologi berarti, humans tetap nomor satu.', '/images/members/member-1790351816-e75ededa.jpg', 1, '2026-09-26 09:13:33', '2026-09-26 09:13:33');
--- achievements ----------------------------------------------------------
+  (29, 14, 'updated', 'IH', 'Ihsan', 'Direktur IT', 'Giyama/09/23', 'eghjhngfsdghfgjfgfdagdhfgj', 'Teknologi berarti, humans tetap nomor satu.', '/images/members/member-1790351816-e75ededa.jpg', 1, '2026-09-26 09:13:33', '2026-09-26 09:13:33'),
+  (30, 7, 'deleted', 'GH', 'Galih Prasetyo', 'K Divisi Humas', 'Giyama/2025/007', 'Menangani hubungan masyarakat, media sosial, dan kerjasama eksternal dengan berbagai stakeholder.', 'Karya kecil hari ini, dampak besar besok.', NULL, 1, '2026-09-28 14:58:30', '2026-09-28 14:58:30'),
+  (31, 8, 'deleted', 'HN', 'Hana Nurhaliza', 'Staf Ahli', 'Giyama/2025/008', 'Mahasiswa Ilmu Komputer yang aktif mengajar programming dasar untuk anggota baru setiap semester.', 'Konsisten itu bos, bukan bosan.', NULL, 1, '2026-09-28 14:58:37', '2026-09-28 14:58:37');
+-- achievements -------------------------------------------------------
 INSERT INTO `achievements` (`id`, `icon`, `image`, `title`, `year`, `description`, `sort_order`, `created_at`, `updated_at`) VALUES
   (1, '🏆', '/images/achievements/achievement-1790397936-65c93c76.webp', 'Juara 1 - Nasional Innovation Challenge 2025', '2025', 'Kompetisi inovasi teknologi tingkat nasional. Tim SIGMA membawa aplikasi manajemen sampah berbasis AI.', 1, '2026-09-26 01:59:31', '2026-09-26 04:45:36'),
   (2, '🥈', '/images/achievements/ach2.png', 'Juara 2 - Hackathon Indonesia Digital 2025', '2025', 'Hackathon 48 jam dengan tema "Digital Solutions for Education". Platform e-learning interaktif.', 2, '2026-09-26 01:59:31', '2026-09-26 04:16:54'),
   (3, '🥉', '/images/achievements/ach3.png', 'Juara 3 - Lomba Cipta Aplikasi 2024', '2024', 'Lomba pembuatan aplikasi tingkat provinsi diikuti 50+ tim dari universitas ternama.', 3, '2026-09-26 01:59:31', '2026-09-26 04:16:54'),
   (4, '🎖️', '/images/achievements/ach1.png', 'Best Innovation Award - Tech Fest 2025', '2025', 'Penghargaan inovasi terbaik dalam acara festival teknologi.', 4, '2026-09-26 01:59:31', '2026-09-26 04:16:55'),
   (6, '📜', '/images/achievements/ach2.png', 'Sertifikasi Internasional - Google IT Support', '2025', '15 anggota berhasil mendapatkan sertifikasi Google IT Support.', 6, '2026-09-26 01:59:31', '2026-09-26 04:16:55');
--- migrations ------------------------------------------------------------
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-  (1, '0001_01_01_000000_create_users_table', 1),
-  (2, '0001_01_01_000001_create_cache_table', 1),
-  (3, '0001_01_01_000002_create_jobs_table', 1),
-  (4, '2026_09_21_000001_create_posts_table', 1),
-  (5, '2026_09_23_072255_create_landing_contents_table', 1),
-  (6, '2026_09_25_000003_create_member_tables', 2),
-  (8, '2026_09_26_000004_create_achievements_table', 3),
-  (9, '2026_09_26_000005_add_image_to_achievements_table', 4),
-  (10, '2026_09_26_000006_add_motto_to_members_table', 4),
-  (11, '2026_09_27_000007_add_link_to_posts_table', 5),
-  (12, '2026_09_27_000008_add_is_featured_to_posts_table', 6),
-  (13, '2026_09_27_000009_create_header_slides_table', 7);
--- =============================================================================
-
 SET FOREIGN_KEY_CHECKS = 1;
 
--- =============================================================================
---  Verifikasi setelah import
 -- =============================================================================
 --  SELECT COUNT(*) FROM landing_contents;   -- 132
 --  SELECT COUNT(*) FROM members;            -- 4

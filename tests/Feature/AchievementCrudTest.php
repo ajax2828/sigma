@@ -14,7 +14,7 @@ class AchievementCrudTest extends TestCase
 
     private function admin(): User
     {
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
         $this->actingAs($user);
 
         return $user;

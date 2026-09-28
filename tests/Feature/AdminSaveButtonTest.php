@@ -40,7 +40,7 @@ class AdminSaveButtonTest extends TestCase
     {
         parent::setUp();
 
-        $this->admin = User::factory()->create();
+        $this->admin = User::factory()->admin()->create();
         $this->post = Post::create([
             'title' => 'Post untuk diedit',
             'content' => 'Isi.',
