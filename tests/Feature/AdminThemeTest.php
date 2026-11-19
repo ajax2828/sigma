@@ -20,8 +20,7 @@ class AdminThemeTest extends TestCase
 
     private function adminHtml(): string
     {
-        $this->actingAs(User::factory()->admin()->create());
-
+        
         return $this->get(route('admin.dashboard'))->assertOk()->getContent();
     }
 
@@ -107,8 +106,7 @@ class AdminThemeTest extends TestCase
     public function test_every_class_used_in_admin_views_is_defined(): void
     {
         $this->adminHtml();
-        $this->actingAs(User::factory()->admin()->create());
-
+        
         $views = glob(resource_path('views/admin/**/*.blade.php'));
         $skip = ['brand', 'btn-login', 'error', 'form-options', 'left-panel', 'login-form', 'remember', 'right-panel', 'subtitle'];
 

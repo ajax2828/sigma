@@ -334,7 +334,6 @@ class SettingController extends Controller
             'description' => $member->description,
             'motto' => $member->motto,
             'photo' => $member->photo,
-            'created_by' => auth()->id(),
         ]);
     }
 

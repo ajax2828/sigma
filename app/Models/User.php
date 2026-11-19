@@ -21,7 +21,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'is_admin',
     ];
 
     /**
@@ -44,21 +43,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean',
         ];
     }
 
-    public function posts(): HasMany
-    {
-        return $this->hasMany(Post::class);
-    }
-
-    /**
-     * Hanya admin yang boleh menyentuh panel. User hasil pendaftaran biasa
-     * tetap punya akun, tapi tidak boleh melihat / mengubah isi situs.
-     */
-    public function isAdmin(): bool
-    {
-        return (bool) $this->is_admin;
-    }
 }

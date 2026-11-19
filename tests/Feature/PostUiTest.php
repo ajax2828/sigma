@@ -13,10 +13,7 @@ class PostUiTest extends TestCase
 
     private function admin(): User
     {
-        $user = User::factory()->admin()->create();
-        $this->actingAs($user);
-
-        return $user;
+        return User::factory()->create();
     }
 
     private function makePost(User $user, string $title, string $status = 'draft', string $content = 'Isi post.'): Post
@@ -293,19 +290,19 @@ class PostUiTest extends TestCase
 
     public function test_edit_form_has_an_author_input(): void
     {
-        $user = User::factory()->admin()->create();
+        $user = User::factory()->create();
         $post = Post::create(['user_id' => $user->id, 'title' => 'Kabar', 'content' => 'Isi', 'status' => 'published']);
 
-        $html = $this->actingAs($user)->get(route('admin.posts.edit', $post))->assertOk()->getContent();
+        $html = $this->get(route('admin.posts.edit', $post))->assertOk()->getContent();
 
         $this->assertStringContainsString('name="author"', $html, 'form edit punya input author');
             }
 
     public function test_author_can_be_set_when_creating_a_post(): void
     {
-        $user = User::factory()->admin()->create();
+        $user = User::factory()->create();
 
-        $this->actingAs($user)->post(route('admin.posts.store'), [
+        $this->post(route('admin.posts.store'), [
             'title' => 'Dengan Penulis',
             'content' => 'Isi',
             'status' => 'published',
@@ -317,10 +314,10 @@ class PostUiTest extends TestCase
 
     public function test_author_can_be_changed_when_editing_a_post(): void
     {
-        $user = User::factory()->admin()->create();
+        $user = User::factory()->create();
         $post = Post::create(['user_id' => $user->id, 'title' => 'Kabar', 'content' => 'Isi', 'status' => 'published']);
 
-        $this->actingAs($user)->put(route('admin.posts.update', $post), [
+        $this->put(route('admin.posts.update', $post), [
             'title' => 'Kabar',
             'content' => 'Isi',
             'status' => 'published',
@@ -332,10 +329,10 @@ class PostUiTest extends TestCase
 
     public function test_blank_author_falls_back_to_the_creator_instead_of_showing_empty(): void
     {
-        $user = User::factory()->admin()->create(['name' => 'Admin SIGMA']);
+        $user = User::factory()->create(['name' => 'Admin SIGMA']);
         $post = Post::create(['user_id' => $user->id, 'title' => 'Kabar', 'content' => 'Isi', 'status' => 'published']);
 
-        $this->actingAs($user)->put(route('admin.posts.update', $post), [
+        $this->put(route('admin.posts.update', $post), [
             'title' => 'Kabar',
             'content' => 'Isi',
             'status' => 'published',
@@ -363,7 +360,7 @@ class PostUiTest extends TestCase
 
     public function test_news_card_shows_the_author_instead_of_the_creator(): void
     {
-        $user = User::factory()->admin()->create(['name' => 'Admin SIGMA']);
+        $user = User::factory()->create(['name' => 'Admin SIGMA']);
         Post::create(['user_id' => $user->id, 'title' => 'Kabar Karya Ratna', 'content' => 'Isi', 'status' => 'published', 'author' => 'Ratna Kusuma']);
 
         $body = $this->get(route('landing'))->assertOk()->getContent();
@@ -373,9 +370,9 @@ class PostUiTest extends TestCase
 
     public function test_author_input_rejects_overlong_value(): void
     {
-        $user = User::factory()->admin()->create();
+        $user = User::factory()->create();
 
-        $this->actingAs($user)->post(route('admin.posts.store'), [
+        $this->post(route('admin.posts.store'), [
             'title' => 'Kabar',
             'content' => 'Isi',
             'status' => 'published',

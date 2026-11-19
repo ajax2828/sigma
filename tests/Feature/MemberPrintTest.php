@@ -13,10 +13,7 @@ class MemberPrintTest extends TestCase
 
     private function admin(): User
     {
-        $admin = User::factory()->admin()->create();
-        $this->actingAs($admin);
-
-        return $admin;
+        return User::factory()->create();
     }
 
     private function makeMember(array $attrs = []): Member
@@ -31,10 +28,6 @@ class MemberPrintTest extends TestCase
         ], $attrs));
     }
 
-    public function test_print_page_requires_auth(): void
-    {
-        $this->get(route('admin.settings.members.print'))->assertRedirect(route('login'));
-    }
 
     public function test_print_page_renders_all_members(): void
     {

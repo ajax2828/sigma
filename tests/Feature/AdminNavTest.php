@@ -12,8 +12,7 @@ class AdminNavTest extends TestCase
 
     public function test_every_admin_page_is_reachable_from_the_navbar(): void
     {
-        $this->actingAs(User::factory()->admin()->create());
-
+        
         $pages = [
             'admin.dashboard' => 'Dashboard',
             'admin.posts.index' => 'Posts',
@@ -37,8 +36,7 @@ class AdminNavTest extends TestCase
 
     public function test_posts_dropdown_holds_posts_landing_hero_and_background(): void
     {
-        $this->actingAs(User::factory()->admin()->create());
-
+        
         $html = $this->get(route('admin.dashboard'))->assertOk()->getContent();
 
         $this->assertSame(1, substr_count($html, 'class="nav-dropdown"'), 'nav harus punya tepat satu dropdown');
@@ -64,8 +62,7 @@ class AdminNavTest extends TestCase
 
     public function test_posts_dropdown_stays_open_on_its_child_pages(): void
     {
-        $this->actingAs(User::factory()->admin()->create());
-
+        
         foreach (['admin.posts.index', 'admin.settings.landing', 'admin.settings.header', 'admin.settings.backgrounds'] as $name) {
             $this->get(route($name))
                 ->assertOk()
@@ -82,8 +79,7 @@ class AdminNavTest extends TestCase
 
     public function test_dropdown_closes_on_outside_click_and_escape(): void
     {
-        $this->actingAs(User::factory()->admin()->create());
-        $html = $this->get(route('admin.dashboard'))->assertOk()->getContent();
+                $html = $this->get(route('admin.dashboard'))->assertOk()->getContent();
 
         // Handler harus menjaga target yang bukan Element (Document/text) sebelum memanggil closest.
         $this->assertStringContainsString("event.target instanceof Element ? event.target : null", $html);
@@ -93,8 +89,7 @@ class AdminNavTest extends TestCase
 
     public function test_landing_page_settings_no_longer_edits_hero_or_achievement_fields(): void
     {
-        $this->actingAs(User::factory()->admin()->create());
-
+        
         $html = $this->get(route('admin.settings.landing'))->assertOk()->getContent();
 
         foreach ([
@@ -117,8 +112,7 @@ class AdminNavTest extends TestCase
 
     public function test_landing_page_update_ignores_hero_fields(): void
     {
-        $this->actingAs(User::factory()->admin()->create());
-
+        
         $this->post(route('admin.settings.landing.update'), [
             'site_title' => 'Situs Baru',
             'hero_title' => 'HARUS DIABAIKAN',

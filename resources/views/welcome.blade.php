@@ -48,10 +48,6 @@
         <h1 class="logo">SIGMA</h1>
         <p class="tagline">Sistem Informasi dan Manajemen Anggota Galeri Invetasi Univeritas Yatsi Madani.</p>
         <div class="actions">
-            <a href="/login" class="btn btn-primary">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
-                Masuk ke Admin
-            </a>
             <a href="#features" class="btn btn-ghost">Pelajari Lebih</a>
         </div>
         <div class="features" id="features">

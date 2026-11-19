@@ -14,10 +14,7 @@ class AchievementCrudTest extends TestCase
 
     private function admin(): User
     {
-        $user = User::factory()->admin()->create();
-        $this->actingAs($user);
-
-        return $user;
+        return User::factory()->create();
     }
 
     public function test_admin_page_lists_achievements(): void
@@ -31,10 +28,6 @@ class AchievementCrudTest extends TestCase
             ->assertSee('Juara 1');
     }
 
-    public function test_guest_is_redirected_to_login(): void
-    {
-        $this->get(route('admin.settings.achievements'))->assertRedirect(route('login'));
-    }
 
     public function test_create_adds_achievement_at_end_of_order(): void
     {

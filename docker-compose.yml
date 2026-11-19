@@ -7,8 +7,8 @@ services:
     container_name: sigma
     restart: unless-stopped
     ports:
-      - "8000:8000"
-      - "8090:8090"
+      - "8080:8000"
+      - "8091:8090"
     volumes:
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini:ro
       - ./docker/entrypoint.sh:/usr/local/bin/entrypoint.sh:ro

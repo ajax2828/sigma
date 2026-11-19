@@ -71,15 +71,13 @@
         .nav-toggle:hover { background: rgba(255, 255, 255, 0.06); border-color: var(--border-strong); }
         .nav-left { display: flex; align-items: center; gap: 2rem; min-width: 0; }
         .nav-right { display: flex; align-items: center; gap: 1.25rem; margin-left: auto; }
-        .nav-logout-form { display: inline; }
         .notification-bell { position: relative; cursor: pointer; color: var(--text-muted); display: flex; transition: color var(--t-fast); }
         .notification-bell:hover { color: var(--text); }
         .notification-badge { position: absolute; top: -6px; right: -6px; background: var(--danger); color: #2b0d0d; font-size: 0.625rem; font-weight: 700; padding: 0.125rem 0.375rem; border-radius: 9999px; min-width: 18px; text-align: center; }
         .user-profile { display: flex; align-items: center; gap: 0.625rem; cursor: pointer; }
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-deep)); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: #1a1207; flex-shrink: 0; }
         .user-name { font-size: 0.8125rem; font-weight: 500; }
-        .btn-logout { background: var(--danger-soft); color: var(--danger); border: 1px solid rgba(224, 122, 122, 0.32); padding: 0.4rem 0.875rem; border-radius: var(--radius-sm); font-family: inherit; font-size: 0.75rem; cursor: pointer; transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast); }
-        .btn-logout:hover { background: rgba(224, 122, 122, 0.24); border-color: rgba(224, 122, 122, 0.5); }
+        .notification-badge { position: absolute; top: -6px; right: -6px; background: var(--danger); color: #2b0d0d; font-size: 0.625rem; font-weight: 700; padding: 0.125rem 0.375rem; border-radius: 9999px; min-width: 18px; text-align: center; }
         
         /* Container */
         .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
@@ -386,20 +384,11 @@
         </div>
         <div class="nav-right">
             <div class="notification-bell">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                 <span class="notification-badge">12</span>
             </div>
-            <div class="user-profile">
-                <div class="user-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
-                <span class="user-name">Welcome, {{ auth()->user()->name }}</span>
-            </div>
-            <form method="POST" action="{{ route('logout') }}" class="nav-logout-form">
-                @csrf
-                <button type="submit" class="btn-logout">Log Out</button>
-            </form>
         </div>
         <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="navbarNav">&#9776;</button>
-    </nav>
         @if(session('success'))
             <div class="save-toast" role="status" aria-live="polite">
                 <span class="save-toast-icon">✓</span>

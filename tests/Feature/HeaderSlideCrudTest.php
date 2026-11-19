@@ -15,10 +15,7 @@ class HeaderSlideCrudTest extends TestCase
 
     private function admin(): User
     {
-        $user = User::factory()->admin()->create();
-        $this->actingAs($user);
-
-        return $user;
+        return User::factory()->create();
     }
 
     public function test_header_page_offers_crud_forms_with_image_input(): void
@@ -166,7 +163,6 @@ class HeaderSlideCrudTest extends TestCase
 
     public function test_posts_page_has_a_visible_link_to_the_landing_page(): void
     {
-        $this->actingAs(User::factory()->admin()->create());
 
         $html = $this->get(route('admin.posts.index'))->assertOk()->getContent();
 
@@ -178,7 +174,6 @@ class HeaderSlideCrudTest extends TestCase
 
     public function test_the_landing_link_lives_only_on_the_posts_header(): void
     {
-        $this->actingAs(User::factory()->admin()->create());
 
         // Permintaan eksplisit: tautannya hanya di header Posts, bukan di
         // navbar dan bukan di halaman lain. Yang dicek adalah href ke landing
@@ -192,8 +187,4 @@ class HeaderSlideCrudTest extends TestCase
         $this->assertStringNotContainsString('Lihat Site', $this->get(route('admin.dashboard'))->assertOk()->getContent());
     }
 
-    public function test_header_page_requires_login(): void
-    {
-        $this->get(route('admin.settings.header'))->assertRedirect(route('login'));
-    }
 }

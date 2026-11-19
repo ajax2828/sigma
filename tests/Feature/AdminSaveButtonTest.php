@@ -40,7 +40,7 @@ class AdminSaveButtonTest extends TestCase
     {
         parent::setUp();
 
-        $this->admin = User::factory()->admin()->create();
+        $this->admin = User::factory()->create();
         $this->post = Post::create([
             'title' => 'Post untuk diedit',
             'content' => 'Isi.',
@@ -51,8 +51,6 @@ class AdminSaveButtonTest extends TestCase
 
     private function html(string $url): string
     {
-        $this->actingAs($this->admin);
-
         $response = $this->get($url);
         $this->assertSame(200, $response->getStatusCode(), "halaman {$url} tidak bisa diakses");
 
