@@ -124,19 +124,19 @@
             <div class="f-grid-2">
                 <div>
                     <label class="f-label f-label-sm">Title</label>
-                    <input type="text" name="hero_title" value="{{ old('hero_title', $contents['hero_title']->value ?? 'SIGMA') }}" maxlength="100" required class="f-input f-input-sm">
+                    <input type="text" name="hero_title" value="{{ old('hero_title', $contents['hero_title']?->value ?? 'SIGMA') }}" maxlength="100" required class="f-input f-input-sm">
                 </div>
                 <div>
                     <label class="f-label f-label-sm">Tagline</label>
-                    <input type="text" name="hero_tagline" value="{{ old('hero_tagline', $contents['hero_tagline']->value ?? '') }}" maxlength="200" class="f-input f-input-sm">
+                    <input type="text" name="hero_tagline" value="{{ old('hero_tagline', $contents['hero_tagline']?->value ?? '') }}" maxlength="200" class="f-input f-input-sm">
                 </div>
                 <div>
                     <label class="f-label f-label-sm">Label Tombol</label>
-                    <input type="text" name="hero_cta_label" value="{{ old('hero_cta_label', $contents['hero_cta_label']->value ?? 'Pelajari Lebih') }}" maxlength="50" class="f-input f-input-sm">
+                    <input type="text" name="hero_cta_label" value="{{ old('hero_cta_label', $contents['hero_cta_label']?->value ?? 'Pelajari Lebih') }}" maxlength="50" class="f-input f-input-sm">
                 </div>
                 <div class="f-span-all">
                     <label class="f-label f-label-sm">Description</label>
-                    <textarea name="hero_description" rows="3" maxlength="1000" style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8125rem; resize: vertical;">{{ old('hero_description', $contents['hero_description']->value ?? '') }}</textarea>
+                    <textarea name="hero_description" rows="3" maxlength="1000" style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.875rem; resize: vertical;">{{ old('hero_description', $contents['hero_description']?->value ?? '') }}</textarea>
                 </div>
             </div>
             <button type="submit" class="btn-save"><svg class="btn-save-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg><span class="btn-save-label">Save Fallback Text</span></button>

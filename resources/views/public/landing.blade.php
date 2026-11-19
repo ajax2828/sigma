@@ -3,7 +3,7 @@
 3|<head>
 4|    <meta charset="UTF-8">
 5|    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-6|    <title>{{ $contents['site_title']->value ?? 'SIGMA - Sistem Informasi Terpadu' }}</title>
+6|    <title>{{ $contents['site_title']?->value ?? 'SIGMA - Sistem Informasi Terpadu' }}</title>
 7|    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
 8|    <style>
 9|        * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,29 +17,29 @@
 17|            --accent: #9b1c1c;
 18|            --shadow: 0 1px 3px rgba(24, 24, 24, 0.08), 0 8px 24px rgba(24, 24, 24, 0.06);
 19|            --shadow-hover: 0 4px 10px rgba(24, 24, 24, 0.12), 0 16px 40px rgba(24, 24, 24, 0.1);
-20|            --page-gradient-start: {{ $contents['page_gradient_start']->value ?? '#f4f0e6' }};
-21|            --page-gradient-end: {{ $contents['page_gradient_end']->value ?? '#e8e0d1' }};
-22|            --page-gradient-angle: {{ $contents['page_gradient_angle']->value ?? '180' }}deg;
-23|            --hero-gradient-start: {{ $contents['hero_gradient_start']->value ?? '#f4f0e6' }};
-24|            --hero-gradient-end: {{ $contents['hero_gradient_end']->value ?? '#faf7ef' }};
-25|            --hero-gradient-angle: {{ $contents['hero_gradient_angle']->value ?? '90' }}deg;
-26|            --about-gradient-start: {{ $contents['about_gradient_start']->value ?? '#fffaf0' }};
-27|            --about-gradient-end: {{ $contents['about_gradient_end']->value ?? '#f4f0e6' }};
-28|            --about-gradient-angle: {{ $contents['about_gradient_angle']->value ?? '180' }}deg;
-29|            --members-gradient-start: {{ $contents['members_gradient_start']->value ?? '#e8e0d1' }};
-30|            --members-gradient-end: {{ $contents['members_gradient_end']->value ?? '#f8f5ed' }};
-31|            --members-gradient-angle: {{ $contents['members_gradient_angle']->value ?? '180' }}deg;
-32|            --achievements-gradient-start: {{ $contents['achievements_gradient_start']->value ?? '#f8f5ed' }};
-33|            --achievements-gradient-end: {{ $contents['achievements_gradient_end']->value ?? '#f4f0e6' }};
-34|            --achievements-gradient-angle: {{ $contents['achievements_gradient_angle']->value ?? '180' }}deg;
-35|            --footer-gradient-start: {{ $contents['footer_gradient_start']->value ?? '#e8e0d1' }};
-36|            --footer-gradient-end: {{ $contents['footer_gradient_end']->value ?? '#f4f0e6' }};
-37|            --footer-gradient-angle: {{ $contents['footer_gradient_angle']->value ?? '90' }}deg;
+20|            --page-gradient-start: {{ $contents['page_gradient_start']?->value ?? '#f4f0e6' }};
+21|            --page-gradient-end: {{ $contents['page_gradient_end']?->value ?? '#e8e0d1' }};
+22|            --page-gradient-angle: {{ $contents['page_gradient_angle']?->value ?? '180' }}deg;
+23|            --hero-gradient-start: {{ $contents['hero_gradient_start']?->value ?? '#f4f0e6' }};
+24|            --hero-gradient-end: {{ $contents['hero_gradient_end']?->value ?? '#faf7ef' }};
+25|            --hero-gradient-angle: {{ $contents['hero_gradient_angle']?->value ?? '90' }}deg;
+26|            --about-gradient-start: {{ $contents['about_gradient_start']?->value ?? '#fffaf0' }};
+27|            --about-gradient-end: {{ $contents['about_gradient_end']?->value ?? '#f4f0e6' }};
+28|            --about-gradient-angle: {{ $contents['about_gradient_angle']?->value ?? '180' }}deg;
+29|            --members-gradient-start: {{ $contents['members_gradient_start']?->value ?? '#e8e0d1' }};
+30|            --members-gradient-end: {{ $contents['members_gradient_end']?->value ?? '#f8f5ed' }};
+31|            --members-gradient-angle: {{ $contents['members_gradient_angle']?->value ?? '180' }}deg;
+32|            --achievements-gradient-start: {{ $contents['achievements_gradient_start']?->value ?? '#f8f5ed' }};
+33|            --achievements-gradient-end: {{ $contents['achievements_gradient_end']?->value ?? '#f4f0e6' }};
+34|            --achievements-gradient-angle: {{ $contents['achievements_gradient_angle']?->value ?? '180' }}deg;
+35|            --footer-gradient-start: {{ $contents['footer_gradient_start']?->value ?? '#e8e0d1' }};
+36|            --footer-gradient-end: {{ $contents['footer_gradient_end']?->value ?? '#f4f0e6' }};
+37|            --footer-gradient-angle: {{ $contents['footer_gradient_angle']?->value ?? '90' }}deg;
 38|        }
 39|        html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
 40|        body { font-family: 'Source Sans 3', Arial, sans-serif; color: var(--ink); background-color: var(--page-gradient-start); background-image: linear-gradient(var(--page-gradient-angle), var(--page-gradient-start), var(--page-gradient-end)); background-size: cover; background-position: center; background-attachment: fixed; line-height: 1.6; }
-41|        @if($contents['page_background_image']->value ?? null)
-42|        body { background-image: linear-gradient(rgba(244, 240, 230, 0.2), rgba(232, 224, 209, 0.82)), url('{{ $contents['page_background_image']->value }}'); }
+41|        @if($contents['page_background_image']?->value ?? null)
+42|        body { background-image: linear-gradient(rgba(244, 240, 230, 0.2), rgba(232, 224, 209, 0.82)), url('{{ $contents['page_background_image']?->value }}'); }
 43|        @endif
 44|        .wrap { max-width: 1180px; margin: 0 auto; }
 45|
@@ -57,8 +57,8 @@
 57|
 58|        /* ===== HEADER + BANNER KABAR (horizontal, full width) ===== */
 59|        .site-header { background-color: var(--hero-gradient-start); background-image: linear-gradient(var(--hero-gradient-angle), var(--hero-gradient-start), var(--hero-gradient-end)); border-bottom: 1px solid var(--line); }
-60|        @if($contents['hero_background_image']->value ?? null)
-61|        .site-header { background-image: linear-gradient(rgba(244, 240, 230, 0.25), rgba(244, 240, 230, 0.88)), url('{{ $contents['hero_background_image']->value }}'); background-size: cover; background-position: center; }
+60|        @if($contents['hero_background_image']?->value ?? null)
+61|        .site-header { background-image: linear-gradient(rgba(244, 240, 230, 0.25), rgba(244, 240, 230, 0.88)), url('{{ $contents['hero_background_image']?->value }}'); background-size: cover; background-position: center; }
 62|        @endif
 63|        .site-head-inner { max-width: 1180px; margin: 0 auto; padding: 3.5rem 2rem 3rem; }
 64|        .site-head h1 { font-family: 'Libre Baskerville', Georgia, serif; font-size: clamp(2.5rem, 6vw, 4.25rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
@@ -144,16 +144,16 @@
 144|        .section > .wrap { padding: 0 2rem; }
 145|
 146|        #about { background-color: var(--about-gradient-start); background-image: linear-gradient(var(--about-gradient-angle), var(--about-gradient-start), var(--about-gradient-end)); }
-147|        @if($contents['about_background_image']->value ?? null)
-148|        #about { background-image: linear-gradient(rgba(255, 250, 240, 0.3), rgba(255, 250, 240, 0.86)), url('{{ $contents['about_background_image']->value }}'); background-size: cover; background-position: center; }
+147|        @if($contents['about_background_image']?->value ?? null)
+148|        #about { background-image: linear-gradient(rgba(255, 250, 240, 0.3), rgba(255, 250, 240, 0.86)), url('{{ $contents['about_background_image']?->value }}'); background-size: cover; background-position: center; }
 149|        @endif
 150|        #members { background-color: var(--members-gradient-start); background-image: linear-gradient(var(--members-gradient-angle), var(--members-gradient-start), var(--members-gradient-end)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-151|        @if($contents['members_background_image']->value ?? null)
-152|        #members { background-image: linear-gradient(rgba(232, 224, 209, 0.3), rgba(232, 224, 209, 0.86)), url('{{ $contents['members_background_image']->value }}'); background-size: cover; background-position: center; }
+151|        @if($contents['members_background_image']?->value ?? null)
+152|        #members { background-image: linear-gradient(rgba(232, 224, 209, 0.3), rgba(232, 224, 209, 0.86)), url('{{ $contents['members_background_image']?->value }}'); background-size: cover; background-position: center; }
 153|        @endif
 154|        #achievements { background-color: var(--achievements-gradient-start); background-image: linear-gradient(var(--achievements-gradient-angle), var(--achievements-gradient-start), var(--achievements-gradient-end)); }
-155|        @if($contents['achievements_background_image']->value ?? null)
-156|        #achievements { background-image: linear-gradient(rgba(248, 245, 237, 0.3), rgba(248, 245, 237, 0.86)), url('{{ $contents['achievements_background_image']->value }}'); background-size: cover; background-position: center; }
+155|        @if($contents['achievements_background_image']?->value ?? null)
+156|        #achievements { background-image: linear-gradient(rgba(248, 245, 237, 0.3), rgba(248, 245, 237, 0.86)), url('{{ $contents['achievements_background_image']?->value }}'); background-size: cover; background-position: center; }
 157|        @endif
 158|
 159|        .card { background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s; }
@@ -205,8 +205,8 @@
 205|
 206|        /* ===== FOOTER ===== */
 207|        footer { text-align: center; padding: 2.5rem 2rem; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--line); background-color: var(--footer-gradient-start); background-image: linear-gradient(var(--footer-gradient-angle), var(--footer-gradient-start), var(--footer-gradient-end)); }
-208|        @if($contents['footer_background_image']->value ?? null)
-209|        footer { background-image: linear-gradient(rgba(232, 224, 209, 0.3), rgba(232, 224, 209, 0.86)), url('{{ $contents['footer_background_image']->value }}'); background-size: cover; background-position: center; }
+208|        @if($contents['footer_background_image']?->value ?? null)
+209|        footer { background-image: linear-gradient(rgba(232, 224, 209, 0.3), rgba(232, 224, 209, 0.86)), url('{{ $contents['footer_background_image']?->value }}'); background-size: cover; background-position: center; }
 210|        @endif
 211|
 212|        /* ===== RESPONSIVE ===== */
@@ -251,12 +251,12 @@
 251|
 252|    <nav class="navbar">
 253|        <div class="nav-container">
-254|            <a href="/" class="nav-brand">{{ $contents['nav_brand']->value ?? 'SIGMA' }}</a>
+254|            <a href="/" class="nav-brand">{{ $contents['nav_brand']?->value ?? 'SIGMA' }}</a>
 255|            <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">&#9776;</button>
 256|            <div class="nav-links" id="navLinks">
-257|                <a href="#about">{{ $contents['nav_about_label']->value ?? 'About' }}</a>
-258|                <a href="#members">{{ $contents['nav_members_label']->value ?? 'Anggota' }}</a>
-259|                <a href="#achievements">{{ $contents['nav_achievements_label']->value ?? 'Prestasi' }}</a>
+257|                <a href="#about">{{ $contents['nav_about_label']?->value ?? 'About' }}</a>
+258|                <a href="#members">{{ $contents['nav_members_label']?->value ?? 'Anggota' }}</a>
+259|                <a href="#achievements">{{ $contents['nav_achievements_label']?->value ?? 'Prestasi' }}</a>
 260|                {{-- Tidak ada tombol Masuk/Daftar di sini: pendaftaran dan
 261|                     login hanya untuk pengelola yang membuka /register atau
 262|                     /login langsung. --}}
@@ -268,7 +268,7 @@
 268|        @if($slides->count())
 269|            @php $isRotating = $slides->count() > 1; @endphp
 270|            <div class="hero-banner" data-hero-banner data-interval="6000" data-reduced-motion="no-rotate"
-271|                 @if($isRotating) tabindex="0" role="region" aria-roledescription="banner" aria-label="{{ $contents['hero_title']->value ?? 'SIGMA' }}"@endif>
+271|                 @if($isRotating) tabindex="0" role="region" aria-roledescription="banner" aria-label="{{ $contents['hero_title']?->value ?? 'SIGMA' }}"@endif>
 272|                <div class="hero-banner-slides">
 273|                    @foreach($slides as $i => $slide)
 274|                        <article class="hero-banner-slide{{ $i === 0 ? ' active' : '' }}"
@@ -307,14 +307,14 @@
 307|            </div>
 308|        @else
 309|            <div class="site-head-inner">
-310|                <h1>{{ $contents['hero_title']->value ?? 'SIGMA' }}</h1>
-311|                <p class="tagline">{{ $contents['hero_tagline']->value ?? 'Sistem Informasi dan Manajemen Terpadu' }}</p>
-312|                <p class="lede">{{ $contents['hero_description']->value ?? 'Organisasi mahasiswa yang bergerak di bidang teknologi dan informasi.' }}</p>
+310|                <h1>{{ $contents['hero_title']?->value ?? 'SIGMA' }}</h1>
+311|                <p class="tagline">{{ $contents['hero_tagline']?->value ?? 'Sistem Informasi dan Manajemen Terpadu' }}</p>
+312|                <p class="lede">{{ $contents['hero_description']?->value ?? 'Organisasi mahasiswa yang bergerak di bidang teknologi dan informasi.' }}</p>
 313|                <div class="head-actions">
 314|                    {{-- Label dan tujuan harus cocok: "Pelajari Lebih" ke
 315|                         Tentang Kami, bukan ke daftar anggota. --}}
-316|                    <a href="#about" class="btn btn-primary">{{ $contents['hero_cta_label']->value ?? 'Pelajari Lebih' }}</a>
-317|                    <a href="#achievements" class="btn btn-ghost">{{ $contents['nav_achievements_label']->value ?? 'Prestasi' }}</a>
+316|                    <a href="#about" class="btn btn-primary">{{ $contents['hero_cta_label']?->value ?? 'Pelajari Lebih' }}</a>
+317|                    <a href="#achievements" class="btn btn-ghost">{{ $contents['nav_achievements_label']?->value ?? 'Prestasi' }}</a>
 318|                </div>
 319|            </div>
 320|        @endif
@@ -348,8 +348,8 @@
 397|
 398|    <section id="members" class="section">
 399|        <div class="section-head">
-400|            <h2 class="section-title">{{ $contents['member_section_title']->value ?? 'Anggota Kami' }}</h2>
-401|            <p class="section-subtitle">{{ $contents['member_section_subtitle']->value ?? 'Orang-orang hebat yang berada di balik setiap pencapaian organisasi.' }}</p>
+400|            <h2 class="section-title">{{ $contents['member_section_title']?->value ?? 'Anggota Kami' }}</h2>
+401|            <p class="section-subtitle">{{ $contents['member_section_subtitle']?->value ?? 'Orang-orang hebat yang berada di balik setiap pencapaian organisasi.' }}</p>
 402|        </div>
 403|        <div class="wrap members-grid">
 404|            @forelse($members as $member)
@@ -376,8 +376,8 @@
 425|
 426|    <section id="achievements" class="section">
 427|        <div class="section-head">
-428|            <h2 class="section-title">{{ $contents['achievement_section_title']->value ?? 'Prestasi Kami' }}</h2>
-429|            <p class="section-subtitle">{{ $contents['achievement_section_subtitle']->value ?? 'Bukti dedikasi dan kerja keras organisasi dalam mencapai berbagai penghargaan.' }}</p>
+428|            <h2 class="section-title">{{ $contents['achievement_section_title']?->value ?? 'Prestasi Kami' }}</h2>
+429|            <p class="section-subtitle">{{ $contents['achievement_section_subtitle']?->value ?? 'Bukti dedikasi dan kerja keras organisasi dalam mencapai berbagai penghargaan.' }}</p>
 430|        </div>
 431|        <div class="wrap achievements-grid">
 432|            @forelse($achievements as $achievement)
@@ -405,50 +405,50 @@
 454|
 455|    <section id="about" class="section">
 348|        <div class="section-head">
-349|            <h2 class="section-title">{{ $contents['about_title']->value ?? 'Tentang Kami' }}</h2>
-350|            <p class="section-subtitle">{{ $contents['about_subtitle']->value ?? 'Kenali lebih dalam tentang organisasi kami, visi, misi, dan nilai-nilai yang kami pegang.' }}</p>
+349|            <h2 class="section-title">{{ $contents['about_title']?->value ?? 'Tentang Kami' }}</h2>
+350|            <p class="section-subtitle">{{ $contents['about_subtitle']?->value ?? 'Kenali lebih dalam tentang organisasi kami, visi, misi, dan nilai-nilai yang kami pegang.' }}</p>
 351|        </div>
 352|        <div class="wrap about-cards">
 353|            <article class="card about-card">
 354|                <div class="tabs" role="tablist">
-355|                    <button type="button" class="tab active" data-tab="about-profile" role="tab" aria-selected="true">{{ $contents['about_slide_title']->value ?? 'Tentang Kami' }}</button>
-356|                    <button type="button" class="tab" data-tab="about-vm" role="tab" aria-selected="false">{{ $contents['vision_mission_title']->value ?? 'Visi & Misi' }}</button>
+355|                    <button type="button" class="tab active" data-tab="about-profile" role="tab" aria-selected="true">{{ $contents['about_slide_title']?->value ?? 'Tentang Kami' }}</button>
+356|                    <button type="button" class="tab" data-tab="about-vm" role="tab" aria-selected="false">{{ $contents['vision_mission_title']?->value ?? 'Visi & Misi' }}</button>
 357|                </div>
 358|                <div class="tab-panel active" id="about-profile">
-359|                    <h3>{{ $contents['about_organization_title']->value ?? 'Organisasi SIGMA' }}</h3>
-360|                    <p>{{ $contents['about_description']->value ?? 'SIGMA adalah organisasi mahasiswa yang mengembangkan teknologi dan informasi.' }}</p>
+359|                    <h3>{{ $contents['about_organization_title']?->value ?? 'Organisasi SIGMA' }}</h3>
+360|                    <p>{{ $contents['about_description']?->value ?? 'SIGMA adalah organisasi mahasiswa yang mengembangkan teknologi dan informasi.' }}</p>
 361|                </div>
 362|                <div class="tab-panel" id="about-vm">
 363|                    <div class="kicker">Visi</div>
-364|                    <p>{{ $contents['vision']->value ?? 'Menjadi organisasi teknologi terdepan yang menghasilkan karya inovatif dan berdampak positif.' }}</p>
+364|                    <p>{{ $contents['vision']?->value ?? 'Menjadi organisasi teknologi terdepan yang menghasilkan karya inovatif dan berdampak positif.' }}</p>
 365|                    <div class="kicker" style="margin-top: 1rem;">Misi</div>
-366|                    <p>{{ $contents['mission']->value ?? 'Membangun ekosistem pembelajaran teknologi yang kolaboratif dan inklusif.' }}</p>
+366|                    <p>{{ $contents['mission']?->value ?? 'Membangun ekosistem pembelajaran teknologi yang kolaboratif dan inklusif.' }}</p>
 367|                </div>
 368|            </article>
 369|            <div class="card stats-card">
 370|                <div class="stat-box">
-371|                    <div class="stat-number">{{ $contents['stat_active_members']->value ?? '25+' }}</div>
-372|                    <div class="stat-label">{{ $contents['stat_active_members_label']->value ?? 'Anggota Aktif' }}</div>
+371|                    <div class="stat-number">{{ $contents['stat_active_members']?->value ?? '25+' }}</div>
+372|                    <div class="stat-label">{{ $contents['stat_active_members_label']?->value ?? 'Anggota Aktif' }}</div>
 373|                </div>
 374|                <div class="stat-box">
-375|                    <div class="stat-number">{{ $contents['stat_projects']->value ?? '12' }}</div>
-376|                    <div class="stat-label">{{ $contents['stat_projects_label']->value ?? 'Proyek Selesai' }}</div>
+375|                    <div class="stat-number">{{ $contents['stat_projects']?->value ?? '12' }}</div>
+376|                    <div class="stat-label">{{ $contents['stat_projects_label']?->value ?? 'Proyek Selesai' }}</div>
 377|                </div>
 378|                <div class="stat-box">
-379|                    <div class="stat-number">{{ $contents['stat_awards']->value ?? '8' }}</div>
-380|                    <div class="stat-label">{{ $contents['stat_awards_label']->value ?? 'Penghargaan' }}</div>
+379|                    <div class="stat-number">{{ $contents['stat_awards']?->value ?? '8' }}</div>
+380|                    <div class="stat-label">{{ $contents['stat_awards_label']?->value ?? 'Penghargaan' }}</div>
 381|                </div>
 382|                <div class="stat-box">
-383|                    <div class="stat-number">{{ $contents['stat_years']->value ?? '3' }}</div>
-384|                    <div class="stat-label">{{ $contents['stat_years_label']->value ?? 'Tahun Berdiri' }}</div>
+383|                    <div class="stat-number">{{ $contents['stat_years']?->value ?? '3' }}</div>
+384|                    <div class="stat-label">{{ $contents['stat_years_label']?->value ?? 'Tahun Berdiri' }}</div>
 385|                </div>
 386|                <div class="stat-box">
-387|                    <div class="stat-number">{{ $contents['stat_partnerships']->value ?? '15+' }}</div>
-388|                    <div class="stat-label">{{ $contents['stat_partnerships_label']->value ?? 'Kerjasama' }}</div>
+387|                    <div class="stat-number">{{ $contents['stat_partnerships']?->value ?? '15+' }}</div>
+388|                    <div class="stat-label">{{ $contents['stat_partnerships_label']?->value ?? 'Kerjasama' }}</div>
 389|                </div>
 390|                <div class="stat-box">
-391|                    <div class="stat-number">{{ $contents['stat_dedication']->value ?? '100%' }}</div>
-392|                    <div class="stat-label">{{ $contents['stat_dedication_label']->value ?? 'Dedikasi' }}</div>
+391|                    <div class="stat-number">{{ $contents['stat_dedication']?->value ?? '100%' }}</div>
+392|                    <div class="stat-label">{{ $contents['stat_dedication_label']?->value ?? 'Dedikasi' }}</div>
 393|                </div>
 394|            </div>
 395|        </div>
@@ -599,7 +599,7 @@
 597|    </script>
 598|
 599|    <footer>
-600|        <p>&copy; {{ date('Y') }} {{ $contents['footer_text']->value ?? 'Organisasi SIGMA. All rights reserved.' }}</p>
+600|        <p>&copy; {{ date('Y') }} {{ $contents['footer_text']?->value ?? 'Organisasi SIGMA. All rights reserved.' }}</p>
 601|    </footer>
 602|
 603|</body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $post->title }} - {{ $contents['site_title']->value ?? 'SIGMA' }}</title>
+    <title>{{ $post->title }} - {{ $contents['site_title']?->value ?? 'SIGMA' }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -39,7 +39,7 @@
 
     <nav class="navbar">
         <div class="nav-container">
-            <a href="{{ route('landing') }}" class="nav-brand">{{ $contents['nav_brand']->value ?? 'SIGMA' }}</a>
+            <a href="{{ route('landing') }}" class="nav-brand">{{ $contents['nav_brand']?->value ?? 'SIGMA' }}</a>
             <div class="nav-links">
                 <a href="{{ route('landing') }}#about">About</a>
                 <a href="{{ route('landing') }}#members">Anggota</a>
@@ -62,7 +62,7 @@
     </main>
 
     <footer>
-        <p>&copy; {{ date('Y') }} {{ $contents['footer_text']->value ?? 'Organisasi SIGMA. All rights reserved.' }}</p>
+        <p>&copy; {{ date('Y') }} {{ $contents['footer_text']?->value ?? 'Organisasi SIGMA. All rights reserved.' }}</p>
     </footer>
 
 </body>

@@ -93,10 +93,10 @@
 
         @foreach($sections as $section)
             @php
-                $currentImage = $contents[$section['image']]->value ?? null;
-                $start = old($section['start'], $contents[$section['start']]->value ?? $section['default_start']);
-                $end = old($section['end'], $contents[$section['end']]->value ?? $section['default_end']);
-                $angle = old($section['angle'], $contents[$section['angle']]->value ?? $section['default_angle']);
+                $currentImage = $contents[$section['image']]?->value ?? null;
+                $start = old($section['start'], $contents[$section['start']]?->value ?? $section['default_start']);
+                $end = old($section['end'], $contents[$section['end']]?->value ?? $section['default_end']);
+                $angle = old($section['angle'], $contents[$section['angle']]?->value ?? $section['default_angle']);
             @endphp
 
             <div class="card mb-lg">
