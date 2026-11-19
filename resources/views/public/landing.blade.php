@@ -48,7 +48,7 @@
 48|        .nav-container { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
 49|        .nav-brand { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.375rem; font-weight: 700; color: var(--ink); text-decoration: none; letter-spacing: 0.08em; }
 50|        .nav-links { display: flex; gap: 1.75rem; align-items: center; }
-51|        .nav-links a { color: var(--ink); text-decoration: none; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
+51|        .nav-links a { color: var(--ink); text-decoration: none; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
 52|        .nav-links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 53|        .page-notice { padding: 0.75rem 1.25rem; font-size: 0.875rem; text-align: center; }
 54|        .page-notice.is-error { background: #fef2f2; color: #b91c1c; border-bottom: 1px solid #fecaca; }
@@ -102,6 +102,9 @@
 102|        .carousel-dots { display: flex; align-items: center; gap: 0.5rem; }
 103|        .carousel-dot { width: 26px; height: 4px; padding: 0; border: 0; border-radius: 2px; background: rgba(24, 24, 24, 0.25); cursor: pointer; transition: background 0.25s ease, width 0.25s ease; }
 104|        .carousel-dot.active { background: var(--accent); width: 40px; }
+        .carousel-pause { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid rgba(24, 24, 24, 0.25); background: transparent; border-radius: 50%; cursor: pointer; color: var(--ink); transition: background 0.2s, border-color 0.2s; }
+        .carousel-pause:hover { background: rgba(24, 24, 24, 0.1); }
+        .carousel-pause:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 105|        .carousel-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 106|        .btn { display: inline-block; padding: 0.7rem 1.4rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--ink); transition: background 0.2s, color 0.2s, border-color 0.2s; }
 107|        .btn-primary { background: var(--ink); color: var(--paper); }
@@ -126,12 +129,12 @@
 126|        .news-rail::-webkit-scrollbar-thumb { background: #4a443c; }
 127|        .news-card { flex: 0 0 clamp(260px, 32%, 380px); scroll-snap-align: start; background: #221f1c; border: 1px solid #332f2a; border-top: 3px solid var(--accent); padding: 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; min-height: 190px; transition: background 0.2s, transform 0.2s; }
 128|        .news-card:hover { background: #2b2723; transform: translateY(-2px); }
-129|        .news-card .label { font-size: 0.63rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.625rem; }
+129|        .news-card .label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.625rem; }
 130|        .news-card h3 { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.0625rem; font-weight: 700; line-height: 1.35; margin-bottom: 0.5rem; }
 131|        .news-card h3 a { color: var(--paper); text-decoration: none; }
 132|        .news-card h3 a:hover { color: var(--accent); }
 133|        .news-card p { font-size: 0.8125rem; color: #b8ad9b; line-height: 1.6; flex: 1; }
-134|        .news-card .meta { display: flex; gap: 0.75rem; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #7d7263; margin-top: 0.875rem; }
+134|        .news-card .meta { display: flex; gap: 0.75rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #7d7263; margin-top: 0.875rem; }
 135|        .news-card .meta a { color: inherit; text-decoration: none; margin-left: auto; transition: color 0.2s; }
 136|        .news-card .meta a:hover, .news-card .meta a:focus-visible { color: var(--accent); }
 137|        .news-empty { max-width: 1180px; margin: 0 auto; padding: 0 2rem; color: #7d7263; font-size: 0.875rem; }
@@ -167,7 +170,7 @@
 167|        .about-card p + p { margin-top: 0.625rem; }
 168|        .about-card .kicker { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
 169|        .tabs { display: flex; gap: 0.375rem; margin-bottom: 1rem; border-bottom: 1px solid var(--line); }
-170|        .tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 0.5rem 0.875rem; font-family: inherit; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); cursor: pointer; }
+170|        .tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 0.5rem 0.875rem; font-family: inherit; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); cursor: pointer; }
 171|        .tab:hover { color: var(--ink); }
 172|        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 173|        .tab-panel { display: none; }
@@ -177,7 +180,7 @@
 177|        .stat-box:nth-child(2n) { border-right: 0; }
 178|        .stat-box:nth-last-child(-n+2) { border-bottom: 0; }
 179|        .stat-number { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.625rem; font-weight: 700; color: var(--accent); line-height: 1.2; }
-180|        .stat-label { font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+180|        .stat-label { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 181|
 182|        /* ===== MEMBERS: foto kiri, data kanan ===== */
 183|        .members-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.25rem; }
@@ -185,7 +188,7 @@
 185|        .member-photo { flex: 0 0 96px; width: 96px; height: 96px; border-radius: 50%; overflow: hidden; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.75rem; font-weight: 700; }
 186|        .member-photo img { width: 100%; height: 100%; object-fit: cover; }
 187|        .member-info { min-width: 0; }
-188|        .member-no { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+188|        .member-no { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
 189|        .member-name { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.0625rem; font-weight: 700; line-height: 1.3; margin-top: 0.125rem; }
 190|        .member-role { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: rgba(200, 189, 169, 0.28); padding: 0.2rem 0.5rem; margin-top: 0.375rem; }
 191|        .member-motto { font-size: 0.8125rem; color: var(--ink-soft); line-height: 1.55; margin-top: 0.5rem; padding-left: 0.625rem; border-left: 2px solid var(--accent); font-style: italic; }
@@ -198,12 +201,25 @@
 198|        .achievement-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
 199|        .achievement-card:hover .achievement-media img { transform: scale(1.05); }
 200|        .achievement-media .icon { font-size: 2.75rem; line-height: 1; }
-201|        .achievement-year { position: absolute; top: 0.75rem; left: 0.75rem; background: var(--accent); color: var(--paper); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.25rem 0.5rem; }
+201|        .achievement-year { position: absolute; top: 0.75rem; left: 0.75rem; background: var(--accent); color: var(--paper); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.25rem 0.5rem; }
 202|        .achievement-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
 203|        .achievement-body h4 { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.0625rem; font-weight: 700; line-height: 1.35; }
 204|        .achievement-body p { font-size: 0.8125rem; color: var(--muted); line-height: 1.65; margin-top: 0.5rem; }
 205|
-206|        /* ===== FOOTER ===== */
+206|                .nav-links a:focus-visible { border-bottom-color: var(--accent); }
+
+        /* ===== FOCUS STATES ===== */
+        /* Keyboard focus must be visible on every interactive element */
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        :focus:not(:focus-visible) { outline: none; }
+        .nav-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .carousel-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .member-card:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(155, 28, 28, 0.15); }
+        .achievement-card:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(155, 28, 28, 0.15); }
+
+/* ===== FOOTER ===== */
 207|        footer { text-align: center; padding: 2.5rem 2rem; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--line); background-color: var(--footer-gradient-start); background-image: linear-gradient(var(--footer-gradient-angle), var(--footer-gradient-start), var(--footer-gradient-end)); }
 208|        @if($contents['footer_background_image']?->value ?? null)
 209|        footer { background-image: linear-gradient(rgba(232, 224, 209, 0.3), rgba(232, 224, 209, 0.86)), url('{{ $contents['footer_background_image']?->value }}'); background-size: cover; background-position: center; }
@@ -294,7 +310,10 @@
 294|                @if($isRotating)
 295|                    {{-- Satu blok kontrol untuk seluruh banner, bukan di dalam loop slide. --}}
 296|                    <div class="carousel-nav">
-297|                        <div class="carousel-dots" data-hero-dots>
+297|                        <button type="button" class="carousel-pause" id="carouselPause" aria-label="Bermain / Berhenti banner otomatis" aria-pressed="true">
+298|                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+299|                        </button>
+300|                        <div class="carousel-dots" data-hero-dots>
 298|                            @foreach($slides as $i => $slide)
 299|                                <button type="button" class="carousel-dot{{ $i === 0 ? ' active' : '' }}"
 300|                                        data-hero-dot="{{ $i }}"
@@ -519,8 +538,21 @@
 517|                }, interval);
 518|            }
 519|
-520|            // Hanya dots yang bisa diklik; navigasi panah lewat keyboard
-521|            // (ArrowLeft/ArrowRight) di bawah, jadi tetap ada jalan manual.
+520|            // Carousel pause/play control
+            const pauseBtn = document.getElementById('carouselPause');
+            if (pauseBtn) {
+                let paused = false;
+                pauseBtn.addEventListener('click', function () {
+                    paused = !paused;
+                    this.setAttribute('aria-pressed', paused ? 'true' : 'false');
+                    this.querySelector('svg').innerHTML = paused
+                        ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+                        : '<polygon points="8,4 20,12 8,20" fill="currentColor" stroke="none"/>';
+                    if (!paused) play();
+                });
+            }
+
+            // Hanya dots yang bisa diklik; navigasi panah lewat keyboard (ArrowLeft/ArrowRight) di bawah, jadi tetap ada jalan manual.
 522|            document.addEventListener('click', function (event) {
 523|                const target = event.target instanceof Element
 524|                    ? event.target.closest('[data-hero-dot]')
@@ -542,7 +574,17 @@
 540|            banner.addEventListener('focusin', stop);
 541|            banner.addEventListener('focusout', function (event) {
 542|                if (!banner.contains(event.relatedTarget)) {
-543|                    play();
+543|                    // Respect reduced motion
+            if (reducedMotion()) {
+                banner.setAttribute('data-reduced-motion', 'no-rotate');
+            }
+
+            // Respect reduced motion
+            if (reducedMotion()) {
+                banner.setAttribute('data-reduced-motion', 'no-rotate');
+            }
+
+            play();
 544|                }
 545|            });
 546|

@@ -6,6 +6,223 @@
     <title>SIGMA - Sistem Informasi Terpadu</title>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans 3', Arial, sans-serif; background: #f4f0e6; color: #181818; }
+
+        /* ===== NAVBAR ===== */
+        .navbar { background: #f4f0e6; border-bottom: 2px solid #181818; padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .nav-container { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.5rem; font-weight: 700; color: #181818; text-decoration: none; letter-spacing: 0.08em; }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links a { color: #181818; text-decoration: none; font-size: 0.78rem; transition: color 0.2s; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+        .nav-links a:hover { color: #9b1c1c; }
+
+        /* ===== HERO ===== */
+        .hero { min-height: 72vh; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding: 5rem max(2rem, calc((100% - 1180px) / 2)); background: transparent; border-bottom: 2px solid #181818; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; width: 42%; height: 100%; right: 0; top: 0; background: linear-gradient(90deg, transparent, #faf7ef 30%); border-left: 0; }
+        .hero::after { content: ''; position: absolute; width: 36%; height: 2px; right: 3%; bottom: 22%; background: #9b1c1c; }
+        .hero h1 { font-family: 'Libre Baskerville', Georgia, serif; font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 700; margin-bottom: 1.5rem; color: #181818; position: relative; z-index: 1; letter-spacing: -0.04em; }
+        .hero .tagline-container { height: 2.5rem; overflow: hidden; position: relative; z-index: 1; margin-bottom: 1rem; }
+        .hero .tagline { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.35rem; color: #9b1c1c; font-weight: 700; margin: 0; line-height: 2rem; position: relative; z-index: 1; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s; }
+        .hero .tagline:not(.active) { position: absolute; top: 0; left: 0; right: 0; opacity: 0; transform: translateY(100%); }
+        .hero .tagline.active { opacity: 1; transform: translateY(0); }
+        .hero .tagline.exit-up { opacity: 0; transform: translateY(-100%); }
+        .hero p { font-size: 1.15rem; color: #3f3a34; max-width: 600px; line-height: 1.7; margin-bottom: 2.5rem; position: relative; z-index: 1; }
+        .cta { position: relative; z-index: 1; }
+        .cta a { padding: 0.8rem 1.5rem; border-radius: 0; font-size: 0.8rem; text-decoration: none; transition: all 0.2s; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: #181818; color: #f4f0e6; }
+        .cta a:hover { background: #9b1c1c; transform: none; }
+
+        /* ===== SECTIONS ===== */
+        .section { padding: 4rem 2rem; max-width: 1180px; margin: 0 auto; }
+        .section-title { text-align: left; font-family: 'Libre Baskerville', Georgia, serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.75rem; color: #181818; border-bottom: 2px solid #181818; padding-bottom: 0.75rem; }
+        .section-subtitle { text-align: left; color: #5f574d; font-size: 1rem; max-width: 700px; margin: 1rem 0 2.5rem; }
+
+        /* ===== ABOUT ===== */
+        .about-grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 4rem; align-items: start; }
+        .about-text h3 { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; color: #181818; }
+        .about-text p { color: #3f3a34; line-height: 1.8; margin-bottom: 1rem; }
+
+        /* About Carousel / Slider */
+        .about-slider { position: relative; overflow: hidden; min-height: 250px; }
+        .about-slides { display: flex; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; }
+        .about-slide { width: 100%; flex: 0 0 100%; padding: 0.5rem 0; }
+        .about-slide-title { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.35rem; font-weight: 700; margin-bottom: 1rem; color: #181818; }
+        .about-slide p { color: #3f3a34; line-height: 1.8; margin-bottom: 0.75rem; }
+        .about-slide-icon { display: none; }
+
+        /* Slider Nav */
+        .slider-nav { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-top: 1.5rem; }
+        .slider-dot { width: 8px; height: 8px; border-radius: 50%; background: #a9a094; cursor: pointer; transition: all 0.3s; border: none; padding: 0; }
+        .slider-dot.active { background: #9b1c1c; transform: scale(1.3); box-shadow: none; }
+        .slider-arrow { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid #181818; color: #181818; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; }
+        .slider-arrow:hover { background: #181818; border-color: #181818; color: #f4f0e6; }
+        .about-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border: 1px solid #c8bda9; background: #e8e0d1; }
+        .stat-box { background: transparent; border: 0; border-right: 1px solid #c8bda9; border-bottom: 1px solid #c8bda9; border-radius: 0; padding: 1.25rem 0.75rem; text-align: center; transition: all 0.2s; }
+        .stat-box:nth-child(2n) { border-right: 0; }
+        .stat-box:nth-last-child(-n+2) { border-bottom: 0; }
+        .stat-box:hover { background: #f4f0e6; }
+        .stat-number { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.75rem; font-weight: 700; color: #9b1c1c; }
+        .stat-label { font-size: 0.72rem; color: #5f574d; margin-top: 0.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+        /* ===== MEMBERS ===== */
+        .members-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .member-card { position: relative; display: flex; align-items: center; gap: 1.25rem; background: #f8f5ed; border: 1px solid #c8bda9; border-radius: 0; padding: 1.25rem; text-align: left; transition: all 0.2s; }
+        .member-card:hover { border-color: #9b1c1c; transform: none; background: #fffdf8; }
+        .member-avatar { width: 54px; height: 54px; border-radius: 50%; background: #181818; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: #f4f0e6; flex-shrink: 0; box-shadow: none; }
+        .member-body { flex: 1; }
+        .member-number { display: inline-block; font-size: 0.65rem; font-weight: 700; color: #9b1c1c; background: transparent; padding: 0; border-radius: 0; margin-bottom: 0.4rem; letter-spacing: 0.08em; }
+        .member-name { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1rem; font-weight: 700; color: #181818; margin-bottom: 0.125rem; }
+        .member-role { font-size: 0.75rem; color: #9b1c1c; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
+        .member-desc { font-size: 0.8125rem; color: #5f574d; line-height: 1.5; }
+
+        /* ===== ACHIEVEMENTS ===== */
+        .achievements-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+        .achievement-card { background: #f8f5ed; border: 1px solid #c8bda9; border-radius: 0; padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; transition: all 0.2s; }
+        .achievement-card:hover { border-color: #9b1c1c; background: #fffdf8; }
+        .achievement-icon { display: none; }
+        .achievement-content h4 { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1rem; font-weight: 700; color: #181818; margin-bottom: 0.25rem; }
+        .achievement-content .year { font-size: 0.72rem; color: #9b1c1c; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .achievement-content p { font-size: 0.875rem; color: #5f574d; line-height: 1.5; }
+
+
+        /* ===== POPUP - Detail Prestasi ===== */
+        .achievement-popup {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .achievement-popup.active {
+            display: flex;
+        }
+        .popup-content {
+            background: #f8f5ed;
+            border: 1px solid #c8bda9;
+            border-radius: 0;
+            padding: 2.5rem;
+            max-width: 650px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+        .popup-close {
+            position: absolute;
+            top: 1rem; right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            color: #9b1c1c;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .popup-close:hover { color: #181818; }
+        .popup-title {
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #181818;
+            margin-bottom: 0.5rem;
+        }
+        .popup-year {
+            font-size: 0.9rem;
+            color: #9b1c1c;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .popup-description {
+            font-size: 1rem;
+            color: #5f574d;
+            line-height: 1.8;
+        }
+        .popup-close-btn {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.6rem 1.5rem;
+            background: #181818;
+            color: #f4f0e6;
+            border: none;
+            border-radius: 0;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .popup-close-btn:hover { background: #9b1c1c; }
+        /* ===== FOOTER ===== */
+        footer { text-align: center; padding: 2.5rem 2rem; color: #5f574d; font-size: 0.8rem; border-top: 2px solid #181818; background: #e8e0d1; }
+        footer a { color: #9b1c1c; text-decoration: none; }
+        footer a:hover { color: #181818; }
+
+        /* ===== TAGLINE TOGGLE (hero auto-rotate) ===== */
+        .tagline-toggle {
+            position: absolute;
+            bottom: 1.25rem;
+            right: 1.25rem;
+            width: 36px;
+            height: 36px;
+            border: 2px solid var(--ink);
+            border-radius: 50%;
+            background: var(--ink);
+            color: var(--paper);
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            z-index: 3;
+        }
+        .tagline-toggle:hover { background: var(--accent); border-color: var(--accent); }
+        .tagline-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem 1.25rem; }
+            .hero { min-height: auto; padding: 4rem 1.25rem 4.5rem; }
+            .hero::before { width: 38%; opacity: 0.65; }
+            .hero::after { width: 45%; right: 1.25rem; bottom: 2rem; }
+            .hero h1 { font-size: clamp(3rem, 18vw, 5rem); }
+            .hero .tagline { font-size: 1.05rem; line-height: 1.5rem; }
+            .hero p { font-size: 1rem; margin-bottom: 2rem; }
+            .about-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    
+        /* ===== FOCUS STATES ===== */
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        :focus:not(:focus-visible) { outline: none; }
+        .nav-links a:focus-visible { border-bottom-color: var(--accent); }
+        .nav-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .carousel-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .member-card:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(155, 28, 28, 0.15); }
+        .achievement-card:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(155, 28, 28, 0.15); }
+
+
+    </style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGMA - Sistem Informasi Terpadu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Source Sans 3', Arial, sans-serif; background: #f4f0e6; color: #181818; }
 
@@ -178,397 +395,515 @@
         }
     </style>
 </head>
-<body>
 
-    <!-- ========================================
-         NAVBAR - Edit link navigasi di sini
-    ======================================== -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="/" class="nav-brand">SIGMA</a>
-            <div class="nav-links">
-                <a href="#about">About</a>
-                <a href="#members">Anggota</a>
-                <a href="#achievements">Prestasi</a>
-            </div>
-        </div>
-    </nav>
+	<!-- ========================================
+		 HERO SECTION
+	======================================== -->
+	<section class="hero">
+		<h1>SIGMA</h1>
+		<div class="tagline-container" id="taglineContainer">
+			<div class="tagline active">Inovasi Digital untuk Masa Depan</div>
+			<div class="tagline">Teknologi yang Menginspirasi</div>
+			<div class="tagline">Berkarya Berani Berbeda</div>
+			<div class="tagline">Solusi Cerdas Generasi Muda</div>
+		</div>
+		<p>Organisasi mahasiswa yang bergerak di bidang teknologi dan informasi, berkomitmen menghasilkan karya inovatif dan berkontribusi untuk kemajuan teknologi di Indonesia.</p>
+		<div class="cta">
+			<a href="#about">Pelajari Lebih</a>
+		</div>
+	</section>
 
-    <!-- ========================================
-         HERO SECTION - Edit judul, tagline, deskripsi
-    ======================================== -->
-    <section class="hero">
-        <h1>SIGMA</h1>
-        <div class="tagline-container" id="taglineContainer">
-            <div class="tagline active">Inovasi Digital untuk Masa Depan</div>
-            <div class="tagline">Teknologi yang Menginspirasi</div>
-            <div class="tagline">Berkarya Berani Berbeda</div>
-            <div class="tagline">Solusi Cerdas Generasi Muda</div>
-        </div>
-        <p>Organisasi mahasiswa yang bergerak di bidang teknologi dan informasi, berkomitmen menghasilkan karya inovatif dan berkontribusi untuk kemajuan teknologi di Indonesia.</p>
-        <div class="cta">
-            <a href="#about">Pelajari Lebih</a>
-        </div>
-    </section>
+	<!-- ========================================
+		 MEMBERS SECTION
+	======================================== -->
+	<section id="members" class="section" style="background: var(--members-gradient-start); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 3rem 2rem;">
+		<h2 class="section-title">Anggota Kami</h2>
+		<p class="section-subtitle">Orang-orang hebat yang berada di balik setiap pencapaian organisasi.</p>
+		<div class="members-grid">
 
-    <!-- ========================================
-         MEMBERS SECTION - Edit data anggota
-         Format: Inisial Avatar, Nama, Jabatan, Deskripsi
-    ======================================== -->
-    <section id="members" class="section" style="background: #e8e0d1; border-top: 1px solid #c8bda9; border-bottom: 1px solid #c8bda9; padding: 3rem 2rem;">
-        <h2 class="section-title">Anggota Kami</h2>
-        <p class="section-subtitle">Orang-orang hebat yang berada di balik setiap pencapaian organisasi.</p>
-        <div class="members-grid">
+			<div class="member-card">
+				<div class="member-avatar">AI</div>
+				<div class="member-body">
+					<div class="member-number">Giyama/2025/001</div>
+					<div class="member-name">Ahmad Ihsan</div>
+					<div class="member-role">Ketua Organisasi</div>
+					<div class="member-desc">Mahasiswa Teknik Informatika yang memiliki pengalaman memimpin tim pengembangan aplikasi web dan mobile selama 3 tahun.</div>
+				</div>
+			</div>
 
-            <div class="member-card">
-                <div class="member-avatar">AI</div>
-                <div class="member-body">
-                    <div class="member-number">Giyama/2025/001</div>
-                    <div class="member-name">Ahmad Ihsan</div>
-                    <div class="member-role">Ketua Organisasi</div>
-                    <div class="member-desc">Mahasiswa Teknik Informatika yang memiliki pengalaman memimpin tim pengembangan aplikasi web dan mobile selama 3 tahun.</div>
-                </div>
-            </div>
+			<div class="member-card">
+				<div class="member-avatar">BN</div>
+				<div class="member-body">
+					<div class="member-number">Giyama/2025/002</div>
+					<div class="member-name">Bella Nadira</div>
+					<div class="member-role">Wakil Ketua</div>
+					<div class="member-desc">Spesialis UI/UX Design dengan portfolio lebih dari 20 proyek desain untuk startup dan perusahaan lokal.</div>
+				</div>
+			</div>
 
-            <div class="member-card">
-                <div class="member-avatar">BN</div>
-                <div class="member-body">
-                    <div class="member-number">Giyama/2025/002</div>
-                    <div class="member-name">Bella Nadira</div>
-                    <div class="member-role">Wakil Ketua</div>
-                    <div class="member-desc">Spesialis UI/UX Design dengan portfolio lebih dari 20 proyek desain untuk startup dan perusahaan lokal.</div>
-                </div>
-            </div>
+			<div class="member-card">
+				<div class="member-avatar">CR</div>
+				<div class="member-body">
+					<div class="member-number">Giyama/2025/003</div>
+					<div class="member-name">Candra Rizky</div>
+					<div class="member-role">Sekretaris</div>
+					<div class="member-desc">Mengelola administrasi organisasi dan koordinasi event, aktif di kepanitiaan tingkat universitas.</div>
+				</div>
+			</div>
 
-            <div class="member-card">
-                <div class="member-avatar">CR</div>
-                <div class="member-body">
-                    <div class="member-number">Giyama/2025/003</div>
-                    <div class="member-name">Candra Rizky</div>
-                    <div class="member-role">Sekretaris</div>
-                    <div class="member-desc">Mengelola administrasi organisasi dan koordinasi event, aktif di kepanitiaan tingkat universitas.</div>
-                </div>
-            </div>
+			<div class="member-card">
+				<div class="member-avatar">DP</div>
+				<div class="member-body">
+					<div class="member-number">Giyama/2025/004</div>
+					<div class="member-name">Dian Permata</div>
+					<div class="member-role">Bendahara</div>
+					<div class="member-desc">Ahli keuangan yang mengatur anggaran dan sponsorship, berpengalaman di organisasi kemahasiswaan.</div>
+				</div>
+			</div>
 
-            <div class="member-card">
-                <div class="member-avatar">DP</div>
-                <div class="member-body">
-                    <div class="member-number">Giyama/2025/004</div>
-                    <div class="member-name">Dian Permata</div>
-                    <div class="member-role">Bendahara</div>
-                    <div class="member-desc">Ahli keuangan yang mengatur anggaran dan sponsorship, berpengalaman di organisasi kemahasiswaan.</div>
-                </div>
-            </div>
+			<div class="member-card">
+				<div class="member-avatar">EH</div>
+				<div class="member-body">
+					<div class="member-number">Giyama/2025/005</div>
+					<div class="member-name">Eka Hidayat</div>
+					<div class="member-role">K Divisi Teknologi</div>
+					<div class="member-desc">Full-stack developer dengan keahlian Laravel, React, dan Flutter. Juara 2 Hackathon Nasional 2025.</div>
+				</div>
+			</div>
 
-            <div class="member-card">
-                <div class="member-avatar">EH</div>
-                <div class="member-body">
-                    <div class="member-number">Giyama/2025/005</div>
-                    <div class="member-name">Eka Hidayat</div>
-                    <div class="member-role">K Divisi Teknologi</div>
-                    <div class="member-desc">Full-stack developer dengan keahlian Laravel, React, dan Flutter. Juara 2 Hackathon Nasional 2025.</div>
-                </div>
-            </div>
+			<div class="member-card">
+				<div class="member-avatar">FA</div>
+				<div class="member-body">
+					<div class="member-number">Giyama/2025/006</div>
+					<div class="member-name">Fitri Aulia</div>
+					<div class="member-role">K Divisi Desain</div>
+					<div class="member-desc">Desainer grafis profesional, berpengalaman membuat branding dan konten visual untuk berbagai komunitas.</div>
+				</div>
+			</div>
 
-            <div class="member-card">
-                <div class="member-avatar">FA</div>
-                <div class="member-body">
-                    <div class="member-number">Giyama/2025/006</div>
-                    <div class="member-name">Fitri Aulia</div>
-                    <div class="member-role">K Divisi Desain</div>
-                    <div class="member-desc">Desainer grafis profesional, berpengalaman membuat branding dan konten visual untuk berbagai komunitas.</div>
-                </div>
-            </div>
+			<div class="member-card">
+				<div class="member-avatar">GH</div>
+				<div class="member-body">
+					<div class="member-number">Giyama/2025/007</div>
+					<div class="member-name">Galih Prasetyo</div>
+					<div class="member-role">K Divisi Humas</div>
+					<div class="member-desc">Menangani hubungan masyarakat, media sosial, dan kerjasama eksternal dengan berbagai stakeholder.</div>
+				</div>
+			</div>
 
-            <div class="member-card">
-                <div class="member-avatar">GH</div>
-                <div class="member-body">
-                    <div class="member-number">Giyama/2025/007</div>
-                    <div class="member-name">Galih Prasetyo</div>
-                    <div class="member-role">K Divisi Humas</div>
-                    <div class="member-desc">Menangani hubungan masyarakat, media sosial, dan kerjasama eksternal dengan berbagai stakeholder.</div>
-                </div>
-            </div>
+			<div class="member-card">
+				<div class="member-avatar">HN</div>
+				<div class="member-body">
+					<div class="member-number">Giyama/2025/008</div>
+					<div class="member-name">Hana Nurhaliza</div>
+					<div class="member-role">Staf Ahli</div>
+					<div class="member-desc">Mahasiswa Ilmu Komputer yang aktif mengajar programming dasar untuk anggota baru setiap semester.</div>
+				</div>
+			</div>
 
-            <div class="member-card">
-                <div class="member-avatar">HN</div>
-                <div class="member-body">
-                    <div class="member-number">Giyama/2025/008</div>
-                    <div class="member-name">Hana Nurhaliza</div>
-                    <div class="member-role">Staf Ahli</div>
-                    <div class="member-desc">Mahasiswa Ilmu Komputer yang aktif mengajar programming dasar untuk anggota baru setiap semester.</div>
-                </div>
-            </div>
+		</div>
+	</section>
 
-        </div>
-    </section>
+	<!-- ========================================
+		 ACHIEVEMENTS SECTION
+	======================================== -->
+	<section id="achievements" class="section">
+		<h2 class="section-title">Prestasi Kami</h2>
+		<p class="section-subtitle">Bukti dedikasi dan kerja keras organisasi dalam mencapai berbagai penghargaan.</p>
+		<div class="achievements-grid">
 
-    <!-- ========================================
-         ACHIEVEMENTS SECTION - Edit data prestasi
-    ======================================== -->
-    <section id="achievements" class="section">
-        <h2 class="section-title">Prestasi Kami</h2>
-        <p class="section-subtitle">Bukti dedikasi dan kerja keras organisasi dalam mencapai berbagai penghargaan.</p>
-        <div class="achievements-grid">
+			<div class="achievement-card">
+				<div class="achievement-content">
+					<h4>Juara 1 - Nasional Innovation Challenge 2025</h4>
+					<button class="achievement-btn" data-year="2025">Baca Selengkapnya</button>
+					<div class="year">2025</div>
+					<p>Kompetisi inovasi teknologi tingkat nasional yang diselenggarakan oleh Kementerian Pendidikan. Tim SIGMA membawa aplikasi manajemen sampah berbasis AI.</p>
+				</div>
+			</div>
 
-            <div class="achievement-card">
-                <div class="achievement-content">
-                    <h4>Juara 1 - Nasional Innovation Challenge 2025</h4>
-                    <button class="achievement-btn" data-year="2025">Baca Selengkapnya</button>
-                    <div class="year">2025</div>
-                    <p>Kompetisi inovasi teknologi tingkat nasional yang diselenggarakan oleh Kementerian Pendidikan. Tim SIGMA membawa aplikasi manajemen sampah berbasis AI.</p>
-                </div>
-            </div>
+			<div class="achievement-card">
+				<div class="achievement-content">
+					<h4>Juara 2 - Hackathon Indonesia Digital 2025</h4>
+					<button class="achievement-btn" data-year="2025">Baca Selengkapnya</button>
+					<div class="year">2025</div>
+					<p>Hackathon 48 jam dengan tema "Digital Solutions for Education". Tim berhasil membuat platform e-learning interaktif.</p>
+				</div>
+			</div>
 
-            <div class="achievement-card">
-                <div class="achievement-content">
-                    <h4>Juara 2 - Hackathon Indonesia Digital 2025</h4>
-                    <button class="achievement-btn" data-year="2025">Baca Selengkapnya</button>
-                    <div class="year">2025</div>
-                    <p>Hackathon 48 jam dengan tema "Digital Solutions for Education". Tim berhasil membuat platform e-learning interaktif.</p>
-                </div>
-            </div>
+			<div class="achievement-card">
+				<div class="achievement-content">
+					<h4>Juara 3 - Lomba Cipta Aplikasi 2024</h4>
+					<button class="achievement-btn" data-year="2024">Baca Selengkapnya</button>
+					<div class="year">2024</div>
+					<p>Lomba pembuatan aplikasi tingkat provinsi yang diikuti 50+ tim dari berbagai universitas ternama.</p>
+				</div>
+			</div>
 
-            <div class="achievement-card">
-                <div class="achievement-content">
-                    <h4>Juara 3 - Lomba Cipta Aplikasi 2024</h4>
-                    <button class="achievement-btn" data-year="2024">Baca Selengkapnya</button>
-                    <div class="year">2024</div>
-                    <p>Lomba pembuatan aplikasi tingkat provinsi yang diikuti 50+ tim dari berbagai universitas ternama.</p>
-                </div>
-            </div>
+			<div class="achievement-card">
+				<div class="achievement-content">
+					<h4>Best Innovation Award - Tech Fest 2025</h4>
+					<button class="achievement-btn" data-year="2025">Baca Selengkapnya</button>
+					<div class="year">2025</div>
+					<p>Penghargaan inovasi terbaik dalam acara festival teknologi yang diselenggarakan universitas negeri ternama.</p>
+				</div>
+			</div>
 
-            <div class="achievement-card">
-                <div class="achievement-content">
-                    <h4>Best Innovation Award - Tech Fest 2025</h4>
-                    <button class="achievement-btn" data-year="2025">Baca Selengkapnya</button>
-                    <div class="year">2025</div>
-                    <p>Penghargaan inovasi terbaik dalam acara festival teknologi yang diselenggarakan universitas negeri ternama.</p>
-                </div>
-            </div>
+			<div class="achievement-card">
+				<div class="achievement-content">
+					<h4>1000 Startup Digital - Top 100</h4>
+					<button class="achievement-btn" data-year="2024">Baca Selengkapnya</button>
+					<div class="year">2024</div>
+					<p>Berhasil masuk 100 besar program pencetakan startup digital yang diselenggarakan Kominfo Indonesia.</p>
+				</div>
+			</div>
 
-            <div class="achievement-card">
-                <div class="achievement-content">
-                    <h4>1000 Startup Digital - Top 100</h4>
-                    <button class="achievement-btn" data-year="2024">Baca Selengkapnya</button>
-                    <div class="year">2024</div>
-                    <p>Berhasil masuk 100 besar program pencetakan startup digital yang diselenggarakan Kominfo Indonesia.</p>
-                </div>
-            </div>
+			<div class="achievement-card">
+				<div class="achievement-content">
+					<h4>Sertifikasi Internasional - Google IT Support</h4>
+					<button class="achievement-btn" data-year="2025">Baca Selengkapnya</button>
+					<div class="year">2025</div>
+					<p>15 anggota berhasil mendapatkan sertifikasi Google IT Support sebagai bukti kompetensi di bidang teknologi informasi.</p>
+				</div>
+			</div>
 
-            <div class="achievement-card">
-                <div class="achievement-content">
-                    <h4>Sertifikasi Internasional - Google IT Support</h4>
-                    <button class="achievement-btn" data-year="2025">Baca Selengkapnya</button>
-                    <div class="year">2025</div>
-                    <p>15 anggota berhasil mendapatkan sertifikasi Google IT Support sebagai bukti kompetensi di bidang teknologi informasi.</p>
-                </div>
-            </div>
+			<div class="achievement-card">
+				<div class="achievement-content">
+					<h4>Most Active Community - Developer Circle</h4>
+					<button class="achievement-btn" data-year="2024">Baca Selengkapnya</button>
+					<div class="year">2024</div>
+					<p>Diakui oleh Facebook Developer Circle sebagai komunitas teknologi paling aktif di regional masing-masing.</p>
+				</div>
+			</div>
 
-            <div class="achievement-card">
-                <div class="achievement-content">
-                    <h4>Most Active Community - Developer Circle</h4>
-                    <button class="achievement-btn" data-year="2024">Baca Selengkapnya</button>
-                    <div class="year">2024</div>
-                    <p>Diakui oleh Facebook Developer Circle sebagai komunitas teknologi paling aktif di regional masing-masing.</p>
-                </div>
-            </div>
+			<div class="achievement-card">
+				<div class="achievement-content">
+					<h4>Best Paper - Seminar Nasional Informatika</h4>
+					<button class="achievement-btn" data-year="2024">Baca Selengkapnya</button>
+					<div class="year">2024</div>
+					<p>Publikasi jurnal ilmiah tentang implementasi machine learning untuk klasifikasi penyakit tanaman.</p>
+				</div>
+			</div>
 
-            <div class="achievement-card">
-                <div class="achievement-content">
-                    <h4>Best Paper - Seminar Nasional Informatika</h4>
-                    <button class="achievement-btn" data-year="2024">Baca Selengkapnya</button>
-                    <div class="year">2024</div>
-                    <p>Publikasi jurnal ilmiah tentang implementasi machine learning untuk klasifikasi penyakit tanaman.</p>
-                </div>
-            </div>
+		</div>
+	</section>
 
-        </div>
-    </section>
-
-    <!-- ========================================
-         ABOUT SECTION - Di atas footer
-    ======================================== -->
-    <section id="about" class="section">
-        <h2 class="section-title">Tentang Kami</h2>
-        <p class="section-subtitle">Kenali lebih dalam tentang organisasi kami, visi, misi, dan nilai-nilai yang kami pegang.</p>
-        <div class="about-grid">
-            <div class="about-text">
-                <h3>Organisasi SIGMA</h3>
-                <div class="about-slider" id="aboutSlider">
-                    <div class="about-slides">
-                        <div class="about-slide">
-                            <div class="about-slide-title">Tentang Kami</div>
-                            <p>SIGMA adalah organisasi mahasiswa yang mengembangkan teknologi dan informasi.</p>
-                        </div>
-                        <div class="about-slide">
-                            <div class="about-slide-title">Visi & Misi</div>
-                            <p><strong>Visi:</strong> Menjadi organisasi teknologi terdepan yang menghasilkan karya inovatif dan berdampak positif.</p>
-                            <p><strong>Misi:</strong> Membangun ekosistem pembelajaran teknologi yang kolaboratif dan inklusif bagi seluruh anggota.</p>
-                        </div>
-                    </div>
-                    <div class="slider-nav">
-                        <button type="button" class="slider-arrow" onclick="sliderPrev()">&#8249;</button>
-                        <div class="slider-dots">
-                            <button type="button" class="slider-dot active" onclick="goToSlide(0)" aria-label="Tentang Kami"></button>
-                            <button type="button" class="slider-dot" onclick="goToSlide(1)" aria-label="Visi dan Misi"></button>
-                        </div>
-                        <button type="button" class="slider-arrow" onclick="sliderNext()">&#8250;</button>
-                    </div>
-                </div>
-            </div>
-            <div class="about-stats">
-                <div class="stat-box">
-                    <div class="stat-number">25+</div>
-                    <div class="stat-label">Anggota Aktif</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">12</div>
-                    <div class="stat-label">Proyek Selesai</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">8</div>
-                    <div class="stat-label">Penghargaan</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">3</div>
-                    <div class="stat-label">Tahun Berdiri</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">15+</div>
-                    <div class="stat-label">Kerjasama</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">Dedikasi</div>
-                </div>
-            </div>
-        </div>
-    </section>
+	<!-- ========================================
+		 ABOUT SECTION
+	======================================== -->
+	<section id="about" class="section">
+		<h2 class="section-title">Tentang Kami</h2>
+		<p class="section-subtitle">Kenali lebih dalam tentang organisasi kami, visi, misi, dan nilai-nilai yang kami pegang.</p>
+		<div class="about-grid">
+			<div class="about-text">
+				<h3>Organisasi SIGMA</h3>
+				<div class="about-slider" id="aboutSlider">
+					<div class="about-slides">
+						<div class="about-slide">
+							<div class="about-slide-title">Tentang Kami</div>
+							<p>SIGMA adalah organisasi mahasiswa yang mengembangkan teknologi dan informasi.</p>
+						</div>
+						<div class="about-slide">
+							<div class="about-slide-title">Visi &amp; Misi</div>
+							<p><strong>Visi:</strong> Menjadi organisasi teknologi terdepan yang menghasilkan karya inovatif dan berdampak positif.</p>
+							<p><strong>Misi:</strong> Membangun ekosistem pembelajaran teknologi yang kolaboratif dan inklusif bagi seluruh anggota.</p>
+						</div>
+					</div>
+					<div class="slider-nav">
+						<button type="button" class="slider-arrow" id="sliderPrev" aria-label="Slide sebelumnya">&#8249;</button>
+						<div class="slider-dots">
+							<button type="button" class="slider-dot active" id="dot0" aria-label="Tentang Kami" data-slide="0"></button>
+							<button type="button" class="slider-dot" id="dot1" aria-label="Visi dan Misi" data-slide="1"></button>
+						</div>
+						<button type="button" class="slider-arrow" id="sliderNext" aria-label="Slide berikutnya">&#8250;</button>
+					</div>
+				</div>
+			</div>
+			<div class="about-stats">
+				<div class="stat-box">
+					<div class="stat-number">25+</div>
+					<div class="stat-label">Anggota Aktif</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-number">12</div>
+					<div class="stat-label">Proyek Selesai</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-number">8</div>
+					<div class="stat-label">Penghargaan</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-number">3</div>
+					<div class="stat-label">Tahun Berdiri</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-number">15+</div>
+					<div class="stat-label">Kerjasama</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-number">100%</div>
+					<div class="stat-label">Dedikasi</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
 
-    <!-- ========================================
-         POPUP - Detail Prestasi
-    ======================================== -->
-    <div class="achievement-popup" id="achievementPopup">
-        <div class="popup-content">
-            <button class="popup-close" id="popupClose">&times;</button>
-            <h3 class="popup-title" id="popupTitle"></h3>
-            <div class="popup-year" id="popupYear"></div>
-            <p class="popup-description" id="popupDescription"></p>
-            <button class="popup-close-btn" id="popupConfirm">Tutup</button>
-        </div>
-    </div>
+	<!-- ========================================
+		 POPUP - Detail Prestasi
+	======================================== -->
+	<div class="achievement-popup" id="achievementPopup" role="dialog" aria-modal="true" aria-label="Detail prestasi">
+		<div class="popup-content">
+			<button class="popup-close" id="popupClose" aria-label="Tutup popup">&times;</button>
+			<h3 class="popup-title" id="popupTitle"></h3>
+			<div class="popup-year" id="popupYear"></div>
+			<p class="popup-description" id="popupDescription"></p>
+			<button class="popup-close-btn" id="popupConfirm">Tutup</button>
+		</div>
+	</div>
 
-    <!-- ========================================
-         FOOTER - Edit teks footer, copyright
-    ======================================== -->
-    <footer>
-        <p>&copy; 2026 Organisasi SIGMA. All rights reserved.</p>
-        <p style="margin-top: 0.5rem;">Designed and maintained by <a href="#">Ajawx.xyz</a></p>
-    </footer>
+	<!-- ========================================
+		 FOOTER
+	======================================== -->
+	<footer>
+		<p>&copy; 2026 Organisasi SIGMA. All rights reserved.</p>
+		<p style="margin-top: 0.5rem;">Designed and maintained by <a href="https://ajawx.xyz">Ajawx.xyz</a></p>
+	</footer>
 
 
-    <!-- Slider JS -->
-    <script>
-    // About Slider
-    const sliderEl = document.getElementById('aboutSlider');
-    const slides = sliderEl.querySelector('.about-slides');
-    const slideItems = [...sliderEl.querySelectorAll('.about-slide')];
-    const dots = [...sliderEl.querySelectorAll('.slider-dot')];
-    let sliderIndex = 0;
+	<!-- ===== SCRIPTS ===== -->
+	<script>
+	(function () {
+		'use strict';
 
-    function updateSlider() {
-      slides.style.transform = 'translateX(-' + (sliderIndex * 100) + '%)';
-      dots.forEach(function(dot, index) {
-        dot.classList.toggle('active', index === sliderIndex);
-      });
-    }
+		// ===== HELPER: sync slider index =====
+		function syncSlider(sliderEl) {
+			const slides = sliderEl.querySelector('.about-slides');
+			const slideItems = [...sliderEl.querySelectorAll('.about-slide')];
+			const dots = [...sliderEl.querySelectorAll('.slider-dot')];
+			const prevBtn = sliderEl.querySelector('#sliderPrev');
+			const nextBtn = sliderEl.querySelector('#sliderNext');
+			let sliderIndex = 0;
 
-    function goToSlide(index) { sliderIndex = index; updateSlider(); }
-    function sliderNext() { sliderIndex = (sliderIndex + 1) % slideItems.length; updateSlider(); }
-    function sliderPrev() { sliderIndex = (sliderIndex - 1 + slideItems.length) % slideItems.length; updateSlider(); }
+			function updateSlider() {
+				slides.style.transform = 'translateX(-' + (sliderIndex * 100) + '%)';
+				dots.forEach(function (dot, index) { dot.classList.toggle('active', index === sliderIndex); });
+				if (prevBtn) { prevBtn.disabled = sliderIndex === 0; }
+				if (nextBtn) { nextBtn.disabled = sliderIndex === slideItems.length - 1; }
+			}
 
-    setInterval(sliderNext, 3000);
+			function goToSlide(index) {
+				sliderIndex = (index + slideItems.length) % slideItems.length;
+				updateSlider();
+			}
+			function sliderNext() { goToSlide(sliderIndex + 1); }
+			function sliderPrev() { goToSlide(sliderIndex - 1); }
 
-    // Hero Tagline Rotator
-    (function() {
-      const taglines = document.querySelectorAll('.hero .tagline');
-      let currentTag = 0;
-      setInterval(function() {
-        taglines[currentTag].classList.remove('active');
-        taglines[currentTag].classList.add('exit-up');
-        currentTag = (currentTag + 1) % taglines.length;
-        taglines[currentTag].classList.add('active');
-        taglines[currentTag].classList.remove('exit-up');
-        setTimeout(function() {
-          taglines.forEach(function(t, i) {
-            if (i !== currentTag) {
-              t.classList.remove('exit-up');
-            }
-          });
-        }, 500);
-      }, 3000);
-    })();
-        // Achievement Popup
-    (function() {
-        const cards = document.querySelectorAll('.achievement-btn');
-        const popup = document.getElementById('achievementPopup');
-        const popupTitle = document.getElementById('popupTitle');
-        const popupYear = document.getElementById('popupYear');
-        const popupDescription = document.getElementById('popupDescription');
-        const popupClose = document.getElementById('popupClose');
-        const popupConfirm = document.getElementById('popupConfirm');
+			return { goToSlide: goToSlide, sliderNext: sliderNext, sliderPrev: sliderPrev, updateSlider: updateSlider, slideItems: slideItems, dots: dots, sliderIndex: sliderIndex };
+		}
 
-        const achievements = [
-            { title: 'Juara 1 - Nasional Innovation Challenge 2025', year: '2025', description: 'Kompetisi inovasi teknologi tingkat nasional yang diselenggarakan oleh Kementerian Pendidikan. Tim SIGMA membawa aplikasi manajemen sampah berbasis AI.' },
-            { title: 'Juara 2 - Hackathon Indonesia Digital 2025', year: '2025', description: 'Hackathon 48 jam dengan tema "Digital Solutions for Education". Tim berhasil membuat platform e-learning interaktif.' },
-            { title: 'Juara 3 - Lomba Cipta Aplikasi 2024', year: '2024', description: 'Lomba pembuatan aplikasi tingkat provinsi yang diikuti 50+ tim dari berbagai universitas ternama.' },
-            { title: 'Best Innovation Award - Tech Fest 2025', year: '2025', description: 'Penghargaan inovasi terbaik dalam acara festival teknologi yang diselenggarakan universitas negeri ternama.' },
-            { title: '1000 Startup Digital - Top 100', year: '2024', description: 'Berhasil masuk 100 besar program pencetakan startup digital yang diselenggarakan Kominfo Indonesia.' },
-            { title: 'Sertifikasi Internasional - Google IT Support', year: '2025', description: '15 anggota berhasil mendapatkan sertifikasi Google IT Support sebagai bukti kompetensi di bidang teknologi informasi.' },
-            { title: 'Most Active Community - Developer Circle', year: '2024', description: 'Diakui oleh Facebook Developer Circle sebagai komunitas teknologi paling aktif di regional masing-masing.' },
-            { title: 'Best Paper - Seminar Nasional Informatika', year: '2024', description: 'Publikasi jurnal ilmiah tentang implementasi machine learning untuk klasifikasi penyakit tanaman.' }
-        ];
+		// ===== 1. ABOUT SLIDER =====
+		(function () {
+			const sliderEl = document.getElementById('aboutSlider');
+			if (!sliderEl) return;
+			const state = syncSlider(sliderEl);
 
-        function openPopup(index) {
-            const a = achievements[index];
-            if (!a) return;
-            popupTitle.textContent = a.title;
-            popupYear.textContent = 'Tahun: ' + a.year;
-            popupDescription.textContent = a.description;
-            popup.classList.add('active');
-        }
+			let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			let isActive = true;
 
-        function closePopup() {
-            popup.classList.remove('active');
-        }
+			// Pause slider on hover / focus (wheel/focus change keeps it running)
+			const sliderParent = sliderEl.parentElement;
+			const pauseSlider = function () { isActive = false; };
+			const playSlider = function () { isActive = true; };
+			if (sliderParent) {
+				sliderParent.addEventListener('mouseenter', pauseSlider);
+				sliderParent.addEventListener('mouseleave', playSlider);
+				sliderParent.addEventListener('focusin', pauseSlider);
+				sliderParent.addEventListener('focusout', playSlider);
+			}
 
-        cards.forEach(function(btn, index) {
-            btn.addEventListener('click', function() {
-                openPopup(index);
-            });
-        });
+			// Keyboard: arrows + dots
+			sliderEl.addEventListener('keydown', function (e) {
+				if (e.key === 'ArrowLeft') { state.sliderPrev(); }
+				if (e.key === 'ArrowRight') { state.sliderNext(); }
+			});
+			state.dots.forEach(function (dot, index) {
+				dot.addEventListener('click', function () { state.goToSlide(index); });
+			});
+			sliderEl.addEventListener('click', function (e) {
+				if (e.target.closest('[data-slide]')) {
+					const idx = parseInt(e.target.closest('[data-slide]').dataset.slide, 10);
+					state.goToSlide(idx);
+				}
+			});
 
-        popupClose.addEventListener('click', closePopup);
-        popupConfirm.addEventListener('click', closePopup);
+			// Auto-play (respects reduced motion + manual controls)
+			setInterval(function () {
+				if (reducedMotion) return;
+				if (!isActive) return;
+				state.sliderNext();
+			}, 3000);
 
-        popup.addEventListener('click', function(e) {
-            if (e.target === popup) {
-                closePopup();
-            }
-        });
+			// Drop idle when window regains focus (so paused slider resumes cleanly)
+			document.addEventListener('visibilitychange', function () {
+				if (!document.hidden && isActive) { state.sliderNext(); }
+			});
 
-        // Keyboard support
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closePopup();
-            }
-        });
-    })();
+			state.updateSlider();
+		})();
 
-</script>
+		// ===== 2. HERO TAGLINE ROTATOR =====
+		(function () {
+			const taglines = document.querySelectorAll('.hero .tagline');
+			if (taglines.length < 2) return;
+			let currentTag = 0;
+			let timer = null;
+			let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			let paused = false;
+
+			const interval = 6000;
+
+			function show(next) {
+				const len = taglines.length;
+				currentTag = (next + len) % len;
+				taglines.forEach(function (t, i) {
+					t.classList.remove('active', 'exit-up');
+					if (i === currentTag) { t.classList.add('active'); }
+				});
+			}
+
+			function stop() { if (timer !== null) { window.clearInterval(timer); timer = null; } }
+			function play() {
+				stop();
+				if (reducedMotion || paused) return;
+				timer = window.setInterval(function () { show(currentTag + 1); }, interval);
+			}
+
+			// Pause on hover / focus and offer a play/pause toggle
+			const hero = document.querySelector('.hero');
+			hero.addEventListener('mouseenter', function () { paused = true; });
+			hero.addEventListener('mouseleave', function () { paused = false; });
+			hero.addEventListener('focusin', function () { paused = true; });
+			hero.addEventListener('focusout', function () { paused = false; });
+
+			// Play/ pause toggle button inside the hero
+			const toggle = document.createElement('button');
+			toggle.type = 'button';
+			toggle.className = 'tagline-toggle';
+			toggle.setAttribute('aria-label', 'Berhenti / Lanjutkan rotasi tagline');
+			toggle.setAttribute('aria-pressed', 'true');
+			toggle.textContent = '⏸';
+			hero.appendChild(toggle);
+			toggle.addEventListener('click', function () {
+				paused = !paused;
+				this.setAttribute('aria-pressed', paused ? 'true' : 'false');
+				this.textContent = paused ? '▶' : '⏸';
+				if (!paused) play();
+			});
+
+			// Keyboard: left/right arrows move taglines
+			hero.addEventListener('keydown', function (e) {
+				if (e.key === 'ArrowLeft') { show(currentTag - 1); stop(); play(); }
+				if (e.key === 'ArrowRight') { show(currentTag + 1); stop(); play(); }
+			});
+
+			// Respect reduced motion -> disable auto-rotate on load
+			if (reducedMotion) {
+				toggle.textContent = '●';
+				toggle.setAttribute('aria-label', 'Rotasi tagline dinonaktifkan (reduced motion)');
+				toggle.disabled = true;
+			}
+
+			play();
+
+			// Hide the toggle when reduced-motion is on
+			if (reducedMotion) { hero.querySelector('.tagline-toggle').style.display = 'none'; }
+		})();
+
+		// ===== 3. ACHIEVEMENT POPUP =====
+		(function () {
+			const cards = document.querySelectorAll('.achievement-btn');
+			const popup = document.getElementById('achievementPopup');
+			const popupTitle = document.getElementById('popupTitle');
+			const popupYear = document.getElementById('popupYear');
+			const popupDescription = document.getElementById('popupDescription');
+			const popupClose = document.getElementById('popupClose');
+			const popupConfirm = document.getElementById('popupConfirm');
+			const popupAnchor = document.getElementById('achievement-btn-anchor');
+
+			const achievements = [
+				{ title: 'Juara 1 - Nasional Innovation Challenge 2025', year: '2025', description: 'Kompetisi inovasi teknologi tingkat nasional yang diselenggarakan oleh Kementerian Pendidikan. Tim SIGMA membawa aplikasi manajemen sampah berbasis AI.' },
+				{ title: 'Juara 2 - Hackathon Indonesia Digital 2025', year: '2025', description: 'Hackathon 48 jam dengan tema "Digital Solutions for Education". Tim berhasil membuat platform e-learning interaktif.' },
+				{ title: 'Juara 3 - Lomba Cipta Aplikasi 2024', year: '2024', description: 'Lomba pembuatan aplikasi tingkat provinsi yang diikuti 50+ tim dari berbagai universitas ternama.' },
+				{ title: 'Best Innovation Award - Tech Fest 2025', year: '2025', description: 'Penghargaan inovasi terbaik dalam acara festival teknologi yang diselenggarakan universitas negeri ternama.' },
+				{ title: '1000 Startup Digital - Top 100', year: '2024', description: 'Berhasil masuk 100 besar program pencetakan startup digital yang diselenggarakan Kominfo Indonesia.' },
+				{ title: 'Sertifikasi Internasional - Google IT Support', year: '2025', description: '15 anggota berhasil mendapatkan sertifikasi Google IT Support sebagai bukti kompetensi di bidang teknologi informasi.' },
+				{ title: 'Most Active Community - Developer Circle', year: '2024', description: 'Diakui oleh Facebook Developer Circle sebagai komunitas teknologi paling aktif di regional masing-masing.' },
+				{ title: 'Best Paper - Seminar Nasional Informatika', year: '2024', description: 'Publikasi jurnal ilmiah tentang implementasi machine learning untuk klasifikasi penyakit tanaman.' }
+			];
+
+			function openPopup(index) {
+				const a = achievements[index];
+				if (!a) return;
+				popupTitle.textContent = a.title;
+				popupYear.textContent = 'Tahun: ' + a.year;
+				popupDescription.textContent = a.description;
+				popup.classList.add('active');
+				popup.setAttribute('aria-expanded', 'true');
+				// Move focus into the popup for keyboard users
+				setTimeout(function () { popupConfirm.focus(); }, 50);
+			}
+
+			function closePopup() {
+				popup.classList.remove('active');
+				popup.setAttribute('aria-expanded', 'false');
+				popupFocusReturn.focus();
+			}
+
+			// Remember where focus was before the popup opened
+			const popupFocusReturn = document.getElementById('achievement-btn-anchor') || cards[0];
+
+			cards.forEach(function (btn, index) {
+				btn.setAttribute('aria-expanded', 'false');
+				btn.setAttribute('aria-controls', 'achievementPopup');
+				btn.addEventListener('click', function () { openPopup(index); });
+			});
+
+			popupClose.addEventListener('click', closePopup);
+			popupConfirm.addEventListener('click', closePopup);
+
+			// Click on the backdrop (outside the content) closes
+			popup.addEventListener('click', function (e) {
+				if (e.target === popup) { closePopup(); }
+			});
+
+			// Focus trap inside popup
+			document.addEventListener('keydown', function (e) {
+				if (e.key !== 'Tab') return;
+				const isOpen = popup.classList.contains('active');
+				if (!isOpen) return;
+				const focusable = popup.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+				if (!focusable.length) return;
+				const first = focusable[0];
+				const last = focusable[focusable.length - 1];
+				if (e.shiftKey && document.activeElement === first) {
+					e.preventDefault();
+					last.focus();
+				} else if (!e.shiftKey && document.activeElement === last) {
+					e.preventDefault();
+					first.focus();
+				}
+			});
+
+			// Escape closes
+			document.addEventListener('keydown', function (e) {
+				if (e.key === 'Escape' && popup.classList.contains('active')) { closePopup(); }
+			});
+			})();
+			})();
+	</script>
 
 </body>
 </html>
 
+</body>
+</html>
