@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(LandingContentSeeder::class);
+        $this->call(ContentDataSeeder::class);
     }
 }

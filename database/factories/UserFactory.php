@@ -33,6 +33,19 @@ class UserFactory extends Factory
     }
 
     /**
+     * User yang boleh masuk panel admin.
+     *
+     * Sengaja berupa state, bukan default: test lain yang butuh user biasa
+     * harus tetap bisa membuat akun non-admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_admin' => true,
+        ]);
+    }
+
+    /**
      * Indicate that the model's email address should be unverified.
      */
     public function unverified(): static
