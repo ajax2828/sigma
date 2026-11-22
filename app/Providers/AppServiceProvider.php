@@ -20,10 +20,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Aplikasi diakses lewat HTTPS (reverse proxy cloud), tapi Laravel
-        // tidak menerima header X-Forwarded-Proto. Tanpa ini route() bikin
-        // URL http:// → form POST kena redirect 301 HTTPS dan error validasi
-        // hilang, sehingga halaman terasa "stuck".
-        URL::forceScheme('https');
+        // Produksi di belakang reverse proxy cloud tidak mengirim
+        // X-Forwarded-Proto, jadi harus dipaksa ke HTTPS. Local tetap
+        // mengikuti skema request (HTTP di :8080, HTTPS di :8443).
+        // APP_URL http://localhost:8000 tidak memicu forceScheme di lokal.
+        if (! app()->environment('local')
+            || str_starts_with((string) config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+        }
     }
 }

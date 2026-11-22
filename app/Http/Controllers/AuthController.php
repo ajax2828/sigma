@@ -96,6 +96,51 @@ class AuthController extends Controller
             ->with('status', 'Akun berhasil dibuat. Selamat datang, ' . $user->name . '!');
     }
 
+    public function showForgotPassword(): View
+    {
+        return view('admin.auth.forgot-password');
+    }
+
+    public function resetByEmail(Request $request): RedirectResponse
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $throttleKey = 'password.reset|' . Str::lower($credentials['email']) . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            throw ValidationException::withMessages([
+                'email' => "Terlalu banyak permintaan. Coba lagi dalam {$seconds} detik.",
+            ]);
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (! $user) {
+            return back()->withInput($request->only('email'))
+                ->withErrors(['email' => 'Email tidak ditemukan.']);
+        }
+
+        // Tidak ada email/link yang dikirim, jadi password sementara dibuat di
+        // sini dan ditampilkan sekali. Cast 'hashed' pada model yang menyimpan
+        // versi hash-nya.
+        $temporaryPassword = Str::random(12);
+
+        $user->forceFill([
+            'password' => $temporaryPassword,
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        return back()->withInput($request->only('email'))
+            ->with('status', 'Password berhasil direset.')
+            ->with('temporary_password', $temporaryPassword);
+    }
+
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();

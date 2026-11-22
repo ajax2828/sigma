@@ -25,12 +25,15 @@
         .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
         .remember { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #64748b; }
         .remember input { width: 16px; height: 16px; accent-color: #667eea; }
+        .forgot { font-size: 0.875rem; color: #667eea; font-weight: 600; text-decoration: none; }
+        .forgot:hover { text-decoration: underline; }
         .btn-login { width: 100%; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(102,126,234,0.4); }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102,126,234,0.5); }
         .alt { text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: #64748b; }
         .alt a { color: #667eea; font-weight: 600; text-decoration: none; }
         .alt a:hover { text-decoration: underline; }
         .error { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 0.875rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.875rem; }
+        .status { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 0.875rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.875rem; line-height: 1.5; }
         @media (max-width: 768px) {
             .left-panel { display: none; }
             .right-panel { padding: 2rem; }
@@ -51,6 +54,9 @@
             @if ($errors->any())
                 <div class="error">{{ $errors->first() }}</div>
             @endif
+            @if (session('status'))
+                <div class="status">{{ session('status') }}</div>
+            @endif
             <form method="POST" action="{{ route('login.process') }}">
                 @csrf
                 <div class="form-group">
@@ -65,6 +71,7 @@
                     <label class="remember">
                         <input type="checkbox" name="remember"> Ingat saya
                     </label>
+                    <a class="forgot" href="{{ route('password.request') }}">Lupa password?</a>
                 </div>
                 <button type="submit" class="btn-login">Masuk</button>
             </form>

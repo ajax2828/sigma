@@ -23,6 +23,10 @@ Route::middleware('guest')->group(function () {
     // di bawah yang menjaga panel tetap tertutup untuk akun biasa.
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.process');
+
+    // Lupa password: cari email di database, reset langsung tanpa kirim link.
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'resetByEmail'])->name('password.update');
 });
 
 // Panel admin beralamat /admin/dashboard. Tanpa redirect ini, mengetik
