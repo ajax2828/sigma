@@ -12,7 +12,7 @@
     </div>
 
     <div class="card">
-        <form action="{{ route('admin.posts.update', $post) }}" method="POST">
+        <form action="{{ route('admin.posts.update', $post) }}" method="POST" enctype="multipart/form-data">
             @csrf @method('PUT')
             <div class="form-group">
                 <label for="title">Title</label>
@@ -30,6 +30,15 @@
                 <label for="content">Content</label>
                 <textarea id="content" name="content" placeholder="Write your content here..." required>{{ old('content', $post->content) }}</textarea>
                 @error('content')<div class="alert alert-danger">{{ $message }}</div>@enderror
+            </div>
+            <div class="form-group">
+                <label for="image">Gambar Artikel</label>
+                @if ($post->image)
+                    <div class="f-preview mb-md"><img src="{{ $post->image }}" alt="Gambar artikel saat ini" class="f-cover"></div>
+                @endif
+                <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/webp" class="f-input f-file f-h-md">
+                <p class="f-hint-sm f-file-hint">Kosongkan untuk mempertahankan gambar lama. JPG, PNG, atau WebP, maksimal 5 MB.</p>
+                @error('image')<div class="alert alert-danger">{{ $message }}</div>@enderror
             </div>
             <div class="form-group">
                 <label for="link">Link Blog</label>

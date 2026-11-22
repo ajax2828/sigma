@@ -71,9 +71,6 @@
         .nav-toggle:hover { background: rgba(255, 255, 255, 0.06); border-color: var(--border-strong); }
         .nav-left { display: flex; align-items: center; gap: 2rem; min-width: 0; }
         .nav-right { display: flex; align-items: center; gap: 1.25rem; margin-left: auto; }
-        .notification-bell { position: relative; cursor: pointer; color: var(--text-muted); display: flex; transition: color var(--t-fast); }
-        .notification-bell:hover { color: var(--text); }
-        .notification-badge { position: absolute; top: -6px; right: -6px; background: var(--danger); color: #2b0d0d; font-size: 0.625rem; font-weight: 700; padding: 0.125rem 0.375rem; border-radius: 9999px; min-width: 18px; text-align: center; }
         .nav-logout-form { display: inline; }
         .user-profile { display: flex; align-items: center; gap: 0.625rem; cursor: pointer; }
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-deep)); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: #1a1207; flex-shrink: 0; }
@@ -206,13 +203,17 @@
         .form-actions { display: flex; gap: 0.75rem; }
         .page-actions { display: flex; gap: 0.625rem; align-items: center; flex-wrap: wrap; }
         .table { width: 100%; border-collapse: collapse; }
-        .table th { padding: 0 1.25rem 0.75rem; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); text-align: left; border-bottom: 1px solid var(--border-strong); }
+        .table th { padding: 0.875rem 1.25rem 0.75rem; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); text-align: left; border-bottom: 1px solid var(--border-strong); }
         .table td { padding: 0.875rem 1.25rem; font-size: 0.875rem; color: var(--text-muted); border-bottom: 1px solid rgba(255, 255, 255, 0.05); vertical-align: middle; }
+        .table th:last-child, .table td:last-child, .table td:nth-child(2), .table td:nth-child(4) { white-space: nowrap; }
         .table tbody tr { transition: background var(--t-fast); }
         .table tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
         .table tbody tr:last-child td { border-bottom: none; }
         .empty-state { padding: 3.5rem 1.5rem; text-align: center; }
         .empty-state p { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem; }
+        .post-cell { display: flex; align-items: flex-start; gap: 0.625rem; min-width: 0; }
+        .post-cell > div { min-width: 0; }
+        .post-thumb { width: 44px; height: 44px; flex: 0 0 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-strong); }
         .post-title { color: #fff; font-weight: 600; text-decoration: none; transition: color var(--t-fast); }
         .post-title:hover { color: var(--accent-text); }
         .post-excerpt { color: var(--text-dim); font-size: 0.75rem; margin-top: 0.25rem; }
@@ -359,7 +360,6 @@
         }
         @media (max-width: 480px) {
             .nav-right { gap: 0.625rem; }
-            .notification-bell { display: none; }
             .save-toast { top: 4.5rem; }
         }
     </style>
@@ -369,26 +369,22 @@
         <div class="nav-left">
             <a href="{{ route('admin.dashboard') }}" class="navbar-brand">SIGMA<span>.</span></a>
             <div class="navbar-nav" id="navbarNav">
-                @php($inPostsDropdown = request()->routeIs('admin.posts.*', 'admin.settings.landing*', 'admin.settings.header*', 'admin.settings.backgrounds*'))
+                @php($inPostsDropdown = request()->routeIs('admin.settings.landing*', 'admin.settings.header*', 'admin.settings.backgrounds*'))
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
                 <details class="nav-dropdown" {{ $inPostsDropdown ? 'open' : '' }}>
                     <summary class="{{ $inPostsDropdown ? 'active' : '' }}">Posts</summary>
                     <div class="nav-dropdown-menu">
-                        <a href="{{ route('admin.posts.index') }}" class="{{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">All Posts</a>
                         <a href="{{ route('admin.settings.landing') }}" class="{{ request()->routeIs('admin.settings.landing*') ? 'active' : '' }}">Landing Page</a>
                         <a href="{{ route('admin.settings.header') }}" class="{{ request()->routeIs('admin.settings.header*') ? 'active' : '' }}">Header</a>
                         <a href="{{ route('admin.settings.backgrounds', ['section' => 'hero']) }}" class="{{ request()->routeIs('admin.settings.backgrounds*') ? 'active' : '' }}">Background</a>
                     </div>
                 </details>
                 <a href="{{ route('admin.settings.members') }}" class="{{ request()->routeIs('admin.settings.members*') ? 'active' : '' }}">Member</a>
+                <a href="{{ route('admin.posts.index') }}" class="{{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">Artikel</a>
                 <a href="{{ route('admin.settings.achievements') }}" class="{{ request()->routeIs('admin.settings.achievements*') ? 'active' : '' }}">Achievements</a>
             </div>
         </div>
         <div class="nav-right">
-            <div class="notification-bell">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                <span class="notification-badge">12</span>
-            </div>
             <div class="user-profile">
                 <div class="user-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
                 <span class="user-name">Welcome, {{ auth()->user()->name }}</span>
@@ -524,7 +520,16 @@
                     const result = responseMessage(parsed, 'Perubahan berhasil disimpan.');
 
                     if (!nextMain) {
-                        showToast('Sesi admin berakhir. Silakan login kembali.', 'error');
+                        // Halaman error (mis. 500) juga tidak punya main.container.
+                        // Jangan samakan dengan sesi habis: pesennya menyesatkan.
+                        const sessionExpired = response.status === 419
+                            || (response.redirected && response.url.includes('/login'));
+                        showToast(
+                            sessionExpired
+                                ? 'Sesi admin berakhir. Silakan login kembali.'
+                                : 'Gagal menyimpan. Periksa kembali isian atau coba lagi.',
+                            'error'
+                        );
                         return;
                     }
 

@@ -24,6 +24,7 @@
         .post-tag { color: #5f574d; border: 1px solid #c8bda9; padding: 0.15rem 0.5rem; }
         h1 { font-family: 'Libre Baskerville', Georgia, serif; font-size: 2.5rem; font-weight: 700; line-height: 1.25; margin-bottom: 2rem; padding-bottom: 1.25rem; border-bottom: 2px solid #181818; }
         .post-body { color: #3f3a34; font-size: 1.0625rem; line-height: 1.9; white-space: pre-wrap; }
+        .post-image { width: 100%; max-height: 420px; object-fit: cover; margin: 0 0 2rem; border: 1px solid #c8bda9; }
 
         footer { border-top: 2px solid #181818; padding: 1.5rem 2rem; text-align: center; color: #5f574d; font-size: 0.8125rem; }
 
@@ -57,6 +58,10 @@
         </div>
 
         <h1>{{ $post->title }}</h1>
+
+        @if ($post->image)
+            <img src="{{ $post->image }}" alt="{{ $post->title }}" class="post-image">
+        @endif
 
         <div class="post-body">{{ $post->content }}</div>
     </main>

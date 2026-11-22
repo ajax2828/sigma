@@ -22,6 +22,9 @@
     </div>
 
     <div class="card">
+        @if ($post->image)
+            <div class="f-preview f-preview-wide mb-md"><img src="{{ $post->image }}" alt="{{ $post->title }}" class="f-cover"></div>
+        @endif
         <div class="post-body">{{ $post->content }}</div>
     </div>
 @endsection

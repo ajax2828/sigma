@@ -7,6 +7,7 @@ use App\Models\HeaderSlide;
 use App\Models\LandingContent;
 use App\Models\Member;
 use App\Models\Post;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class LandingPageController extends Controller
@@ -32,6 +33,7 @@ class LandingPageController extends Controller
             'title' => $achievement->title,
             'year' => $achievement->year ?? '',
             'desc' => $achievement->description ?? '',
+            'url' => route('achievements.show', $achievement),
         ])->values()->all();
 
         // Kabar terbaru: semua post published, ditampilkan sebagai rail horizontal di header.
@@ -73,7 +75,7 @@ class LandingPageController extends Controller
                 return [
                     'title' => $slide->title,
                     'text' => \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($slide->content))), 150),
-                    'image' => null,
+                    'image' => $slide->image,
                     'url' => $slide->readUrl(),
                     // Label ikut jenis kontennya: slide berita menuju artikel,
                     // bukan "Pelajari Lebih" milik hero cadangan. Label harus
@@ -93,5 +95,12 @@ class LandingPageController extends Controller
             'posts' => $posts,
             'slides' => $slides,
         ]);
+    }
+
+    public function achievementShow(Achievement $achievement): View
+    {
+        $contents = LandingContent::all()->keyBy('key');
+
+        return view('public.achievement', compact('achievement', 'contents'));
     }
 }

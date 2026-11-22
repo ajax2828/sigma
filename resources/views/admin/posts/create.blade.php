@@ -12,7 +12,7 @@
     </div>
 
     <div class="card">
-        <form action="{{ route('admin.posts.store') }}" method="POST">
+        <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label for="title">Title</label>
@@ -30,6 +30,12 @@
                 <label for="content">Content</label>
                 <textarea id="content" name="content" placeholder="Write your content here..." required>{{ old('content') }}</textarea>
                 @error('content')<div class="alert alert-danger">{{ $message }}</div>@enderror
+            </div>
+            <div class="form-group">
+                <label for="image">Gambar Artikel</label>
+                <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/webp" class="f-input f-file f-h-md">
+                <p class="f-hint-sm f-file-hint">Opsional. JPG, PNG, atau WebP, maksimal 5 MB.</p>
+                @error('image')<div class="alert alert-danger">{{ $message }}</div>@enderror
             </div>
             <div class="form-group">
                 <label for="link">Link Blog</label>

@@ -12,6 +12,9 @@ Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 // Publik: post published saja, 404 kalau draft/archived.
 Route::get('/posts/{post}', [PostController::class, 'publicShow'])->name('posts.show');
 
+// Publik: halaman baca prestasi (dari popup preview di beranda).
+Route::get('/achievements/{achievement}', [LandingPageController::class, 'achievementShow'])->name('achievements.show');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.process');

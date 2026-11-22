@@ -129,6 +129,7 @@
         .news-rail::-webkit-scrollbar-thumb { background: #4a443c; }
         .news-card { flex: 0 0 clamp(260px, 32%, 380px); scroll-snap-align: start; background: #221f1c; border: 1px solid #332f2a; border-top: 3px solid var(--accent); padding: 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; min-height: 190px; transition: background 0.2s, transform 0.2s; }
         .news-card:hover { background: #2b2723; transform: translateY(-2px); }
+        .news-card-image { width: calc(100% + 3rem); height: 140px; object-fit: cover; display: block; margin: -1.5rem -1.5rem 1rem; background: #332f2a; }
         .news-card .label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.625rem; }
         .news-card h3 { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.0625rem; font-weight: 700; line-height: 1.35; margin-bottom: 0.5rem; }
         .news-card h3 a { color: var(--paper); text-decoration: none; }
@@ -196,7 +197,8 @@
 
         /* ===== ACHIEVEMENTS: gambar atas, penjelasan bawah ===== */
         .achievements-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-        .achievement-card { display: flex; flex-direction: column; overflow: hidden; }
+        .achievement-card { display: flex; flex-direction: column; overflow: hidden; cursor: pointer; }
+        .achievement-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
         .achievement-media { position: relative; aspect-ratio: 16 / 10; background: var(--ink); display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .achievement-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
         .achievement-card:hover .achievement-media img { transform: scale(1.05); }
@@ -205,6 +207,10 @@
         .achievement-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
         .achievement-body h4 { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.0625rem; font-weight: 700; line-height: 1.35; }
         .achievement-body p { font-size: 0.8125rem; color: var(--muted); line-height: 1.65; margin-top: 0.5rem; }
+        .achievement-btn { align-self: flex-start; margin-top: auto; padding: 1.25rem 0 0; display: inline-flex; align-items: center; gap: 0.5rem; background: none; border: 0; border-bottom: 1px solid var(--accent); font-family: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); cursor: pointer; transition: color 0.2s, gap 0.2s, border-color 0.2s; }
+        .achievement-btn::after { content: '\2192'; font-size: 1rem; line-height: 1; }
+        .achievement-btn:hover { color: var(--ink); border-bottom-color: var(--ink); gap: 0.75rem; }
+        .achievement-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
         /* ===== POPUP: baca detail prestasi / artikel ===== */
         .achievement-popup, .post-popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 200; justify-content: center; align-items: center; padding: 2rem; }
@@ -218,6 +224,10 @@
         .popup-close-btn { display: inline-block; margin-top: 1.5rem; padding: 0.6rem 1.5rem; background: var(--ink); color: var(--paper); border: none; border-radius: 0; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s; text-align: center; text-decoration: none; }
         .popup-close-btn:hover { background: var(--accent); }
         .post-popup-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 1rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+        .post-popup-image { width: 100%; max-height: 280px; object-fit: cover; display: block; margin-bottom: 1.25rem; border: 1px solid var(--line); background: #332f2a; }
+        .post-popup-image[hidden] { display: none; }
+        .achievement-popup-image { width: 100%; max-height: 300px; object-fit: cover; display: block; margin-bottom: 1.5rem; border: 1px solid var(--line); background: var(--ink); }
+        .achievement-popup-image[hidden] { display: none; }
 
                 .nav-links a:focus-visible { border-bottom-color: var(--accent); }
 
@@ -361,6 +371,9 @@
             <div class="news-rail">
                 @foreach($posts as $post)
                 <article class="news-card">
+                    @if($post->image)
+                        <img class="news-card-image" src="{{ $post->image }}" alt="{{ $post->title }}" loading="lazy">
+                    @endif
                     <div class="label">{{ $post->created_at->format('d M Y') }}</div>
                     <h3><a href="{{ $post->readUrl() }}"@if($post->hasExternalLink()) target="_blank" rel="noopener noreferrer"@endif>{{ $post->title }}</a></h3>
                     <p>{{ Illuminate\Support\Str::limit(strip_tags($post->content), 130) }}</p>
@@ -413,7 +426,7 @@
         </div>
         <div class="wrap achievements-grid">
             @forelse($achievements as $achievement)
-                <article class="card achievement-card">
+                <article class="card achievement-card" role="button" tabindex="0" aria-label="Lihat detail prestasi: {{ $achievement['title'] }}">
                     <div class="achievement-media">
                         @if($achievement['image'])
                             <img src="{{ $achievement['image'] }}" alt="{{ $achievement['title'] }}" loading="lazy">
@@ -427,7 +440,7 @@
                     <div class="achievement-body">
                         <h4>{{ $achievement['title'] }}</h4>
                         <p>{{ $achievement['desc'] }}</p>
-                        <button type="button" class="achievement-btn" data-year="{{ $achievement['year'] }}">Baca Selengkapnya</button>
+                        <span class="achievement-btn" data-year="{{ $achievement['year'] }}" data-url="{{ $achievement['url'] }}">Baca Selengkapnya</span>
                     </div>
                 </article>
             @empty
@@ -491,16 +504,18 @@
     <div class="achievement-popup" id="achievementPopup" role="dialog" aria-modal="true" aria-label="Detail prestasi">
         <div class="popup-content">
             <button type="button" class="popup-close" id="popupClose" aria-label="Tutup popup">&times;</button>
+            <img class="achievement-popup-image" id="popupImage" alt="" hidden>
             <h3 class="popup-title" id="popupTitle"></h3>
             <div class="popup-year" id="popupYear"></div>
             <p class="popup-description" id="popupDescription"></p>
-            <button type="button" class="popup-close-btn" id="popupConfirm">Tutup</button>
+            <button type="button" class="popup-close-btn" id="popupConfirm">Baca Selengkapnya</button>
         </div>
     </div>
 
     <div class="post-popup" id="postPopup" role="dialog" aria-modal="true" aria-label="Detail artikel">
         <div class="popup-content">
             <button type="button" class="popup-close" id="postPopupClose" aria-label="Tutup popup">&times;</button>
+            <img class="post-popup-image" id="postPopupImage" alt="" hidden>
             <h3 class="popup-title" id="postPopupTitle"></h3>
             <div class="post-popup-meta" id="postPopupMeta"></div>
             <p class="popup-description" id="postPopupContent"></p>
@@ -670,17 +685,29 @@
             const popupTitle = document.getElementById('popupTitle');
             const popupYear = document.getElementById('popupYear');
             const popupDescription = document.getElementById('popupDescription');
+            const popupImage = document.getElementById('popupImage');
             const popupConfirm = document.getElementById('popupConfirm');
-            const buttons = document.querySelectorAll('.achievement-btn');
+            const popupCloseBtn = document.getElementById('popupClose');
+            const cards = document.querySelectorAll('.achievement-card');
 
-            if (!popup || buttons.length === 0) { return; }
+            if (!popup || cards.length === 0) { return; }
 
-            function openPopup(button) {
-                const card = button.closest('.achievement-card');
+            function openPopup(card) {
                 if (!card) { return; }
+                const button = card.querySelector('.achievement-btn');
                 popupTitle.textContent = card.querySelector('.achievement-body h4').textContent;
-                popupYear.textContent = 'Tahun: ' + (button.dataset.year || '');
+                popupYear.textContent = 'Tahun: ' + (button && button.dataset.year ? button.dataset.year : '');
+                popup.dataset.readUrl = button && button.dataset.url ? button.dataset.url : '';
                 popupDescription.textContent = card.querySelector('.achievement-body p').textContent;
+                const cardImage = card.querySelector('.achievement-media img');
+                if (cardImage) {
+                    popupImage.src = cardImage.getAttribute('src');
+                    popupImage.alt = cardImage.alt || '';
+                    popupImage.hidden = false;
+                } else {
+                    popupImage.removeAttribute('src');
+                    popupImage.hidden = true;
+                }
                 popup.classList.add('active');
                 popup.setAttribute('aria-expanded', 'true');
                 setTimeout(function () { popupConfirm.focus(); }, 50);
@@ -691,11 +718,20 @@
                 popup.setAttribute('aria-expanded', 'false');
             }
 
-            buttons.forEach(function (button) {
-                button.addEventListener('click', function () { openPopup(button); });
+            cards.forEach(function (card) {
+                card.addEventListener('click', function () { openPopup(card); });
+                card.addEventListener('keydown', function (event) {
+                    if (event.key !== 'Enter' && event.key !== ' ') { return; }
+                    event.preventDefault();
+                    openPopup(card);
+                });
             });
 
-            document.getElementById('popupConfirm').addEventListener('click', closePopup);
+            if (popupCloseBtn) { popupCloseBtn.addEventListener('click', closePopup); }
+            popupConfirm.addEventListener('click', function () {
+                const url = popup.dataset.readUrl;
+                if (url) { window.location.href = url; }
+            });
             popup.addEventListener('click', function (event) {
                 if (event.target === popup) { closePopup(); }
             });
@@ -723,7 +759,9 @@
             const popupTitle = document.getElementById('postPopupTitle');
             const popupMeta = document.getElementById('postPopupMeta');
             const popupContent = document.getElementById('postPopupContent');
+            const popupImage = document.getElementById('postPopupImage');
             const popupReadBtn = document.getElementById('postPopupReadBtn');
+            const popupCloseBtn = document.getElementById('postPopupClose');
             const cards = document.querySelectorAll('.news-card');
 
             if (!popup) { return; }
@@ -734,6 +772,15 @@
                 popupTitle.textContent = titleLink ? titleLink.textContent : '';
                 popupMeta.textContent = card.querySelector('.meta span') ? card.querySelector('.meta span').textContent : '';
                 popupContent.textContent = preview ? preview.textContent : '';
+                const cardImage = card.querySelector('.news-card-image');
+                if (cardImage) {
+                    popupImage.src = cardImage.getAttribute('src');
+                    popupImage.alt = cardImage.alt || '';
+                    popupImage.hidden = false;
+                } else {
+                    popupImage.removeAttribute('src');
+                    popupImage.hidden = true;
+                }
                 popup.dataset.postUrl = card.querySelector('.news-read') ? card.querySelector('.news-read').getAttribute('href') : '';
                 popup.classList.add('active');
                 popup.setAttribute('aria-expanded', 'true');
@@ -749,7 +796,12 @@
                 card.addEventListener('click', function (event) {
                     const readLink = event.target instanceof Element ? event.target.closest('.news-read') : null;
                     if (readLink) {
-                        window.open(readLink.getAttribute('href'), '_blank', 'noopener');
+                        const href = readLink.getAttribute('href');
+                        if (readLink.target === '_blank') {
+                            window.open(href, '_blank', 'noopener');
+                        } else {
+                            window.location.href = href;
+                        }
                         return;
                     }
                     const target = event.target instanceof Element ? event.target : null;
@@ -760,11 +812,10 @@
             popupReadBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 const url = popup.dataset.postUrl;
-                if (url) { window.open(url, '_blank', 'noopener'); }
+                if (url) { window.location.href = url; }
                 closePostPopup();
             });
-            document.getElementById('postPopupCloseBtn').addEventListener('click', closePostPopup);
-            document.getElementById('postPopupClose').addEventListener('click', closePostPopup);
+            if (popupCloseBtn) { popupCloseBtn.addEventListener('click', closePostPopup); }
             popup.addEventListener('click', function (event) { if (event.target === popup) { closePostPopup(); } });
             document.addEventListener('keydown', function (event) {
                 if (event.key !== 'Escape') { return; }

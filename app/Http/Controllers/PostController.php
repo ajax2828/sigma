@@ -6,6 +6,7 @@ use App\Models\LandingContent;
 use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\View\View;
 
 class PostController extends Controller
@@ -43,6 +44,9 @@ class PostController extends Controller
     {
         $validated = $this->validated($request);
 
+        $validated['user_id'] = $request->user()->id;
+        $validated['image'] = $this->storeImage($request);
+
         Post::create($validated);
 
         return redirect()->route('admin.posts.index')->with('success', 'Post created successfully.');
@@ -62,6 +66,15 @@ class PostController extends Controller
     {
         $validated = $this->validated($request);
 
+        if ($request->hasFile('image')) {
+            $this->deleteImage($post->image);
+            $validated['image'] = $this->storeImage($request);
+        } else {
+            // Tidak ada file baru: jangan sentuh kolom image supaya gambar
+            // lama tidak hilang setiap kali judul/isi diedit.
+            unset($validated['image']);
+        }
+
         $post->update($validated);
 
         return redirect()->route('admin.posts.index')->with('success', 'Post updated successfully.');
@@ -69,8 +82,37 @@ class PostController extends Controller
 
     public function destroy(Post $post): RedirectResponse
     {
+        $this->deleteImage($post->image);
+
         $post->delete();
         return redirect()->route('admin.posts.index')->with('success', 'Post deleted successfully.');
+    }
+
+    private function storeImage(Request $request): ?string
+    {
+        if (! $request->hasFile('image')) {
+            return null;
+        }
+
+        File::ensureDirectoryExists(public_path('images/posts'), 0775);
+        $file = $request->file('image');
+        $filename = 'post-' . time() . '-' . bin2hex(random_bytes(4)) . '.' . $file->extension();
+        $file->move(public_path('images/posts'), $filename);
+
+        return '/images/posts/' . $filename;
+    }
+
+    private function deleteImage(?string $path): void
+    {
+        // Hapus hanya file yang memang dibuat di direktori ini.
+        if (! $path || dirname($path) !== '/images/posts') {
+            return;
+        }
+
+        $full = public_path('images/posts/' . basename($path));
+        if (is_file($full)) {
+            File::delete($full);
+        }
     }
 
     /**
@@ -86,6 +128,7 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'author' => 'nullable|string|max:100',
             'content' => 'required|string',
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'link' => 'nullable|string|max:2048',
             'status' => 'required|in:draft,published,archived',
         ]);

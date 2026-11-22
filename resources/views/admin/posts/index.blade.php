@@ -47,11 +47,18 @@
                     @foreach ($posts as $post)
                         <tr>
                             <td>
-                                <a href="{{ route('admin.posts.show', $post) }}" class="post-title">{{ $post->title }}</a>
-                                <div class="post-excerpt">{{ Str::limit(strip_tags($post->content), 70) }}</div>
+                                <div class="post-cell">
+                                    @if ($post->image)
+                                        <img src="{{ $post->image }}" alt="" class="post-thumb">
+                                    @endif
+                                    <div>
+                                        <a href="{{ route('admin.posts.show', $post) }}" class="post-title">{{ $post->title }}</a>
+                                        <div class="post-excerpt">{{ Str::limit(strip_tags($post->content), 70) }}</div>
+                                    </div>
+                                </div>
                             </td>
                             <td><span class="badge badge-{{ $post->status }}">{{ ucfirst($post->status) }}</span></td>
-                            <td>{{ $post->user->name }}</td>
+                            <td>{{ $post->authorName() }}</td>
                             <td>{{ $post->created_at->format('M d, Y') }}</td>
                             <td>
                                 <div class="actions">
@@ -67,7 +74,7 @@
                 </tbody>
             </table>
             <div style="padding: 1.25rem; border-top: 1px solid rgba(255,255,255,0.08);">
-                {{ $posts->links() }}
+                {{ $posts->links('pagination.admin') }}
             </div>
         @else
             <div class="empty-state">
