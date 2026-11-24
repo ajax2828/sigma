@@ -23,7 +23,29 @@ class PostController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.posts.index', compact('posts'));
+        $contents = LandingContent::all()->keyBy('key');
+
+        return view('admin.posts.index', compact('posts', 'contents'));
+    }
+
+    /**
+     * Teks section "Kabar Terbaru" di landing page. Isi kartunya sendiri
+     * berasal dari post published, sedangkan judul/petunjuknya di sini.
+     */
+    public function updateSection(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'news_section_title' => ['required', 'string', 'max:150'],
+            'news_section_hint' => ['nullable', 'string', 'max:150'],
+            'news_empty_message' => ['nullable', 'string', 'max:300'],
+        ]);
+
+        foreach ($data as $key => $value) {
+            LandingContent::updateOrCreate(['key' => $key], ['value' => $value, 'type' => 'text']);
+        }
+
+        return redirect()->route('admin.posts.index')
+            ->with('success', 'Pengaturan Kabar Terbaru berhasil disimpan.');
     }
 
     public function publicShow(Post $post): View

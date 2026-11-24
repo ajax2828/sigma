@@ -73,6 +73,11 @@ class LandingContentSeeder extends Seeder
             ['key' => 'stat_partnerships_label', 'value' => 'Kerjasama', 'type' => 'text'],
             ['key' => 'stat_dedication_label', 'value' => 'Dedikasi', 'type' => 'text'],
 
+            // News section
+            ['key' => 'news_section_title', 'value' => 'Kabar Terbaru', 'type' => 'text'],
+            ['key' => 'news_section_hint', 'value' => 'Geser ke samping ›', 'type' => 'text'],
+            ['key' => 'news_empty_message', 'value' => 'Belum ada kabar yang dipublikasikan.', 'type' => 'text'],
+
             // Members section
             ['key' => 'member_section_title', 'value' => 'Anggota Kami', 'type' => 'text'],
             ['key' => 'member_section_subtitle', 'value' => 'Orang-orang hebat yang berada di balik setiap pencapaian organisasi.', 'type' => 'text'],

@@ -364,8 +364,8 @@
 
     <section class="news" aria-labelledby="newsTitle" id="kabar">
         <div class="news-head">
-            <h2 id="newsTitle">Kabar Terbaru</h2>
-            <span>Geser ke samping &rsaquo;</span>
+            <h2 id="newsTitle">{{ $contents['news_section_title']?->value ?? 'Kabar Terbaru' }}</h2>
+            <span>{{ $contents['news_section_hint']?->value ?? 'Geser ke samping ›' }}</span>
         </div>
         @if($posts->count())
             <div class="news-rail">
@@ -385,7 +385,7 @@
                 @endforeach
             </div>
         @else
-            <p class="news-empty">Belum ada kabar yang dipublikasikan.</p>
+            <p class="news-empty">{{ $contents['news_empty_message']?->value ?? 'Belum ada kabar yang dipublikasikan.' }}</p>
         @endif
     </section>
 

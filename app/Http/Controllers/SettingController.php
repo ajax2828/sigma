@@ -415,7 +415,7 @@ class SettingController extends Controller
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'title' => ['required', 'string', 'max:200'],
             'year' => ['nullable', 'string', 'max:20'],
-            'description' => ['nullable', 'string', 'max:1000'],
+            'description' => ['nullable', 'string'],
         ]);
 
         $image = $this->storeAchievementImage($request);

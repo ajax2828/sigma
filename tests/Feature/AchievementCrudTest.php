@@ -14,7 +14,10 @@ class AchievementCrudTest extends TestCase
 
     private function admin(): User
     {
-        return User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($user);
+
+        return $user;
     }
 
     public function test_admin_page_lists_achievements(): void
@@ -138,5 +141,50 @@ class AchievementCrudTest extends TestCase
             ->assertOk()
             ->assertDontSee('Sudah Dihapus')
             ->assertSee('Masih Ada');
+    }
+
+    public function test_description_has_no_application_limit_on_create(): void
+    {
+        $this->admin();
+        $description = rtrim(str_repeat('Deskripsi prestasi yang panjang. ', 400));
+
+        $this->post(route('admin.settings.achievements.store'), [
+            'icon' => '🏆',
+            'title' => 'Prestasi Panjang',
+            'description' => $description,
+        ])->assertRedirect(route('admin.settings.achievements'));
+
+        $created = Achievement::where('title', 'Prestasi Panjang')->first();
+        $this->assertNotNull($created);
+        $this->assertGreaterThan(1000, strlen($created->description));
+        $this->assertSame($description, $created->description);
+    }
+
+    public function test_description_has_no_application_limit_on_update(): void
+    {
+        $this->admin();
+        $achievement = Achievement::create(['title' => 'Lama', 'description' => 'Pendek']);
+        $description = rtrim(str_repeat('Isi panjang. ', 1200));
+
+        $this->put(route('admin.settings.achievements.update', $achievement), [
+            'title' => 'Lama',
+            'description' => $description,
+        ])->assertRedirect(route('admin.settings.achievements'));
+
+        $this->assertSame($description, $achievement->fresh()->description);
+    }
+
+    public function test_description_textareas_have_no_maxlength_attribute(): void
+    {
+        $this->admin();
+        Achievement::create(['title' => 'Contoh', 'description' => 'Deskripsi']);
+
+        $html = $this->get(route('admin.settings.achievements'))->assertOk()->getContent();
+
+        preg_match_all('/<textarea name="description"[^>]*>/', $html, $matches);
+        $this->assertNotEmpty($matches[0], 'form achievements harus punya textarea description');
+        foreach ($matches[0] as $tag) {
+            $this->assertStringNotContainsString('maxlength', $tag, 'textarea tidak boleh membatasi panjang deskripsi');
+        }
     }
 }

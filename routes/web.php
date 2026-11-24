@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('admin')->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/posts', [PostController::class, 'index'])->name('admin.posts.index');
+    Route::post('/admin/posts/section', [PostController::class, 'updateSection'])->name('admin.posts.section');
     Route::get('/admin/posts/create', [PostController::class, 'create'])->name('admin.posts.create');
     Route::post('/admin/posts', [PostController::class, 'store'])->name('admin.posts.store');
     Route::get('/admin/posts/{post}', [PostController::class, 'show'])->name('admin.posts.show');

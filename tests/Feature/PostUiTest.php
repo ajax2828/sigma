@@ -11,9 +11,17 @@ class PostUiTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function admin(): User
+    private function admin(?string $name = null): User
     {
-        return User::factory()->create();
+        $attributes = ['is_admin' => true];
+        if ($name !== null) {
+            $attributes['name'] = $name;
+        }
+
+        $user = User::factory()->create($attributes);
+        $this->actingAs($user);
+
+        return $user;
     }
 
     private function makePost(User $user, string $title, string $status = 'draft', string $content = 'Isi post.'): Post
@@ -290,7 +298,7 @@ class PostUiTest extends TestCase
 
     public function test_edit_form_has_an_author_input(): void
     {
-        $user = User::factory()->create();
+        $user = $this->admin();
         $post = Post::create(['user_id' => $user->id, 'title' => 'Kabar', 'content' => 'Isi', 'status' => 'published']);
 
         $html = $this->get(route('admin.posts.edit', $post))->assertOk()->getContent();
@@ -300,7 +308,7 @@ class PostUiTest extends TestCase
 
     public function test_author_can_be_set_when_creating_a_post(): void
     {
-        $user = User::factory()->create();
+        $user = $this->admin();
 
         $this->post(route('admin.posts.store'), [
             'title' => 'Dengan Penulis',
@@ -314,7 +322,7 @@ class PostUiTest extends TestCase
 
     public function test_author_can_be_changed_when_editing_a_post(): void
     {
-        $user = User::factory()->create();
+        $user = $this->admin();
         $post = Post::create(['user_id' => $user->id, 'title' => 'Kabar', 'content' => 'Isi', 'status' => 'published']);
 
         $this->put(route('admin.posts.update', $post), [
@@ -329,7 +337,7 @@ class PostUiTest extends TestCase
 
     public function test_blank_author_falls_back_to_the_creator_instead_of_showing_empty(): void
     {
-        $user = User::factory()->create(['name' => 'Admin SIGMA']);
+        $user = $this->admin('Admin SIGMA');
         $post = Post::create(['user_id' => $user->id, 'title' => 'Kabar', 'content' => 'Isi', 'status' => 'published']);
 
         $this->put(route('admin.posts.update', $post), [
@@ -370,7 +378,7 @@ class PostUiTest extends TestCase
 
     public function test_author_input_rejects_overlong_value(): void
     {
-        $user = User::factory()->create();
+        $user = $this->admin();
 
         $this->post(route('admin.posts.store'), [
             'title' => 'Kabar',
@@ -378,5 +386,54 @@ class PostUiTest extends TestCase
             'status' => 'published',
             'author' => str_repeat('a', 101),
         ])->assertSessionHasErrors('author');
+    }
+
+    // ===== PENGATURAN SECTION KABAR TERBARU =====
+
+    public function test_posts_page_has_editable_news_section_form(): void
+    {
+        $this->admin();
+
+        $html = $this->get(route('admin.posts.index'))->assertOk()->getContent();
+
+        $this->assertStringContainsString(route('admin.posts.section'), $html);
+        $this->assertStringContainsString('name="news_section_title"', $html);
+        $this->assertStringContainsString('name="news_section_hint"', $html);
+        $this->assertStringContainsString('name="news_empty_message"', $html);
+    }
+
+    public function test_news_section_settings_are_saved_and_shown_on_landing_page(): void
+    {
+        $this->admin();
+
+        $this->post(route('admin.posts.section'), [
+            'news_section_title' => 'Berita SIGMA',
+            'news_section_hint' => 'Geser untuk lihat semua',
+            'news_empty_message' => 'Belum ada berita, pantau terus.',
+        ])->assertRedirect(route('admin.posts.index'));
+
+        $this->assertDatabaseHas('landing_contents', [
+            'key' => 'news_section_title',
+            'value' => 'Berita SIGMA',
+        ]);
+        $this->assertDatabaseHas('landing_contents', [
+            'key' => 'news_section_hint',
+            'value' => 'Geser untuk lihat semua',
+        ]);
+
+        $body = $this->get(route('landing'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('Berita SIGMA', $body);
+        $this->assertStringContainsString('Geser untuk lihat semua', $body);
+        $this->assertStringContainsString('Belum ada berita, pantau terus.', $body);
+    }
+
+    public function test_news_section_title_is_required(): void
+    {
+        $this->admin();
+
+        $this->post(route('admin.posts.section'), [
+            'news_section_title' => '',
+        ])->assertSessionHasErrors('news_section_title');
     }
 }

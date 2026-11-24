@@ -67,7 +67,7 @@
                 </div>
                 <div class="f-span-all">
                     <label class="f-label f-label-sm">Description</label>
-                    <textarea name="description" rows="2" maxlength="1000" placeholder="Achievement description..." style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8125rem; resize: vertical;">{{ old('description') }}</textarea>
+                    <textarea name="description" rows="5" placeholder="Achievement description..." style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8125rem; resize: vertical;">{{ old('description') }}</textarea>
                 </div>
             </div>
             <button type="submit" class="btn-save btn-save-success"><svg class="btn-save-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg><span class="btn-save-label">Add Achievement</span></button>
@@ -116,7 +116,7 @@
                     </div>
                     <div class="f-span-all">
                         <label class="f-label f-label-sm">Description</label>
-                        <textarea name="description" rows="2" maxlength="1000" style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8125rem; resize: vertical;">{{ old('description', $achievement->description) }}</textarea>
+                        <textarea name="description" rows="5" style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8125rem; resize: vertical;">{{ old('description', $achievement->description) }}</textarea>
                     </div>
                 </div>
                 <button type="submit" class="btn-save"><svg class="btn-save-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg><span class="btn-save-label">Save Changes</span></button>
